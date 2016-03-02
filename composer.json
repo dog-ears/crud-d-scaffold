@@ -1,0 +1,22 @@
+{
+  "name": "dog-ears/l5scaffold",
+  "description": "Extend Laravel 5.2's generators scaffold.",
+  "keywords": ["laravel", "generators", "scaffold" , "laravel5.2"],
+  "license": "MIT",
+  "minimum-stability": "dev",
+  "authors": [
+    {
+      "name": "dog-ears",
+      "email": "info@dog-ears.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.4.0",
+    "illuminate/support": "~5.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "dogears\\L5scaffold\\": "src/"
+    }
+  }
+}
