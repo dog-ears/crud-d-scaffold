@@ -56,6 +56,9 @@ trait MakerTrait {
         } elseif($path == "view-create"){
             return './resources/views/'.$file_name.'/create.blade.php';
 
+        } elseif($path == "view"){
+            return './resources/views/'.$file_name;
+
         }
     }
 
