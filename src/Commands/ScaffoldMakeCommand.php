@@ -44,6 +44,13 @@ class ScaffoldMakeCommand extends Command
     protected $meta;
 
     /**
+     * Name config information
+     *
+     * @var array
+     */
+    protected $name_config;
+
+    /**
      * @var Composer
      */
     private $composer;
@@ -89,13 +96,26 @@ class ScaffoldMakeCommand extends Command
 //$this->solveName_test('nameName');
 //exit();
 
-        // Start Scaffold
-        $this->info('Configuring ' . $this->getObjName("Name") . '...');
 
-        // Setup migration and saves configs
+        
+        // Setup configs and names
+        $this->name_config['controller_name'] = $this->solveName('NameNames'); //ex) AppleTypes
+        $this->name_config['model_name'] = $this->solveName('NameName'); //ex) AppleType
+        $this->name_config['migration_name'] = $this->solveName('name_names'); //ex) apple_types
+        $this->name_config['migration_class_name'] = $this->solveName('NameNames'); //ex) AppleTypes
+        $this->name_config['table_name'] = $this->solveName('name_names'); //ex) apple_types
+        $this->name_config['seeder_name'] = $this->solveName('NameNames'); //ex) AppleTypes
+        $this->name_config['view_name'] = $this->solveName('nameNames'); //ex) appleTypes
+        $this->name_config['route_name'] = $this->solveName('nameNames'); //ex) appleTypes
+
         $this->meta['action'] = 'create';
-        $this->meta['var_name'] = $this->getObjName("name");
-        $this->meta['table'] = $this->getObjName("names"); // Store table name
+        $this->meta['var_name'] = $this->solveName('nameName');
+        $this->meta['table'] = $this->getNameConfig('table_name'); // Store table name
+
+
+
+        // Start Scaffold
+        $this->info('Configuring ' . $this->solveName('NameName') . '...');
 
         // Generate files
         $this->makeMigration();
@@ -104,8 +124,6 @@ class ScaffoldMakeCommand extends Command
         $this->makeController();
         $this->makeViewLayout();
         $this->makeViews();
-
-
     }
 
 
@@ -165,7 +183,7 @@ class ScaffoldMakeCommand extends Command
         $this->info('Dump-autoload...');
         $this->composer->dumpAutoloads();
 
-        $this->info('Route::resource("'.$this->getObjName("names").'","'.$this->getObjName("Name").'Controller"); // Add this line in routes.php');
+        $this->info('Route::resource("'.$this->solveName('nameNames').'","'.$this->getNameConfig('controller_name').'Controller"); // Add this line in routes.php');
 
     }
 
@@ -209,11 +227,25 @@ class ScaffoldMakeCommand extends Command
 
     /**
      * Get access to $meta array
-     * @return array
+     * @return array or string
      */
-    public function getMeta()
+    public function getMeta($input = null)
     {
-        return $this->meta;
+        if($input){
+            return $this->meta[$input];
+        }else{
+            return $this->meta;
+        }
+    }
+
+
+    /**
+     * Get access to $name_config array
+     * @return string
+     */
+    public function getNameConfig($input)
+    {
+        return $this->name_config[$input];
     }
 
 

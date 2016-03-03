@@ -41,7 +41,7 @@ class MakeView
 
     protected function generateView($nameView = 'index'){
         // Get path
-        $path = $this->getPath($this->scaffoldCommandObj->getObjName('names'), 'view-'.$nameView);
+        $path = $this->getPath($this->scaffoldCommandObj->getNameConfig('view_name'), 'view-'.$nameView);
 
 
         // Create directory
@@ -113,9 +113,9 @@ class MakeView
      */
     protected function replaceName(&$stub)
     {
-        $stub = str_replace('{{Class}}', $this->scaffoldCommandObj->getObjName('Names'), $stub);
-        $stub = str_replace('{{class}}', $this->scaffoldCommandObj->getObjName('names'), $stub);
-        $stub = str_replace('{{classSingle}}', $this->scaffoldCommandObj->getObjName('name'), $stub);
+        $stub = str_replace('{{Class}}', $this->scaffoldCommandObj->solveName('NameNames'), $stub);
+        $stub = str_replace('{{class}}', $this->scaffoldCommandObj->solveName('nameNames'), $stub);
+        $stub = str_replace('{{classSingle}}', $this->scaffoldCommandObj->solveName('nameName'), $stub);
 
         return $this;
     }

@@ -30,7 +30,7 @@ class MakeController
         // Cria o nome do arquivo do controller // TweetController
 
 
-        $name = $this->scaffoldCommandObj->getObjName('Name') . 'Controller';
+        $name = $this->scaffoldCommandObj->getNameConfig('controller_name'). 'Controller';
 
         // Verifica se o arquivo existe com o mesmo o nome
         if ($this->files->exists($path = $this->getPath($name))) {
@@ -80,7 +80,7 @@ class MakeController
     protected function replaceClassName(&$stub)
     {
 
-        $className = $this->scaffoldCommandObj->getObjName('Name') . 'Controller';
+        $className = $this->scaffoldCommandObj->getNameConfig('controller_name') . 'Controller';
         $stub = str_replace('{{class}}', $className, $stub);
 
         return $this;
@@ -96,7 +96,7 @@ class MakeController
     private function replaceModelPath(&$stub)
     {
 
-        $model_name = $this->getAppNamespace() . $this->scaffoldCommandObj->getObjName('Name');
+        $model_name = $this->getAppNamespace() . $this->scaffoldCommandObj->getNameConfig('model_name');
         $stub = str_replace('{{model_path}}', $model_name, $stub);
 
         return $this;
@@ -106,9 +106,9 @@ class MakeController
 
     private function replaceModelName(&$stub)
     {
-        $model_name_uc = $this->scaffoldCommandObj->getObjName('Name');
-        $model_name = $this->scaffoldCommandObj->getObjName('name');
-        $model_names = $this->scaffoldCommandObj->getObjName('names');
+        $model_name_uc = $this->scaffoldCommandObj->solveName('NameName');
+        $model_name = $this->scaffoldCommandObj->solveName('nameName');
+        $model_names = $this->scaffoldCommandObj->solveName('nameNames');
 
         $stub = str_replace('{{model_name_class}}', $model_name_uc, $stub);
         $stub = str_replace('{{model_name_var_sgl}}', $model_name, $stub);
