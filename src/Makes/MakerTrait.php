@@ -59,6 +59,9 @@ trait MakerTrait {
         } elseif($path == "view"){
             return './resources/views/'.$file_name;
 
+        } elseif($path == "factories"){
+            return './database/factories/'.$file_name.'.php';
+
         }
     }
 

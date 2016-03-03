@@ -92,18 +92,12 @@ class ScaffoldMakeCommand extends Command
     public function fire()
     {
 
-//テスト
-//$this->solveName_test('nameName');
-//exit();
-
         //NameSolver initialize
         $this->nameSolverInit();
 
         $this->meta['action'] = 'create';
         $this->meta['var_name'] = $this->solveName('nameName');
         $this->meta['table'] = $this->getNameConfig('table_name'); // Store table name
-
-
 
         // Start Scaffold
         $this->info('Configuring ' . $this->solveName('NameName') . '...');
@@ -212,6 +206,7 @@ class ScaffoldMakeCommand extends Command
     {
         return [
             ['schema', 's', InputOption::VALUE_REQUIRED, 'Schema to generate scaffold files. (Ex: --schema="title:string")', null],
+            ['seeding', 'S', InputOption::VALUE_OPTIONAL, 'Create seeding files.', false],
             ['form', 'f', InputOption::VALUE_OPTIONAL, 'Use Illumintate/Html Form facade to generate input fields', false]
         ];
     }
