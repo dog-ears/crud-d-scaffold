@@ -87,6 +87,11 @@ class SyntaxBuilder
             $fieldsc = $this->createSchemaForViewMethod($schema, $meta, 'create-content');
             return $fieldsc;
 
+        } else if ($type == "factory") {
+
+            $fieldsc = $this->createSchemaForFactoryMethod($schema, $meta);
+            return $fieldsc;
+
         } else {
             throw new \Exception("Type not found in syntaxBuilder");
         }
@@ -278,11 +283,20 @@ class SyntaxBuilder
                 str_repeat(' ', 21) . "<p class=\"form-control-static\">{{\$%s->%s}}</p>\n" .
                 str_repeat(' ', 16) . "</div>", strtolower($field['name']), strtoupper($field['name']), $meta['var_name'], strtolower($field['name']));
 
-
         } elseif ($type == 'view-edit-content') {
             $syntax = $this->buildField($field, $type, $meta['var_name']);
         } elseif ($type == 'view-create-content') {
             $syntax = $this->buildField($field, $type, $meta['var_name'], false);
+
+        } elseif ($type == 'factory') {
+
+            if( $field['name'] == 'name' ){
+                $syntax = sprintf("'%s' => \$faker->name,", $field['name']);                
+            }else{
+                $syntax = sprintf("'%s' => \$faker->sentence(\$nbWords = 6, \$variableNbWords = true),", $field['name']);                
+            }
+
+
         } else {
             // Fields to controller
             $syntax = sprintf("\$%s->%s = \$request->input(\"%s", $meta['var_name'], $field['name'], $field['name']);
@@ -428,4 +442,24 @@ class SyntaxBuilder
         return $layout;
     }
 
+
+
+    /**
+     * Construct the factory fields
+     *
+     * @param $schema
+     * @param $meta
+     * @return string
+     */
+    private function createSchemaForFactoryMethod($schema, $meta)
+    {
+        if (!$schema) return '';
+
+        $fields = array_map(function ($field) use ($meta) {
+            return $this->AddColumn($field, 'factory', $meta);
+        }, $schema);
+
+        return implode("\n". str_repeat(' ', 8), $fields);
+
+    }
 }
