@@ -11,15 +11,21 @@ trait NameSolverTrait {
      * @return mixed
      * @throws \Exception
      */
-    public function solveName($input,$config = 'NameName'){
+    public function solveName($config = 'NameName', $input = null){
         $names = [];
 
-        $names['nameName'] = camel_case( str_singular($input) );
-        $names['NameName'] = studly_case( str_singular($input) );
-        $names['nameNames'] = camel_case( str_plural($input) );
-        $names['NameNames'] = studly_case( str_plural($input) );
-        $names['name_name'] = str_replace('__', '_', snake_case( str_singular($input) ) );
-        $names['name_names'] = str_replace('__', '_', snake_case( str_plural($input) ) );
+        if( $input ){
+            $args_name = $input;
+        }else{
+            $args_name = $this->argument('name');
+        }
+
+        $names['nameName'] = camel_case( str_singular($args_name) );
+        $names['NameName'] = studly_case( str_singular($args_name) );
+        $names['nameNames'] = camel_case( str_plural($args_name) );
+        $names['NameNames'] = studly_case( str_plural($args_name) );
+        $names['name_name'] = str_replace('__', '_', snake_case( str_singular($args_name) ) );
+        $names['name_names'] = str_replace('__', '_', snake_case( str_plural($args_name) ) );
 
         if (!isset($names[$config])) {
             throw new \Exception("Position name is not found");
@@ -63,7 +69,7 @@ trait NameSolverTrait {
                 
         $this->info( 'solver type is '. $config );
         foreach($test_word as $value){
-            $this->info( $value.' -> '.$this->solveName($value, $config) );
+            $this->info( $value.' -> '.$this->solveName($config, $value) );
         }
     }
 }

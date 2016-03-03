@@ -27,7 +27,7 @@ class MakeModel {
     protected function start()
     {
 
-        $name = $this->scaffoldCommandObj->getObjName('Name');
+        $name = $this->scaffoldCommandObj->getNameConfig('model_name');
         $modelPath = $this->getPath($name, 'model');
 
         if (! $this->files->exists($modelPath)) {

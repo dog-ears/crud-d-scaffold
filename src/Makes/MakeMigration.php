@@ -30,7 +30,7 @@ class MakeMigration {
 
     protected function start(){
         // Cria o nome do arquivo do migration // create_tweets_table
-        $name = 'create_'.str_plural(strtolower( $this->scaffoldCommandObj->argument('name') )).'_table';
+        $name = 'create_'. $this->scaffoldCommandObj->getNameConfig('table_name'). '_table';
 
         // Verifica se o arquivo existe com o mesmo o nome
         if ($this->files->exists($path = $this->getPath($name)))
@@ -90,7 +90,7 @@ class MakeMigration {
      */
     protected function replaceClassName(&$stub)
     {
-        $className = ucwords(camel_case('Create'.str_plural($this->scaffoldCommandObj->argument('name')).'Table'));
+        $className = 'Create'. $this->scaffoldCommandObj->getNameConfig('migration_class_name'). 'Table';
         $stub = str_replace('{{class}}', $className, $stub);
 
         return $this;
@@ -104,7 +104,7 @@ class MakeMigration {
      */
     protected function replaceTableName(&$stub)
     {
-        $table = $this->scaffoldCommandObj->getMeta()['table'];
+        $table = $this->scaffoldCommandObj->getMeta('table');
         $stub = str_replace('{{table}}', $table, $stub);
 
         return $this;
@@ -123,12 +123,10 @@ class MakeMigration {
             $schema = (new SchemaParser)->parse($schema);
         }
 
-
         if($type == 'migration'){
             // Create migration fields
             $schema = (new SyntaxBuilder)->create($schema, $this->scaffoldCommandObj->getMeta());
             $stub = str_replace(['{{schema_up}}', '{{schema_down}}'], $schema, $stub);
-
 
         } else if($type='controller'){
             // Create controllers fields

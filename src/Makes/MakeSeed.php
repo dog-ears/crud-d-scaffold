@@ -24,7 +24,7 @@ class MakeSeed
 
 
         // Get path
-        $path = $this->getPath($this->scaffoldCommandObj->getObjName('Name') . 'TableSeeder', 'seed');
+        $path = $this->getPath($this->scaffoldCommandObj->getNameConfig('seeder_name'). 'TableSeeder', 'seed');
 
 
         // Create directory
@@ -72,7 +72,7 @@ class MakeSeed
 
     private function replaceClassName(&$stub)
     {
-        $name = $this->scaffoldCommandObj->getObjName('Name');
+        $name = $this->scaffoldCommandObj->getNameConfig('seeder_name');
 
         $stub = str_replace('{{class}}', $name, $stub);
 
