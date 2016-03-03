@@ -96,17 +96,8 @@ class ScaffoldMakeCommand extends Command
 //$this->solveName_test('nameName');
 //exit();
 
-
-        
-        // Setup configs and names
-        $this->name_config['controller_name'] = $this->solveName('NameNames'); //ex) AppleTypes
-        $this->name_config['model_name'] = $this->solveName('NameName'); //ex) AppleType
-        $this->name_config['migration_name'] = $this->solveName('name_names'); //ex) apple_types
-        $this->name_config['migration_class_name'] = $this->solveName('NameNames'); //ex) AppleTypes
-        $this->name_config['table_name'] = $this->solveName('name_names'); //ex) apple_types
-        $this->name_config['seeder_name'] = $this->solveName('NameNames'); //ex) AppleTypes
-        $this->name_config['view_name'] = $this->solveName('nameNames'); //ex) appleTypes
-        $this->name_config['route_name'] = $this->solveName('nameNames'); //ex) appleTypes
+        //NameSolver initialize
+        $this->nameSolverInit();
 
         $this->meta['action'] = 'create';
         $this->meta['var_name'] = $this->solveName('nameName');
