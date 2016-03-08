@@ -292,6 +292,10 @@ class SyntaxBuilder
 
             if( $field['name'] == 'name' ){
                 $syntax = sprintf("'%s' => \$faker->name,", $field['name']);                
+            }elseif( $field['type'] === 'date' || $field['type'] === 'dateTime' ){
+                $syntax = sprintf("'%s' => \$faker->dateTimeAD(\$max = 'now')", $field['name']);                
+            }elseif( $field['type'] === 'integer' ){
+                $syntax = sprintf("'%s' => \$faker->randomDigit", $field['name']);                
             }else{
                 $syntax = sprintf("'%s' => \$faker->sentence(\$nbWords = 6, \$variableNbWords = true),", $field['name']);                
             }
