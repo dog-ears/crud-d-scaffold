@@ -52,7 +52,7 @@ class MakeRoute{
 
         //output(insert)
         $src = $this->files->get($output_path.$output_filename);
-        $pattern = '/(Route::group\(\[\'middleware\' => \[\'web\'\]\], function \(\) {\n)(.*\n)(}\);)/';
+        $pattern = '/(Route::group\(\[\'middleware\' => \[\'web\'\]\], function \(\) {\n)(.*\n)(}\);)/s';
         $src = preg_replace($pattern, '\1\2    '.$stub_compiled. "\n". '\3', $src);
         $this->files->put($output_path.$output_filename, $src);
 
