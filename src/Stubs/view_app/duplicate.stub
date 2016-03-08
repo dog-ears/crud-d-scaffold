@@ -2,7 +2,7 @@
 
 @section('header')
     <div class="page-header">
-        <h1><i class="glyphicon glyphicon-plus"></i> {{app_model_class}} / Create </h1>
+        <h1><i class="glyphicon glyphicon-duplicate"></i> {{app_model_class}} / Duplicate #{{${{app_model_var}}->id}}</h1>
     </div>
 @endsection
 
@@ -17,7 +17,7 @@
 
                 {{content_fields}}
                 <div class="well well-sm">
-                    <button type="submit" class="btn btn-primary">Create</button>
+                    <button type="submit" class="btn btn-primary">Duplicate</button>
                     <a class="btn btn-link pull-right" href="{{ route('{{app_route}}.index') }}"><i class="glyphicon glyphicon-backward"></i> Back</a>
                 </div>
             </form>

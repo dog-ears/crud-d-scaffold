@@ -26,12 +26,12 @@
                     <tbody>
                         @foreach(${{app_model_vars}} as ${{app_model_var}})
                             <tr>
-                                <td>{{${{app_model_var}}->id}}</td>
+                                <td><a href="{{ route('{{app_route}}.show', $appleType->id) }}">{{${{app_model_var}}->id}}</a></td>
                                 {{content_fields}}
                                 <td class="text-right">
-                                    <a class="btn btn-xs btn-primary" href="{{ route('{{app_model_vars}}.show', ${{app_model_var}}->id) }}"><i class="glyphicon glyphicon-eye-open"></i> View</a>
-                                    <a class="btn btn-xs btn-warning" href="{{ route('{{app_model_vars}}.edit', ${{app_model_var}}->id) }}"><i class="glyphicon glyphicon-edit"></i> Edit</a>
-                                    <form action="{{ route('{{app_model_vars}}.destroy', ${{app_model_var}}->id) }}" method="POST" style="display: inline;" onsubmit="if(confirm('Delete? Are you sure?')) { return true } else {return false };">
+                                    <a class="btn btn-xs btn-primary" href="{{ route('{{app_route}}.duplicate', ${{app_model_var}}->id) }}"><i class="glyphicon glyphicon-duplicate"></i> Duplicate</a>
+                                    <a class="btn btn-xs btn-warning" href="{{ route('{{app_route}}.edit', ${{app_model_var}}->id) }}"><i class="glyphicon glyphicon-edit"></i> Edit</a>
+                                    <form action="{{ route('{{app_route}}.destroy', ${{app_model_var}}->id) }}" method="POST" style="display: inline;" onsubmit="if(confirm('Delete? Are you sure?')) { return true } else {return false };">
                                         <input type="hidden" name="_method" value="DELETE">
                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                         <button type="submit" class="btn btn-xs btn-danger"><i class="glyphicon glyphicon-trash"></i> Delete</button>

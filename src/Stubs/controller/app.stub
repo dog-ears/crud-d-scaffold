@@ -74,6 +74,19 @@ class {{app_controller_class}}Controller extends Controller {
 	}
 
 	/**
+	 * Show the form for duplicatting the specified resource.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function duplicate($id)
+	{
+		${{app_model_var}} = {{app_model_class}}::findOrFail($id);
+
+		return view('{{app_model_vars}}.duplicate', compact('{{app_model_var}}'));
+	}
+
+	/**
 	 * Update the specified resource in storage.
 	 *
 	 * @param  int  $id

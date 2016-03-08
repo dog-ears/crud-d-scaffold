@@ -64,6 +64,9 @@ class MakeView
             ],
             'edit' => [
                 'content_fields' => (new SyntaxBuilder)->create($schemaArray, $this->scaffoldCommandObj->getMeta(), 'view-edit-content', $this->scaffoldCommandObj->option('form')),
+            ],
+            'duplicate' => [    //same as edit
+                'content_fields' => (new SyntaxBuilder)->create($schemaArray, $this->scaffoldCommandObj->getMeta(), 'view-edit-content', $this->scaffoldCommandObj->option('form')),
             ]
         ];
 
