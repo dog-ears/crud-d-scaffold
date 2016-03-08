@@ -1,5 +1,4 @@
 <?php
-
 namespace dogears\L5scaffold;
 
 use Illuminate\Support\ServiceProvider;
@@ -13,8 +12,10 @@ class GeneratorsServiceProvider extends ServiceProvider {
 	 */
 	public function boot()
 	{
-		//
-
+		//config publish
+	    $this->publishes([
+	        __DIR__.'/config/l5scaffold.php' => config_path('l5scaffold.php'),
+	    ]);
 	}
 
 	/**
@@ -24,11 +25,13 @@ class GeneratorsServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-
 		$this->registerScaffoldGenerator();
 
+		//config setting
+	    $this->mergeConfigFrom(
+	        __DIR__.'/config/l5scaffold.php', 'l5scaffold'
+	    );
 	}
-
 
 	/**
 	 * Register the make:scaffold generator.

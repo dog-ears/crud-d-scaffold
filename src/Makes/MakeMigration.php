@@ -4,139 +4,67 @@
  * User: fernandobritofl
  * Date: 4/22/15
  * Time: 10:34 PM
+
+マイグレーションに関する処理を担当
+・出力先の決定
+・スタブコントローラーへの発注、データの受け取り
+・実際の出力
+・終了メッセージ
+
  */
 
 namespace dogears\L5scaffold\Makes;
 
-
 use Illuminate\Filesystem\Filesystem;
 use dogears\L5scaffold\Commands\ScaffoldMakeCommand;
-use dogears\L5scaffold\Migrations\SchemaParser;
-use dogears\L5scaffold\Migrations\SyntaxBuilder;
+use dogears\L5scaffold\Stubs\StubController;
+use dogears\L5scaffold\Traits\MakerTrait;
+use dogears\L5scaffold\Traits\NameSolverTrait;
 
 class MakeMigration {
-    use MakerTrait;
+    use MakerTrait,NameSolverTrait;
 
+    protected $files;
     protected $scaffoldCommandObj;
 
     public function __construct(ScaffoldMakeCommand $scaffoldCommand, Filesystem $files)
     {
         $this->files = $files;
         $this->scaffoldCommandObj = $scaffoldCommand;
-
         $this->start();
     }
 
-
     protected function start(){
-        // Cria o nome do arquivo do migration // create_tweets_table
-        $name = 'create_'. $this->scaffoldCommandObj->getNameConfig('table_name'). '_table';
 
-        // Verifica se o arquivo existe com o mesmo o nome
-        if ($this->files->exists($path = $this->getPath($name)))
-        {
+        //get_stub_path and filename
+        $stub_path = __DIR__.'/../Stubs/migrate/';
+        $stub_filename = 'app.stub';
+
+        //set custom replace
+        $custom_replace = [
+            'table' => $this->solveName($this->scaffoldCommandObj->argument('name'), config('l5scaffold.app_name_rules.name_names')),
+        ];
+
+        //create new stub
+        $stub = new StubController( $this->scaffoldCommandObj, $this->files, $stub_path.$stub_filename, $schema_repalce_type = 'migration', $custom_replace );
+
+        //compile
+        $stub_compiled = $stub->getCompiled();
+
+        //get output_path and filename
+        $output_path = './database/migrations/';
+        $output_filename = date('Y_m_d_His'). '_create_'. $this->solveName($this->scaffoldCommandObj->argument('name'), config('l5scaffold.app_name_rules.app_migrate_filename')). '_table.php';
+
+        //output_exist_check
+        if( $this->files->exists($output_path.$output_filename) ){
             return $this->scaffoldCommandObj->error($this->type.' already exists!');
         }
 
-        // Cria a pasta caso nao exista
-        $this->makeDirectory($path);
+        //output
+        $this->makeDirectory($output_path);
+        $this->files->put($output_path.$output_filename, $stub_compiled);
 
-        // Grava o arquivo
-        $this->files->put($path, $this->compileMigrationStub());
-
+        //end message
         $this->scaffoldCommandObj->info('Migration created successfully');
     }
-
-
-    /**
-     * Get the path to where we should store the migration.
-     *
-     * @param  string $name
-     * @return string
-     */
-    protected function getPath($name)
-    {
-        return './database/migrations/'.date('Y_m_d_His').'_'.$name.'.php';
-    }
-
-
-
-    /**
-     * Compile the migration stub.
-     *
-     * @return string
-     */
-    protected function compileMigrationStub()
-    {
-        $stub = $this->files->get(__DIR__.'/../stubs/migration.stub');
-
-        $this->replaceClassName($stub)
-            ->replaceSchema($stub)
-            ->replaceTableName($stub);
-
-
-        return $stub;
-    }
-
-
-
-
-
-    /**
-     * Replace the class name in the stub.
-     *
-     * @param  string $stub
-     * @return $this
-     */
-    protected function replaceClassName(&$stub)
-    {
-        $className = 'Create'. $this->scaffoldCommandObj->getNameConfig('migration_class_name'). 'Table';
-        $stub = str_replace('{{class}}', $className, $stub);
-
-        return $this;
-    }
-
-    /**
-     * Replace the table name in the stub.
-     *
-     * @param  string $stub
-     * @return $this
-     */
-    protected function replaceTableName(&$stub)
-    {
-        $table = $this->scaffoldCommandObj->getMeta('table');
-        $stub = str_replace('{{table}}', $table, $stub);
-
-        return $this;
-    }
-
-    /**
-     * Replace the schema for the stub.
-     *
-     * @param  string $stub
-     * @param string $type
-     * @return $this
-     */
-    protected function replaceSchema(&$stub, $type='migration')
-    {
-        if ($schema = $this->scaffoldCommandObj->option('schema')) {
-            $schema = (new SchemaParser)->parse($schema);
-        }
-
-        if($type == 'migration'){
-            // Create migration fields
-            $schema = (new SyntaxBuilder)->create($schema, $this->scaffoldCommandObj->getMeta());
-            $stub = str_replace(['{{schema_up}}', '{{schema_down}}'], $schema, $stub);
-
-        } else if($type='controller'){
-            // Create controllers fields
-            $schema = (new SyntaxBuilder)->create($schema, $this->scaffoldCommandObj->getMeta(), 'controller');
-            $stub = str_replace('{{model_fields}}', $schema, $stub);
-
-
-        } else {}
-
-        return $this;
-    }
-
 }
