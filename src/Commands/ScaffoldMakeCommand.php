@@ -6,13 +6,14 @@ use Illuminate\Console\AppNamespaceDetectorTrait;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Composer;
+use dogears\L5scaffold\Makes\MakeMigration;
 use dogears\L5scaffold\Makes\MakeController;
 use dogears\L5scaffold\Makes\MakeLayout;
-use dogears\L5scaffold\Makes\MakeMigration;
 use dogears\L5scaffold\Makes\MakeModel;
-use dogears\L5scaffold\Makes\MakerTrait;
 use dogears\L5scaffold\Makes\MakeSeed;
 use dogears\L5scaffold\Makes\MakeView;
+use dogears\L5scaffold\Makes\MakeRoute;
+use dogears\L5scaffold\Traits\MakerTrait;
 use dogears\L5scaffold\Traits\NameSolverTrait;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
@@ -44,17 +45,9 @@ class ScaffoldMakeCommand extends Command
     protected $meta;
 
     /**
-     * Name config information
-     *
-     * @var array
-     */
-    protected $name_config;
-
-    /**
      * @var Composer
      */
     private $composer;
-
 
     /**
      * Views to generate
@@ -79,7 +72,6 @@ class ScaffoldMakeCommand extends Command
     {
         parent::__construct();
 
-
         $this->files = $files;
         $this->composer = $composer;
     }
@@ -91,16 +83,13 @@ class ScaffoldMakeCommand extends Command
      */
     public function fire()
     {
-
-        //NameSolver initialize
-        $this->nameSolverInit();
-
+        //set meta data for schema
         $this->meta['action'] = 'create';
-        $this->meta['var_name'] = $this->solveName('nameName');
-        $this->meta['table'] = $this->getNameConfig('table_name'); // Store table name
+        $this->meta['var_name'] = $this->solveName($this->argument('name'),'nameName');
+        $this->meta['table'] = $this->solveName($this->argument('name'),config('l5scaffold.app_name_rules.app_migrate_tablename')); // Store table name
 
-        // Start Scaffold
-        $this->info('Configuring ' . $this->solveName('NameName') . '...');
+        // Message of Start Scaffold
+        $this->info('Configuring ' . $this->solveName($this->argument('name'),'NameName') . '...');
 
         // Generate files
         $this->makeMigration();
@@ -109,8 +98,8 @@ class ScaffoldMakeCommand extends Command
         $this->makeController();
         $this->makeViewLayout();
         $this->makeViews();
+        $this->makeRoute();
     }
-
 
     /**
      * Generate the desired migration.
@@ -120,7 +109,6 @@ class ScaffoldMakeCommand extends Command
         new MakeMigration($this, $this->files);
     }
 
-
     /**
      * Generate a Seed
      */
@@ -128,7 +116,6 @@ class ScaffoldMakeCommand extends Command
     {
         new MakeSeed($this, $this->files);
     }
-
 
     /**
      * Generate an Eloquent model, if the user wishes.
@@ -138,40 +125,13 @@ class ScaffoldMakeCommand extends Command
         new MakeModel($this, $this->files);
     }
 
-
     /**
      * Make a Controller with default actions
      */
     private function makeController()
     {
-
         new MakeController($this, $this->files);
-
     }
-
-
-    /**
-     * Setup views and assets
-     *
-     */
-    private function makeViews()
-    {
-
-        foreach ($this->views as $view) {
-            // index, create, show, edit
-            new MakeView($this, $this->files, $view);
-        }
-
-
-        $this->info('Views created successfully.');
-
-        $this->info('Dump-autoload...');
-        $this->composer->dumpAutoloads();
-
-        $this->info('Route::resource("'.$this->solveName('nameNames').'","'.$this->getNameConfig('controller_name').'Controller"); // Add this line in routes.php');
-
-    }
-
 
     /**
      * Make a layout.blade.php with bootstrap
@@ -183,6 +143,28 @@ class ScaffoldMakeCommand extends Command
         new MakeLayout($this, $this->files);
     }
 
+    /**
+     * Setup views and assets
+     *
+     */
+    private function makeViews()
+    {
+        foreach ($this->views as $view) {
+            // index, create, show, edit
+            new MakeView($this, $this->files, $view);
+        }
+
+        $this->info('Views created successfully.');
+        $this->info('Dump-autoload...');
+        $this->composer->dumpAutoloads();
+    }
+
+    private function makeRoute()
+    {
+        new MakeRoute($this, $this->files);
+    }
+
+
 
     /**
      * Get the console command arguments.
@@ -192,10 +174,9 @@ class ScaffoldMakeCommand extends Command
     protected function getArguments()
     {
         return [
-            ['name', InputArgument::REQUIRED, 'The name of the model. (Ex: Post)'],
+            ['name', InputArgument::REQUIRED, 'The name of the model. (Ex: AppleType)'],
         ];
     }
-
 
     /**
      * Get the console command options.
@@ -222,48 +203,5 @@ class ScaffoldMakeCommand extends Command
         }else{
             return $this->meta;
         }
-    }
-
-
-    /**
-     * Get access to $name_config array
-     * @return string
-     */
-    public function getNameConfig($input)
-    {
-        return $this->name_config[$input];
-    }
-
-
-    /**
-     * Generate names
-     *
-     * @param string $config
-     * @return mixed
-     * @throws \Exception
-     */
-    public function getObjName($config = 'Name')
-    {
-
-        $names = [];
-        $args_name = $this->argument('name');
-
-
-        // Name[0] = Tweet
-        $names['Name'] = str_singular(ucfirst($args_name));
-        // Name[1] = Tweets
-        $names['Names'] = str_plural(ucfirst($args_name));
-        // Name[2] = tweets
-        $names['names'] = str_plural(strtolower(preg_replace('/(?<!^)([A-Z])/', '_$1', $args_name)));
-        // Name[3] = tweet
-        $names['name'] = str_singular(strtolower(preg_replace('/(?<!^)([A-Z])/', '_$1', $args_name)));
-
-
-        if (!isset($names[$config])) {
-            throw new \Exception("Position name is not found");
-        };
-
-        return $names[$config];
-
     }
 }

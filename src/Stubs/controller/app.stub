@@ -1,0 +1,108 @@
+<?php namespace App\Http\Controllers;
+
+use App\Http\Requests;
+use App\Http\Controllers\Controller;
+
+use App\{{app_model_class}};
+use Illuminate\Http\Request;
+
+class {{app_controller_class}}Controller extends Controller {
+
+	/**
+	 * Display a listing of the resource.
+	 *
+	 * @return Response
+	 */
+	public function index()
+	{
+		${{app_model_vars}} = {{app_model_class}}::orderBy('id', 'desc')->paginate(10);
+
+		return view('{{app_model_vars}}.index', compact('{{app_model_vars}}'));
+	}
+
+	/**
+	 * Show the form for creating a new resource.
+	 *
+	 * @return Response
+	 */
+	public function create()
+	{
+		return view('{{app_model_vars}}.create');
+	}
+
+	/**
+	 * Store a newly created resource in storage.
+	 *
+	 * @param Request $request
+	 * @return Response
+	 */
+	public function store(Request $request)
+	{
+		${{app_model_var}} = new {{app_model_class}}();
+
+		{{schema_controller}}
+
+		${{app_model_var}}->save();
+
+		return redirect()->route('{{app_model_vars}}.index')->with('message', 'Item created successfully.');
+	}
+
+	/**
+	 * Display the specified resource.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function show($id)
+	{
+		${{app_model_var}} = {{app_model_class}}::findOrFail($id);
+
+		return view('{{app_model_vars}}.show', compact('{{app_model_var}}'));
+	}
+
+	/**
+	 * Show the form for editing the specified resource.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function edit($id)
+	{
+		${{app_model_var}} = {{app_model_class}}::findOrFail($id);
+
+		return view('{{app_model_vars}}.edit', compact('{{app_model_var}}'));
+	}
+
+	/**
+	 * Update the specified resource in storage.
+	 *
+	 * @param  int  $id
+	 * @param Request $request
+	 * @return Response
+	 */
+	public function update(Request $request, $id)
+	{
+		${{app_model_var}} = {{app_model_class}}::findOrFail($id);
+
+		{{schema_controller}}
+
+		${{app_model_var}}->save();
+
+		return redirect()->route('{{app_model_vars}}.index')->with('message', 'Item updated successfully.');
+	}
+
+	/**
+	 * Remove the specified resource from storage.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function destroy($id)
+	{
+		${{app_model_var}} = {{app_model_class}}::findOrFail($id);
+		${{app_model_var}}->delete();
+
+		return redirect()->route('{{app_model_vars}}.index')->with('message', 'Item deleted successfully.');
+	}
+
+}

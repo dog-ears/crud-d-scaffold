@@ -1,51 +1,51 @@
 <?php
 
+/**
+ * Created by dog-ears
+
+[入力]
+なし
+
+[処理]
+Scaffold作成時に入力されたアプリ名を、
+各種形式にあわせて変換。
+ストックする。
+
+[出力]
+
+ 
+ */
+ 
 namespace dogears\L5scaffold\Traits;
 
 trait NameSolverTrait {
 
-    public function nameSolverInit() {
-
-        // Setup configs and names
-        $this->name_config['controller_name'] = $this->solveName('NameNames'); //ex) AppleTypes
-        $this->name_config['model_name'] = $this->solveName('NameName'); //ex) AppleType
-        $this->name_config['migration_name'] = $this->solveName('name_names'); //ex) apple_types
-        $this->name_config['migration_class_name'] = $this->solveName('NameNames'); //ex) AppleTypes
-        $this->name_config['table_name'] = $this->solveName('name_names'); //ex) apple_types
-        $this->name_config['seeder_name'] = $this->solveName('NameNames'); //ex) AppleTypes
-        $this->name_config['view_name'] = $this->solveName('nameNames'); //ex) appleTypes
-        $this->name_config['route_name'] = $this->solveName('nameNames'); //ex) appleTypes
-
-    }
-
     /**
      * Get the Name.
      *
-     * @param string $config
-     * @return mixed
+     * @param string $input,$type
+     * @return string
      * @throws \Exception
      */
-    public function solveName($config = 'NameName', $input = null){
-        $names = [];
+    public function solveName($input, $type){
 
-        if( $input ){
-            $args_name = $input;
+        if( $type === 'nameName' ){
+            $result = camel_case( str_singular($input) );
+        }elseif( $type === 'NameName' ){
+            $result = studly_case( str_singular($input) );
+        }elseif( $type === 'nameNames' ){
+            $result = camel_case( str_plural($input) );
+        }elseif( $type === 'NameNames' ){
+            $result = studly_case( str_plural($input) );
+        }elseif( $type === 'name_name' ){
+            $result = str_replace('__', '_', snake_case( str_singular($input) ) );
+        }elseif( $type === 'name_names' ){
+            $result = str_replace('__', '_', snake_case( str_plural($input) ) );
         }else{
-            $args_name = $this->argument('name');
+            throw new \Exception("NameSolver accept invalid type");
         }
 
-        $names['nameName'] = camel_case( str_singular($args_name) );
-        $names['NameName'] = studly_case( str_singular($args_name) );
-        $names['nameNames'] = camel_case( str_plural($args_name) );
-        $names['NameNames'] = studly_case( str_plural($args_name) );
-        $names['name_name'] = str_replace('__', '_', snake_case( str_singular($args_name) ) );
-        $names['name_names'] = str_replace('__', '_', snake_case( str_plural($args_name) ) );
-
-        if (!isset($names[$config])) {
-            throw new \Exception("Position name is not found");
-        };
-
-        return $names[$config];
+        return $result;
     }
 
     /**
@@ -53,9 +53,9 @@ trait NameSolverTrait {
      *
      * @param string $config
      */
-    public function solveName_test($config){
+    public function solveName_test($type){
 
-        $test_word = array(
+        $test_words = array(
                 //"appletype",  //無理
                 //"APPLETYPE",  //無理
     
@@ -81,9 +81,9 @@ trait NameSolverTrait {
                 "AppleTypes",
                 );
                 
-        $this->info( 'solver type is '. $config );
-        foreach($test_word as $value){
-            $this->info( $value.' -> '.$this->solveName($config, $value) );
+        $this->info( 'solver type is '. $type );
+        foreach($test_words as $test_word){
+            $this->info( $test_word.' -> '.$this->solveName($test_word, $type) );
         }
     }
 }
