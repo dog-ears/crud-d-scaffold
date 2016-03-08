@@ -54,7 +54,7 @@ class ScaffoldMakeCommand extends Command
      *
      * @var array
      */
-    private $views = ['index', 'create', 'show', 'edit'];
+    private $views = ['index', 'create', 'show', 'edit','duplicate'];
 
     /**
      * Store name from Model
