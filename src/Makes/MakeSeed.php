@@ -86,45 +86,45 @@ class MakeSeed{
 
             //end message
             $this->scaffoldCommandObj->info('Seeding - DatabaseSeeder updated successfully');
-        }
 
-        //(iii)DatabaseSeeder --------------------------------------------------
-
-        //get_stub_path and filename
-        $stub_path = __DIR__.'/../Stubs/seed/';
-        $stub_filename = 'app.stub';
-
-        //create new stub
-        $stub = new StubController( $this->scaffoldCommandObj, $this->files, $stub_path.$stub_filename, $schema_repalce_type = null, $custom_replace = null );
-
-        //compile
-        $stub_compiled = $stub->getCompiled();
-
-        //get output_path and filename
-        $output_path = './database/seeds/';
-        $output_filename = $this->solveName($this->scaffoldCommandObj->argument('name'), config('l5scaffold.app_name_rules.app_seeder_class')).'TableSeeder.php';
-
-        //output_func
-        $output_func = function () use($output_path, $output_filename, $stub_compiled){
-
-            //output
-            $this->makeDirectory($output_path.$output_filename);
-            $this->files->put($output_path.$output_filename, $stub_compiled);            
-
-            //end message
-            $this->scaffoldCommandObj->info('Seeding created successfully');
-        };
-
-        //output_exist_check
-        if( $this->files->exists($output_path.$output_filename) ){
-            if ($this->scaffoldCommandObj->confirm($output_path.$output_filename. ' already exists! Do you wish to overwrite? [yes|no]')) {
-
+            //(iii)DatabaseSeeder --------------------------------------------------
+    
+            //get_stub_path and filename
+            $stub_path = __DIR__.'/../Stubs/seed/';
+            $stub_filename = 'app.stub';
+    
+            //create new stub
+            $stub = new StubController( $this->scaffoldCommandObj, $this->files, $stub_path.$stub_filename, $schema_repalce_type = null, $custom_replace = null );
+    
+            //compile
+            $stub_compiled = $stub->getCompiled();
+    
+            //get output_path and filename
+            $output_path = './database/seeds/';
+            $output_filename = $this->solveName($this->scaffoldCommandObj->argument('name'), config('l5scaffold.app_name_rules.app_seeder_class')).'TableSeeder.php';
+    
+            //output_func
+            $output_func = function () use($output_path, $output_filename, $stub_compiled){
+    
+                //output
+                $this->makeDirectory($output_path.$output_filename);
+                $this->files->put($output_path.$output_filename, $stub_compiled);            
+    
+                //end message
+                $this->scaffoldCommandObj->info('Seeding created successfully');
+            };
+    
+            //output_exist_check
+            if( $this->files->exists($output_path.$output_filename) ){
+                if ($this->scaffoldCommandObj->confirm($output_path.$output_filename. ' already exists! Do you wish to overwrite? [yes|no]')) {
+    
+                    //call output_func
+                    $output_func();
+                }
+            }else{
                 //call output_func
                 $output_func();
             }
-        }else{
-            //call output_func
-            $output_func();
         }
     }
 }
