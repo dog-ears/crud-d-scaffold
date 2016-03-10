@@ -20,17 +20,18 @@ use dogears\L5scaffold\Commands\ScaffoldMakeCommand;
 use dogears\L5scaffold\Stubs\StubController;
 use dogears\L5scaffold\Traits\MakerTrait;
 use dogears\L5scaffold\Traits\NameSolverTrait;
+use dogears\L5scaffold\Traits\OutputTrait;
 
 class MakeLayout {
-    use MakerTrait,NameSolverTrait;
+    use MakerTrait,NameSolverTrait,OutputTrait;
 
     protected $files;
-    protected $scaffoldCommandObj;
+    protected $commandObj;
 
-    public function __construct(ScaffoldMakeCommand $scaffoldCommand, Filesystem $files)
+    public function __construct($command, Filesystem $files)
     {
         $this->files = $files;
-        $this->scaffoldCommandObj = $scaffoldCommand;
+        $this->commandObj = $command;
         $this->start();
     }
 
@@ -43,7 +44,7 @@ class MakeLayout {
         $stub_filename = 'layout.stub';
 
         //create new stub
-        $stub = new StubController( $this->scaffoldCommandObj, $this->files, $stub_path.$stub_filename, $schema_repalce_type = null, $custom_replace = null );
+        $stub = new StubController( $this->commandObj, $this->files, $stub_path.$stub_filename, $schema_repalce_type = null, $custom_replace = null );
 
         //compile
         $stub_compiled = $stub->getCompiled();
@@ -52,28 +53,10 @@ class MakeLayout {
         $output_path = './resources/views/';
         $output_filename = 'layout.blade.php';
 
-        //output_func
-        $output_func = function () use($output_path, $output_filename, $stub_compiled){
+        //output(use OutputTrait)
+        $this->outputPut( $output_path, $output_filename, $stub_compiled, $message_success='view_layout_layout created successfully', $debug=false );
 
-            //output
-            $this->makeDirectory($output_path);
-            $this->files->put($output_path.$output_filename, $stub_compiled);            
 
-            //end message
-            $this->scaffoldCommandObj->info('view_layout_layout created successfully');
-        };
-
-        //output_exist_check
-        if( $this->files->exists($output_path.$output_filename) ){
-            if ($this->scaffoldCommandObj->confirm($output_path.$output_filename. ' already exists! Do you wish to overwrite? [yes|no]')) {
-
-                //call output_func
-                $output_func();
-            }
-        }else{
-            //call output_func
-            $output_func();
-        }
 
         //(ii)error --------------------------------------------------
 
@@ -82,7 +65,7 @@ class MakeLayout {
         $stub_filename = 'error.stub';
 
         //create new stub
-        $stub = new StubController( $this->scaffoldCommandObj, $this->files, $stub_path.$stub_filename, $schema_repalce_type = null, $custom_replace = null );
+        $stub = new StubController( $this->commandObj, $this->files, $stub_path.$stub_filename, $schema_repalce_type = null, $custom_replace = null );
 
         //compile
         $stub_compiled = $stub->getCompiled();
@@ -91,27 +74,7 @@ class MakeLayout {
         $output_path = './resources/views/';
         $output_filename = 'error.blade.php';
 
-        //output_func
-        $output_func = function () use($output_path, $output_filename, $stub_compiled){
-
-            //output
-            $this->makeDirectory($output_path);
-            $this->files->put($output_path.$output_filename, $stub_compiled);            
-
-            //end message
-            $this->scaffoldCommandObj->info('view_layout_error created successfully');
-        };
-
-        //output_exist_check
-        if( $this->files->exists($output_path.$output_filename) ){
-            if ($this->scaffoldCommandObj->confirm($output_path.$output_filename. ' already exists! Do you wish to overwrite? [yes|no]')) {
-
-                //call output_func
-                $output_func();
-            }
-        }else{
-            //call output_func
-            $output_func();
-        }
+        //output(use OutputTrait)
+        $this->outputPut( $output_path, $output_filename, $stub_compiled, $message_success='view_layout_error created successfully', $debug=false );
     }
 }

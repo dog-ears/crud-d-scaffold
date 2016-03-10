@@ -23,19 +23,20 @@ use dogears\L5scaffold\Traits\NameSolverTrait;
 
 use dogears\L5scaffold\Migrations\SchemaParser;
 use dogears\L5scaffold\Migrations\SyntaxBuilder;
+use dogears\L5scaffold\Traits\OutputTrait;
 
 class MakeView
 {
-    use MakerTrait,NameSolverTrait;
+    use MakerTrait,NameSolverTrait,OutputTrait;
 
     protected $files;
-    protected $scaffoldCommandObj;
+    protected $commandObj;
     protected $viewName;
 
-    public function __construct(ScaffoldMakeCommand $scaffoldCommand, Filesystem $files, $viewName)
+    public function __construct($command, Filesystem $files, $viewName)
     {
         $this->files = $files;
-        $this->scaffoldCommandObj = $scaffoldCommand;
+        $this->commandObj = $command;
         $this->viewName = $viewName;
         $this->start();
     }
@@ -47,60 +48,40 @@ class MakeView
         $stub_filename = $this->viewName.'.stub';
 
         //create custom parameter
-        if ($schema = $this->scaffoldCommandObj->option('schema')) {
+        if ($schema = $this->commandObj->option('schema')) {
             $schemaArray = (new SchemaParser)->parse($schema);
         }
 
         $custom_replace = [
             'index' => [
-                'header_fields' => (new SyntaxBuilder)->create($schemaArray, $this->scaffoldCommandObj->getMeta(), 'view-index-header'),
-                'content_fields' => (new SyntaxBuilder)->create($schemaArray, $this->scaffoldCommandObj->getMeta(), 'view-index-content'),
+                'header_fields' => (new SyntaxBuilder)->create($schemaArray, $this->commandObj->getMeta(), 'view-index-header'),
+                'content_fields' => (new SyntaxBuilder)->create($schemaArray, $this->commandObj->getMeta(), 'view-index-content'),
             ],
             'show' => [
-                'content_fields' => (new SyntaxBuilder)->create($schemaArray, $this->scaffoldCommandObj->getMeta(), 'view-show-content'),
+                'content_fields' => (new SyntaxBuilder)->create($schemaArray, $this->commandObj->getMeta(), 'view-show-content'),
             ],
             'create' => [
-                'content_fields' => (new SyntaxBuilder)->create($schemaArray, $this->scaffoldCommandObj->getMeta(), 'view-create-content', true),
+                'content_fields' => (new SyntaxBuilder)->create($schemaArray, $this->commandObj->getMeta(), 'view-create-content', true),
             ],
             'edit' => [
-                'content_fields' => (new SyntaxBuilder)->create($schemaArray, $this->scaffoldCommandObj->getMeta(), 'view-edit-content', true),
+                'content_fields' => (new SyntaxBuilder)->create($schemaArray, $this->commandObj->getMeta(), 'view-edit-content', true),
             ],
             'duplicate' => [    //same as edit
-                'content_fields' => (new SyntaxBuilder)->create($schemaArray, $this->scaffoldCommandObj->getMeta(), 'view-edit-content', true),
+                'content_fields' => (new SyntaxBuilder)->create($schemaArray, $this->commandObj->getMeta(), 'view-edit-content', true),
             ]
         ];
 
         //create new stub
-        $stub = new StubController( $this->scaffoldCommandObj, $this->files, $stub_path.$stub_filename, $schema_repalce_type = null, $custom_replace[$this->viewName]);
+        $stub = new StubController( $this->commandObj, $this->files, $stub_path.$stub_filename, $schema_repalce_type = null, $custom_replace[$this->viewName]);
 
         //compile
         $stub_compiled = $stub->getCompiled();
 
         //get output_path and filename
-        $output_path = './resources/views/'.$this->solveName($this->scaffoldCommandObj->argument('name'), config('l5scaffold.app_name_rules.app_model_vars')).'/';
+        $output_path = './resources/views/'.$this->solveName($this->commandObj->argument('name'), config('l5scaffold.app_name_rules.app_model_vars')).'/';
         $output_filename = $this->viewName.'.blade.php';
 
-        //output_func
-        $output_func = function () use($output_path, $output_filename, $stub_compiled){
-
-            //output
-            $this->makeDirectory($output_path.$output_filename);
-            $this->files->put($output_path.$output_filename, $stub_compiled);            
-
-            //end message
-            $this->scaffoldCommandObj->info('View-'.$this->viewName.' created successfully');
-        };
-
-        //output_exist_check
-        if( $this->files->exists($output_path.$output_filename) ){
-            if ($this->scaffoldCommandObj->confirm($output_path.$output_filename. ' already exists! Do you wish to overwrite? [yes|no]')) {
-
-                //call output_func
-                $output_func();
-            }
-        }else{
-            //call output_func
-            $output_func();
-        }
+        //output(use OutputTrait)
+        $this->outputPut( $output_path, $output_filename, $stub_compiled, $message_success='View-'.$this->viewName.' created successfully', $debug=false );
     }
 }

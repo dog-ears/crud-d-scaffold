@@ -20,17 +20,18 @@ use dogears\L5scaffold\Commands\ScaffoldMakeCommand;
 use dogears\L5scaffold\Stubs\StubController;
 use dogears\L5scaffold\Traits\MakerTrait;
 use dogears\L5scaffold\Traits\NameSolverTrait;
+use dogears\L5scaffold\Traits\OutputTrait;
 
 class MakeMigration {
-    use MakerTrait,NameSolverTrait;
+    use MakerTrait,NameSolverTrait,OutputTrait;
 
     protected $files;
-    protected $scaffoldCommandObj;
+    protected $commandObj;
 
-    public function __construct(ScaffoldMakeCommand $scaffoldCommand, Filesystem $files)
+    public function __construct($command, Filesystem $files)
     {
         $this->files = $files;
-        $this->scaffoldCommandObj = $scaffoldCommand;
+        $this->commandObj = $command;
         $this->start();
     }
 
@@ -42,29 +43,20 @@ class MakeMigration {
 
         //set custom replace
         $custom_replace = [
-            'table' => $this->solveName($this->scaffoldCommandObj->argument('name'), config('l5scaffold.app_name_rules.name_names')),
+            'table' => $this->solveName($this->commandObj->argument('name'), config('l5scaffold.app_name_rules.name_names')),
         ];
 
         //create new stub
-        $stub = new StubController( $this->scaffoldCommandObj, $this->files, $stub_path.$stub_filename, $schema_repalce_type = 'migration', $custom_replace );
+        $stub = new StubController( $this->commandObj, $this->files, $stub_path.$stub_filename, $schema_repalce_type = 'migration', $custom_replace );
 
         //compile
         $stub_compiled = $stub->getCompiled();
 
         //get output_path and filename
         $output_path = './database/migrations/';
-        $output_filename = date('Y_m_d_His'). '_create_'. $this->solveName($this->scaffoldCommandObj->argument('name'), config('l5scaffold.app_name_rules.app_migrate_filename')). '_table.php';
+        $output_filename = date('Y_m_d_His'). '_create_'. $this->solveName($this->commandObj->argument('name'), config('l5scaffold.app_name_rules.app_migrate_filename')). '_table.php';
 
-        //output_exist_check
-        if( $this->files->exists($output_path.$output_filename) ){
-            return $this->scaffoldCommandObj->error($this->type.' already exists!');
-        }
-
-        //output
-        $this->makeDirectory($output_path);
-        $this->files->put($output_path.$output_filename, $stub_compiled);
-
-        //end message
-        $this->scaffoldCommandObj->info('Migration created successfully');
+        //output(use OutputTrait)
+        $this->outputPut( $output_path, $output_filename, $stub_compiled, $message_success='Migration created successfully', $debug=false );
     }
 }
