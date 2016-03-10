@@ -20,7 +20,8 @@ class ScaffoldDeleteCommand extends Command
      *
      * @var string
      */
-    protected $name = 'delete:scaffold';
+    protected $signature = 'delete:scaffold
+                            {name : The name of the model. (Ex: AppleType)}';
 
     /**
      * The console command description.
@@ -156,19 +157,6 @@ class ScaffoldDeleteCommand extends Command
         $this->info('Delete is done.');
         $this->info('Rollback migration and delete migrate file if you need.');
     }
-
-    /**
-     * Get the console command arguments.
-     *
-     * @return array
-     */
-    protected function getArguments()
-    {
-        return [
-            ['name', InputArgument::REQUIRED, 'The name of the model. (Ex: AppleType)'],
-        ];
-    }
-
 
     /**
      * Get the console command options.

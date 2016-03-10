@@ -27,7 +27,10 @@ class ScaffoldMakeCommand extends Command
      *
      * @var string
      */
-    protected $name = 'make:scaffold';
+    protected $signature = 'make:scaffold
+                            {name : The name of the model. (Ex: AppleType)}
+                            {--s|schema=null : Schema to generate scaffold files. (Ex: --schema="title:string")}
+                            {--S|seeding : Create seeding files.}';
 
     /**
      * The console command description.
@@ -159,37 +162,13 @@ class ScaffoldMakeCommand extends Command
         $this->composer->dumpAutoloads();
     }
 
+    /**
+     * Setup Route
+     *
+     */
     private function makeRoute()
     {
         new MakeRoute($this, $this->files);
-    }
-
-
-
-    /**
-     * Get the console command arguments.
-     *
-     * @return array
-     */
-    protected function getArguments()
-    {
-        return [
-            ['name', InputArgument::REQUIRED, 'The name of the model. (Ex: AppleType)'],
-        ];
-    }
-
-    /**
-     * Get the console command options.
-     *
-     * @return array
-     */
-    protected function getOptions()
-    {
-        return [
-            ['schema', 's', InputOption::VALUE_REQUIRED, 'Schema to generate scaffold files. (Ex: --schema="title:string")', null],
-            ['seeding', 'S', InputOption::VALUE_OPTIONAL, 'Create seeding files.', false],
-            ['form', 'f', InputOption::VALUE_OPTIONAL, 'Use Illumintate/Html Form facade to generate input fields', false]
-        ];
     }
 
     /**
