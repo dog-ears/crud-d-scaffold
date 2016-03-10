@@ -20,17 +20,18 @@ use dogears\L5scaffold\Commands\ScaffoldMakeCommand;
 use dogears\L5scaffold\Stubs\StubController;
 use dogears\L5scaffold\Traits\MakerTrait;
 use dogears\L5scaffold\Traits\NameSolverTrait;
+use dogears\L5scaffold\Traits\OutputTrait;
 
 class MakeRoute{
-    use MakerTrait,NameSolverTrait;
+    use MakerTrait,NameSolverTrait,OutputTrait;
 
     protected $files;
-    protected $scaffoldCommandObj;
+    protected $commandObj;
 
-    public function __construct(ScaffoldMakeCommand $scaffoldCommand, Filesystem $files)
+    public function __construct($command, Filesystem $files)
     {
         $this->files = $files;
-        $this->scaffoldCommandObj = $scaffoldCommand;
+        $this->commandObj = $command;
         $this->start();
     }
 
@@ -41,7 +42,7 @@ class MakeRoute{
         $stub_filename = 'route_insert.stub';
 
         //create new stub
-        $stub = new StubController( $this->scaffoldCommandObj, $this->files, $stub_path.$stub_filename, $schema_repalce_type = null, $custom_replace = null );
+        $stub = new StubController( $this->commandObj, $this->files, $stub_path.$stub_filename, $schema_repalce_type = null, $custom_replace = null );
 
         //compile
         $stub_compiled = $stub->getCompiled();
@@ -50,13 +51,11 @@ class MakeRoute{
         $output_path = './app/Http/';
         $output_filename = 'routes.php';
 
-        //output(insert)
-        $src = $this->files->get($output_path.$output_filename);
+        //replace word
         $pattern = '/(Route::group\(\[\'middleware\' => \[\'web\'\]\], function \(\) {\n)(.*\n)(}\);)/s';
-        $src = preg_replace($pattern, '\1\2    '.$stub_compiled. "\n". '\3', $src);
-        $this->files->put($output_path.$output_filename, $src);
+        $replacement = '\1\2    '.$stub_compiled. "\n". '\3';
 
-        //end message
-        $this->scaffoldCommandObj->info('Route updated successfully');
+        //output(use OutputTrait)
+        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $message_success='Route updated successfully', $debug=false );
     }
 }

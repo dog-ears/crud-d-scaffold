@@ -20,26 +20,29 @@ use dogears\L5scaffold\Commands\ScaffoldMakeCommand;
 use dogears\L5scaffold\Stubs\StubController;
 use dogears\L5scaffold\Traits\MakerTrait;
 use dogears\L5scaffold\Traits\NameSolverTrait;
+use dogears\L5scaffold\Traits\OutputTrait;
 
 class MakeSeed{
-    use MakerTrait,NameSolverTrait;
+    use MakerTrait,NameSolverTrait,OutputTrait;
 
     protected $files;
-    protected $scaffoldCommandObj;
+    protected $commandObj;
 
-    public function __construct(ScaffoldMakeCommand $scaffoldCommand, Filesystem $files)
+    public function __construct($command, Filesystem $files)
     {
         $this->files = $files;
-        $this->scaffoldCommandObj = $scaffoldCommand;
+        $this->commandObj = $command;
         $this->start();
     }
 
     protected function start()
     {
-        if( $this->scaffoldCommandObj->option('seeding') ){
+        if( $this->commandObj->option('seeding') ){
 
             //message create seeding
-            $this->scaffoldCommandObj->info('--Create Seeding');
+            $this->commandObj->info('--Create Seeding');
+
+
 
             //(i)Factory --------------------------------------------------
 
@@ -48,7 +51,7 @@ class MakeSeed{
             $stub_filename = 'factory_apend.stub';
 
             //create new stub
-            $stub = new StubController( $this->scaffoldCommandObj, $this->files, $stub_path.$stub_filename, $schema_repalce_type = 'factory', $custom_replace = null );
+            $stub = new StubController( $this->commandObj, $this->files, $stub_path.$stub_filename, $schema_repalce_type = 'factory', $custom_replace = null );
 
             //compile
             $stub_compiled = $stub->getCompiled();
@@ -57,11 +60,10 @@ class MakeSeed{
             $output_path = './database/factories/';
             $output_filename = 'ModelFactory.php';
 
-            //output(append)
-            $this->files->append($output_path.$output_filename, $stub_compiled);
+            //output(use OutputTrait)
+            $this->outputAppend( $output_path, $output_filename, $stub_compiled, $message_success='Seeding - Factory updated successfully', $debug=false );
 
-            //end message
-            $this->scaffoldCommandObj->info('Seeding - Factory updated successfully');
+
 
             //(ii)DatabaseSeeder --------------------------------------------------
 
@@ -70,7 +72,7 @@ class MakeSeed{
             $stub_filename = 'databaseSeeder_insert.stub';
 
             //create new stub
-            $stub = new StubController( $this->scaffoldCommandObj, $this->files, $stub_path.$stub_filename, $schema_repalce_type = null, $custom_replace = null );
+            $stub = new StubController( $this->commandObj, $this->files, $stub_path.$stub_filename, $schema_repalce_type = null, $custom_replace = null );
 
             //compile
             $stub_compiled = $stub->getCompiled();
@@ -79,13 +81,14 @@ class MakeSeed{
             $output_path = './database/seeds/';
             $output_filename = 'DatabaseSeeder.php';
 
-            //output(insert)
-            $src = $this->files->get($output_path.$output_filename);
-            $src = preg_replace('/\n    }\n}/', $stub_compiled."\n    }\n}",$src);
-            $this->files->put($output_path.$output_filename, $src);
+            //replace word
+            $pattern = '/\n    }\n}/';
+            $replacement = $stub_compiled."\n    }\n}";
 
-            //end message
-            $this->scaffoldCommandObj->info('Seeding - DatabaseSeeder updated successfully');
+            //output(use OutputTrait)
+            $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $message_success='Seeding - DatabaseSeeder updated successfully', $debug=false );
+
+
 
             //(iii)DatabaseSeeder --------------------------------------------------
     
@@ -94,37 +97,17 @@ class MakeSeed{
             $stub_filename = 'app.stub';
     
             //create new stub
-            $stub = new StubController( $this->scaffoldCommandObj, $this->files, $stub_path.$stub_filename, $schema_repalce_type = null, $custom_replace = null );
+            $stub = new StubController( $this->commandObj, $this->files, $stub_path.$stub_filename, $schema_repalce_type = null, $custom_replace = null );
     
             //compile
             $stub_compiled = $stub->getCompiled();
     
             //get output_path and filename
             $output_path = './database/seeds/';
-            $output_filename = $this->solveName($this->scaffoldCommandObj->argument('name'), config('l5scaffold.app_name_rules.app_seeder_class')).'TableSeeder.php';
-    
-            //output_func
-            $output_func = function () use($output_path, $output_filename, $stub_compiled){
-    
-                //output
-                $this->makeDirectory($output_path.$output_filename);
-                $this->files->put($output_path.$output_filename, $stub_compiled);            
-    
-                //end message
-                $this->scaffoldCommandObj->info('Seeding created successfully');
-            };
-    
-            //output_exist_check
-            if( $this->files->exists($output_path.$output_filename) ){
-                if ($this->scaffoldCommandObj->confirm($output_path.$output_filename. ' already exists! Do you wish to overwrite? [yes|no]')) {
-    
-                    //call output_func
-                    $output_func();
-                }
-            }else{
-                //call output_func
-                $output_func();
-            }
+            $output_filename = $this->solveName($this->commandObj->argument('name'), config('l5scaffold.app_name_rules.app_seeder_class')).'TableSeeder.php';
+
+            //output(use OutputTrait)
+            $this->outputPut( $output_path, $output_filename, $stub_compiled, $message_success='Seeding - DatabaseSeeder updated successfully', $debug=false );
         }
     }
 }

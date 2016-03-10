@@ -20,17 +20,18 @@ use dogears\L5scaffold\Commands\ScaffoldMakeCommand;
 use dogears\L5scaffold\Stubs\StubController;
 use dogears\L5scaffold\Traits\MakerTrait;
 use dogears\L5scaffold\Traits\NameSolverTrait;
+use dogears\L5scaffold\Traits\OutputTrait;
 
 class MakeModel {
-    use MakerTrait,NameSolverTrait;
+    use MakerTrait,NameSolverTrait,OutputTrait;
 
     protected $files;
-    protected $scaffoldCommandObj;
+    protected $commandObj;
 
-    public function __construct(ScaffoldMakeCommand $scaffoldCommand, Filesystem $files)
+    public function __construct($command, Filesystem $files)
     {
         $this->files = $files;
-        $this->scaffoldCommandObj = $scaffoldCommand;
+        $this->commandObj = $command;
         $this->start();
     }
 
@@ -41,36 +42,16 @@ class MakeModel {
         $stub_filename = 'app.stub';
 
         //create new stub
-        $stub = new StubController( $this->scaffoldCommandObj, $this->files, $stub_path.$stub_filename, $schema_repalce_type = null, $custom_replace = null );
+        $stub = new StubController( $this->commandObj, $this->files, $stub_path.$stub_filename, $schema_repalce_type = null, $custom_replace = null );
 
         //compile
         $stub_compiled = $stub->getCompiled();
 
         //get output_path and filename
         $output_path = './app/';
-        $output_filename = $this->solveName($this->scaffoldCommandObj->argument('name'), config('l5scaffold.app_name_rules.app_model_class')).'.php';
+        $output_filename = $this->solveName($this->commandObj->argument('name'), config('l5scaffold.app_name_rules.app_model_class')).'.php';
 
-        //output_func
-        $output_func = function () use($output_path, $output_filename, $stub_compiled){
-
-            //output
-            $this->makeDirectory($output_path);
-            $this->files->put($output_path.$output_filename, $stub_compiled);            
-
-            //end message
-            $this->scaffoldCommandObj->info('Model created successfully');
-        };
-
-        //output_exist_check
-        if( $this->files->exists($output_path.$output_filename) ){
-            if ($this->scaffoldCommandObj->confirm($output_path.$output_filename. ' already exists! Do you wish to overwrite? [yes|no]')) {
-
-                //call output_func
-                $output_func();
-            }
-        }else{
-            //call output_func
-            $output_func();
-        }
+        //output(use OutputTrait)
+        $this->outputPut( $output_path, $output_filename, $stub_compiled, $message_success='Model created successfully', $debug=false );
     }
 }
