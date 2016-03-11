@@ -1,16 +1,23 @@
 @extends('layout')
 @section('header')
+
+<ol class="breadcrumb">
+	<li><a href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span></a></li>
+    <li><a href="{{ route('{{app_route}}.index') }}">{{app_model_class}}</a></li>
+    <li class="active">{{ ${{app_model_var}}->name }}</li>
+</ol>
+
 <div class="page-header">
         <h1>{{app_model_class}} / Show #{{${{app_model_var}}->id}}
-            <form action="{{ route('{{app_route}}.destroy', ${{app_model_var}}->id) }}" method="POST" style="display: inline;" onsubmit="if(confirm('Delete? Are you sure?')) { return true } else {return false };">
-                <input type="hidden" name="_method" value="DELETE">
-                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+
+            {!! Form::model(${{app_model_var}}, array('route' => array('{{app_route}}.destroy', ${{app_model_var}}->id),'method' => 'delete', 'style' => 'display: inline;', 'onsubmit'=> "if(confirm('Delete? Are you sure?')) { return true } else {return false };")) !!}
                 <div class="btn-group pull-right" role="group" aria-label="...">
                     <a class="btn btn-primary btn-group" role="group" href="{{ route('{{app_route}}.duplicate', ${{app_model_var}}->id) }}"><i class="glyphicon glyphicon-duplicate"></i> Duplicate</a>
                     <a class="btn btn-warning btn-group" role="group" href="{{ route('{{app_route}}.edit', ${{app_model_var}}->id) }}"><i class="glyphicon glyphicon-edit"></i> Edit</a>
                     <button type="submit" class="btn btn-danger">Delete <i class="glyphicon glyphicon-trash"></i></button>
                 </div>
-            </form>
+            {!! Form::close() !!}
+
         </h1>
     </div>
 @endsection
@@ -22,7 +29,7 @@
             <form action="#">
                 <div class="form-group">
                     <label for="nome">ID</label>
-                    <p class="form-control-static"></p>
+                    <p class="form-control-static">{{${{app_model_var}}->id}}</p>
                 </div>
                 {{content_fields}}
             </form>

@@ -76,5 +76,49 @@ class MakeLayout {
 
         //output(use OutputTrait)
         $this->outputPut( $output_path, $output_filename, $stub_compiled, $message_success='view_layout_error created successfully', $debug=false );
+
+
+
+        //(iii)navi - put --------------------------------------------------
+
+        //get_stub_path and filename
+        $stub_path = __DIR__.'/../Stubs/view_layout/';
+        $stub_filename = 'navi.stub';
+
+        //create new stub
+        $stub = new StubController( $this->commandObj, $this->files, $stub_path.$stub_filename, $schema_repalce_type = null, $custom_replace = null );
+
+        //compile
+        $stub_compiled = $stub->getCompiled();
+
+        //get output_path and filename
+        $output_path = './resources/views/';
+        $output_filename = 'navi.blade.php';
+
+        //output(use OutputTrait)
+        $this->outputPut( $output_path, $output_filename, $stub_compiled, $message_success='view_layout_navi created successfully', $debug=false );
+
+        //(iv)navi - add --------------------------------------------------
+
+        //get_stub_path and filename
+        $stub_path = __DIR__.'/../Stubs/view_layout/';
+        $stub_filename = 'navi_add.stub';
+
+        //create new stub
+        $stub = new StubController( $this->commandObj, $this->files, $stub_path.$stub_filename, $schema_repalce_type = null, $custom_replace = null );
+
+        //compile
+        $stub_compiled = $stub->getCompiled();
+
+        //get output_path and filename
+        $output_path = './resources/views/';
+        $output_filename = 'navi.blade.php';
+
+        //replace word
+        $pattern = '#(<ul id="app_navi" class="dropdown-menu" role="menu">)(.*?)(\s*?</ul>)#s';
+        $replacement = '\1\2'.$stub_compiled.'\3';
+
+        //output(use OutputTrait)
+        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $message_success='view_layout_navi updated successfully', $debug=false );
     }
 }

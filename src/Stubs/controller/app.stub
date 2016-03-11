@@ -17,7 +17,7 @@ class {{app_controller_class}}Controller extends Controller {
 	{
 		${{app_model_vars}} = {{app_model_class}}::orderBy('id', 'desc')->paginate(10);
 
-		return view('{{app_model_vars}}.index', compact('{{app_model_vars}}'));
+		return view('{{app_route}}.index', compact('{{app_model_vars}}'));
 	}
 
 	/**
@@ -27,7 +27,7 @@ class {{app_controller_class}}Controller extends Controller {
 	 */
 	public function create()
 	{
-		return view('{{app_model_vars}}.create');
+		return view('{{app_route}}.create');
 	}
 
 	/**
@@ -38,13 +38,11 @@ class {{app_controller_class}}Controller extends Controller {
 	 */
 	public function store(Request $request)
 	{
-		${{app_model_var}} = new {{app_model_class}}();
 
-		{{schema_controller}}
+		//create data
+		{{app_model_class}}::create( $request->all() );
 
-		${{app_model_var}}->save();
-
-		return redirect()->route('{{app_model_vars}}.index')->with('message', 'Item created successfully.');
+		return redirect()->route('{{app_route}}.index')->with('message', 'Item created successfully.');
 	}
 
 	/**
@@ -53,11 +51,9 @@ class {{app_controller_class}}Controller extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show($id)
+	public function show({{app_model_class}} ${{app_model_var}})
 	{
-		${{app_model_var}} = {{app_model_class}}::findOrFail($id);
-
-		return view('{{app_model_vars}}.show', compact('{{app_model_var}}'));
+		return view('{{app_route}}.show', compact('{{app_model_var}}'));
 	}
 
 	/**
@@ -66,11 +62,9 @@ class {{app_controller_class}}Controller extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function edit($id)
+	public function edit({{app_model_class}} ${{app_model_var}})
 	{
-		${{app_model_var}} = {{app_model_class}}::findOrFail($id);
-
-		return view('{{app_model_vars}}.edit', compact('{{app_model_var}}'));
+		return view('{{app_route}}.edit', compact('{{app_model_var}}'));
 	}
 
 	/**
@@ -79,11 +73,9 @@ class {{app_controller_class}}Controller extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function duplicate($id)
+	public function duplicate({{app_model_class}} ${{app_model_var}})
 	{
-		${{app_model_var}} = {{app_model_class}}::findOrFail($id);
-
-		return view('{{app_model_vars}}.duplicate', compact('{{app_model_var}}'));
+		return view('{{app_route}}.duplicate', compact('{{app_model_var}}'));
 	}
 
 	/**
@@ -93,15 +85,12 @@ class {{app_controller_class}}Controller extends Controller {
 	 * @param Request $request
 	 * @return Response
 	 */
-	public function update(Request $request, $id)
+	public function update({{app_model_class}} ${{app_model_var}}, Request $request)
 	{
-		${{app_model_var}} = {{app_model_class}}::findOrFail($id);
+		//update data
+		${{app_model_var}}->update($request->all());
 
-		{{schema_controller}}
-
-		${{app_model_var}}->save();
-
-		return redirect()->route('{{app_model_vars}}.index')->with('message', 'Item updated successfully.');
+		return redirect()->route('{{app_route}}.index')->with('message', 'Item updated successfully.');
 	}
 
 	/**
@@ -110,12 +99,11 @@ class {{app_controller_class}}Controller extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function destroy($id)
+	public function destroy({{app_model_class}} ${{app_model_var}})
 	{
-		${{app_model_var}} = {{app_model_class}}::findOrFail($id);
 		${{app_model_var}}->delete();
 
-		return redirect()->route('{{app_model_vars}}.index')->with('message', 'Item deleted successfully.');
+		return redirect()->route('{{app_route}}.index')->with('message', 'Item deleted successfully.');
 	}
 
 }
