@@ -78,6 +78,11 @@ trait OutputTrait {
         //matching
         if( !preg_match($pattern, $src)){
             $this->commandObj->error( 'pattern is not match! in '.$output_path.$output_filename );
+            if($debug){
+                $this->commandObj->info( "pattern :\n".$pattern );
+                $this->commandObj->info( '------------------------------' );
+                $this->commandObj->info( "src :\n".$src );
+            }
             exit();
         }
 
@@ -114,10 +119,16 @@ trait OutputTrait {
 
         //output_exist_check
         if( $this->files->exists($output_path.$output_filename) ){
-            if ($this->commandObj->confirm($output_path.$output_filename. ' already exists! Do you wish to overwrite? [yes|no]')) {
 
-                //call output_func
-                $output_func();
+            //[!] abort exist check in case view-layout file
+            if( $output_path === './resources/views/' ){
+                $this->commandObj->info( 'view-layout is already exists' );
+            }else{
+                if ($this->commandObj->confirm($output_path.$output_filename. ' already exists! Do you wish to overwrite? [yes|no]')) {
+    
+                    //call output_func
+                    $output_func();
+                }
             }
         }else{
             //call output_func

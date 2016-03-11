@@ -45,7 +45,7 @@ class MakeController
         $stub_filename = 'app.stub';
 
         //create new stub
-        $stub = new StubController( $this->commandObj, $this->files, $stub_path.$stub_filename, $schema_repalce_type = 'controller', $custom_replace = null );
+        $stub = new StubController( $this->commandObj, $this->files, $stub_path.$stub_filename, $schema_repalce_type = null, $custom_replace = null );
 
         //compile
         $stub_compiled = $stub->getCompiled();

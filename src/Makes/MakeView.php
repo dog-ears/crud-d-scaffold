@@ -60,13 +60,10 @@ class MakeView
             'show' => [
                 'content_fields' => (new SyntaxBuilder)->create($schemaArray, $this->commandObj->getMeta(), 'view-show-content'),
             ],
-            'create' => [
-                'content_fields' => (new SyntaxBuilder)->create($schemaArray, $this->commandObj->getMeta(), 'view-create-content', true),
-            ],
-            'edit' => [
-                'content_fields' => (new SyntaxBuilder)->create($schemaArray, $this->commandObj->getMeta(), 'view-edit-content', true),
-            ],
-            'duplicate' => [    //same as edit
+            'create' => [ 'content_fields' => '', ],
+            'edit' => [ 'content_fields' => '', ],
+            'duplicate' => [ 'content_fields' => '', ],
+            '_form' => [
                 'content_fields' => (new SyntaxBuilder)->create($schemaArray, $this->commandObj->getMeta(), 'view-edit-content', true),
             ]
         ];

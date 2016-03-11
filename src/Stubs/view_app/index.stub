@@ -1,6 +1,12 @@
 @extends('layout')
 
 @section('header')
+
+    <ol class="breadcrumb">
+    	<li><a href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span></a></li>
+        <li class="active">{{app_model_class}}</li>
+    </ol>
+
     <div class="page-header clearfix">
         <h1>
             <i class="glyphicon glyphicon-align-justify"></i> {{app_model_class}}
@@ -31,11 +37,9 @@
                                 <td class="text-right">
                                     <a class="btn btn-xs btn-primary" href="{{ route('{{app_route}}.duplicate', ${{app_model_var}}->id) }}"><i class="glyphicon glyphicon-duplicate"></i> Duplicate</a>
                                     <a class="btn btn-xs btn-warning" href="{{ route('{{app_route}}.edit', ${{app_model_var}}->id) }}"><i class="glyphicon glyphicon-edit"></i> Edit</a>
-                                    <form action="{{ route('{{app_route}}.destroy', ${{app_model_var}}->id) }}" method="POST" style="display: inline;" onsubmit="if(confirm('Delete? Are you sure?')) { return true } else {return false };">
-                                        <input type="hidden" name="_method" value="DELETE">
-                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                    {!! Form::model(${{app_model_var}}, array('route' => array('{{app_route}}.destroy', ${{app_model_var}}->id),'method' => 'delete', 'style' => 'display: inline;', 'onsubmit'=> "if(confirm('Delete? Are you sure?')) { return true } else {return false };")) !!}
                                         <button type="submit" class="btn btn-xs btn-danger"><i class="glyphicon glyphicon-trash"></i> Delete</button>
-                                    </form>
+                                    {!! Form::close() !!}
                                 </td>
                             </tr>
                         @endforeach

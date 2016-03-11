@@ -56,12 +56,6 @@ class SyntaxBuilder
             return compact('up', 'down');
 
 
-        } else if ($type == "controller") {
-
-            $fieldsc = $this->createSchemaForControllerMethod($schema, $meta);
-            return $fieldsc;
-
-
         } else if ($type == "view-index-header") {
 
             $fieldsc = $this->createSchemaForViewMethod($schema, $meta, 'index-header');
@@ -306,10 +300,6 @@ class SyntaxBuilder
 
             $syntax = sprintf("'%s',", $field['name']);                
 
-        } else {
-            // Fields to controller
-            $syntax = sprintf("\$%s->%s = \$request->input(\"%s", $meta['var_name'], $field['name'], $field['name']);
-            $syntax .= '");';
         }
 
 
@@ -351,7 +341,7 @@ class SyntaxBuilder
         $syntax[] = '   <label for="' . $column . '-field">' . $title . '</label>';
 
         if($this->illuminate) {
-            $syntax[] = '   {!! Form::' . $input . '("' . $column . '", ' . $value . ', array("class" => "form-control", "id" => "' . $column . '-field")) !!}';
+            $syntax[] = '   {!! Form::' . $input . '("' . $column . '", null, array("class" => "form-control", "id" => "' . $column . '-field")) !!}';
         } else {
             $syntax[] = $this->htmlField($column, $variable, $field, $type);
         }
@@ -376,27 +366,6 @@ class SyntaxBuilder
         return sprintf("\$table->dropColumn('%s');", $field['name']);
     }
 
-
-    /**
-     * Construct the controller fields
-     *
-     * @param $schema
-     * @param $meta
-     * @return string
-     */
-    private function createSchemaForControllerMethod($schema, $meta)
-    {
-
-
-        if (!$schema) return '';
-
-        $fields = array_map(function ($field) use ($meta) {
-            return $this->AddColumn($field, 'controller', $meta);
-        }, $schema);
-
-
-        return implode("\n" . str_repeat(' ', 8), $fields);
-    }
 
 
     /**

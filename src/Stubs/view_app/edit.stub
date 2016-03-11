@@ -1,6 +1,14 @@
 @extends('layout')
 
 @section('header')
+
+	<ol class="breadcrumb">
+	    <li><a href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span></a></li>
+	    <li><a href="{{ route('{{app_route}}.index') }}">{{app_model_class}}</a></li>
+	    <li><a href="{{ route('{{app_route}}.show', ${{app_model_var}}->id) }}">{{ ${{app_model_var}}->name }}</a></li>
+	    <li class="active">編集</li>
+	</ol>
+
     <div class="page-header">
         <h1><i class="glyphicon glyphicon-edit"></i> {{app_model_class}} / Edit #{{${{app_model_var}}->id}}</h1>
     </div>
@@ -12,16 +20,15 @@
     <div class="row">
         <div class="col-md-12">
 
-            <form action="{{ route('{{app_route}}.update', ${{app_model_var}}->id) }}" method="POST">
-                <input type="hidden" name="_method" value="PUT">
-                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+            {!! Form::model(${{app_model_var}}, array('route' => array('{{app_route}}.update', ${{app_model_var}}->id),'method' => 'put')) !!}
 
-                {{content_fields}}
+@include('{{app_route}}._form')
+
                 <div class="well well-sm">
                     <button type="submit" class="btn btn-primary">Save</button>
                     <a class="btn btn-link pull-right" href="{{ route('{{app_route}}.index') }}"><i class="glyphicon glyphicon-backward"></i>  Back</a>
                 </div>
-            </form>
+            {!! Form::close() !!}
 
         </div>
     </div>

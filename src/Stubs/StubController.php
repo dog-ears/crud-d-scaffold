@@ -101,12 +101,6 @@ class StubController {
             $schema = (new SyntaxBuilder)->create($schema, $this->scaffoldCommandObj->getMeta(), 'factory');
             $stub = str_replace('{{schema_factory}}', $schema, $stub);
 
-        } else if($type === 'controller'){
-
-            // Create controllers fields
-            $schema = (new SyntaxBuilder)->create($schema, $this->scaffoldCommandObj->getMeta(), 'controller');
-            $stub = str_replace('{{schema_controller}}', $schema, $stub);
-
         } else if($type === 'model'){
 
             // Create mass assignment fields in model
