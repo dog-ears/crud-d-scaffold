@@ -13,7 +13,7 @@ return [
     //
     //
     'app_name_rules' => [
-        'app_migrate_filename' => 'name_names',
+        'app_migrate_filename' => 'name_names', // use as table name and migration file name.
         'app_migrate_class' => 'NameNames',
         'app_migrate_tablename' => 'name_names',
         'app_seeder_class' => 'NameNames',
