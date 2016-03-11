@@ -6,6 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class {{app_model_class}} extends Model
 {
-    //
-
+	//Mass Assignment
+	protected $fillable = [{{schema_model}}];
 }

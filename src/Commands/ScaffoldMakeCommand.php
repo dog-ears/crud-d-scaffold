@@ -13,6 +13,7 @@ use dogears\L5scaffold\Makes\MakeModel;
 use dogears\L5scaffold\Makes\MakeSeed;
 use dogears\L5scaffold\Makes\MakeView;
 use dogears\L5scaffold\Makes\MakeRoute;
+use dogears\L5scaffold\Makes\MakeRouteServiceProvider;
 use dogears\L5scaffold\Traits\MakerTrait;
 use dogears\L5scaffold\Traits\NameSolverTrait;
 use Symfony\Component\Console\Input\InputOption;
@@ -102,6 +103,7 @@ class ScaffoldMakeCommand extends Command
         $this->makeViewLayout();
         $this->makeViews();
         $this->makeRoute();
+        $this->makeRouteServiceProvider();
     }
 
     /**
@@ -169,6 +171,15 @@ class ScaffoldMakeCommand extends Command
     private function makeRoute()
     {
         new MakeRoute($this, $this->files);
+    }
+
+    /**
+     * Setup Route
+     *
+     */
+    private function makeRouteServiceProvider()
+    {
+        new MakeRouteServiceProvider($this, $this->files);
     }
 
     /**

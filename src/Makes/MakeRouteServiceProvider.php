@@ -5,7 +5,7 @@
  * Date: 4/22/15
  * Time: 10:34 PM
 
-モデルに関する処理を担当
+ルートサービスプロバイダに関する処理を担当
 ・出力先の決定
 ・スタブコントローラーへの発注、データの受け取り
 ・実際の出力
@@ -22,7 +22,7 @@ use dogears\L5scaffold\Traits\MakerTrait;
 use dogears\L5scaffold\Traits\NameSolverTrait;
 use dogears\L5scaffold\Traits\OutputTrait;
 
-class MakeModel {
+class MakeRouteServiceProvider {
     use MakerTrait,NameSolverTrait,OutputTrait;
 
     protected $files;
@@ -38,20 +38,24 @@ class MakeModel {
     protected function start()
     {
         //get_stub_path and filename
-        $stub_path = __DIR__.'/../Stubs/model/';
+        $stub_path = __DIR__.'/../Stubs/routeServiceProvider/';
         $stub_filename = 'app.stub';
 
         //create new stub
-        $stub = new StubController( $this->commandObj, $this->files, $stub_path.$stub_filename, $schema_repalce_type = 'model', $custom_replace = null );
+        $stub = new StubController( $this->commandObj, $this->files, $stub_path.$stub_filename, $schema_repalce_type = null, $custom_replace = null );
 
         //compile
         $stub_compiled = $stub->getCompiled();
 
         //get output_path and filename
-        $output_path = './app/';
-        $output_filename = $this->solveName($this->commandObj->argument('name'), config('l5scaffold.app_name_rules.app_model_class')).'.php';
+        $output_path = './app/Providers/';
+        $output_filename = 'RouteServiceProvider.php';
+
+        //replace word
+        $pattern = '#(.*)(public function boot\(Router \$router\)\n\s*\{\n)(.*?)(\s*}\n)(.*)#s';
+        $replacement = '\1\2\3'."\n".$stub_compiled.'\4\5';
 
         //output(use OutputTrait)
-        $this->outputPut( $output_path, $output_filename, $stub_compiled, $message_success='Model created successfully', $debug=false );
+        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $message_success='RouteServiceProvider updated successfully', $debug=false );
     }
 }

@@ -92,6 +92,11 @@ class SyntaxBuilder
             $fieldsc = $this->createSchemaForFactoryMethod($schema, $meta);
             return $fieldsc;
 
+        } else if ($type == "model") {
+
+            $fieldsc = $this->createSchemaForModelMethod($schema, $meta);
+            return $fieldsc;
+
         } else {
             throw new \Exception("Type not found in syntaxBuilder");
         }
@@ -242,8 +247,6 @@ class SyntaxBuilder
      */
     private function addColumn($field, $type = "migration", $meta = "")
     {
-
-
         if ($type == 'migration') {
 
             $syntax = sprintf("\$table->%s('%s')", $field['type'], $field['name']);
@@ -261,7 +264,6 @@ class SyntaxBuilder
             }
 
             $syntax .= ';';
-
 
         } elseif ($type == 'view-index-header') {
 
@@ -299,6 +301,10 @@ class SyntaxBuilder
             }else{
                 $syntax = sprintf("'%s' => \$faker->sentence(\$nbWords = 6, \$variableNbWords = true),", $field['name']);                
             }
+
+        } elseif ($type == 'model') {
+
+            $syntax = sprintf("'%s',", $field['name']);                
 
         } else {
             // Fields to controller
@@ -463,6 +469,27 @@ class SyntaxBuilder
         }, $schema);
 
         return implode("\n". str_repeat(' ', 8), $fields);
+
+    }
+
+
+
+    /**
+     * Construct the Model fields
+     *
+     * @param $schema
+     * @param $meta
+     * @return string
+     */
+    private function createSchemaForModelMethod($schema, $meta)
+    {
+        if (!$schema) return '';
+
+        $fields = array_map(function ($field){
+            return "'".$field['name']."'";
+        }, $schema);
+
+        return implode(",", $fields);
 
     }
 }
