@@ -43,7 +43,7 @@ class MakeMigration {
 
         //set custom replace
         $custom_replace = [
-            'table' => $this->solveName($this->commandObj->argument('name'), config('l5scaffold.app_name_rules.name_names')),
+            'table' => $this->solveName($this->commandObj->argument('name'), config('l5scaffold.app_name_rules.app_migrate_filename')),
         ];
 
         //create new stub

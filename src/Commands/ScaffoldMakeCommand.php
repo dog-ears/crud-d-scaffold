@@ -30,7 +30,7 @@ class ScaffoldMakeCommand extends Command
      */
     protected $signature = 'make:scaffold
                             {name : The name of the model. (Ex: AppleType)}
-                            {--s|schema=null : Schema to generate scaffold files. (Ex: --schema="title:string")}
+                            {--s|schema=null : Schema to generate scaffold files. (Ex: --schema="title:string, body:nullable:, apple_type_id:integer:unsigned")}
                             {--S|seeding : Create seeding files.}';
 
     /**
@@ -97,13 +97,13 @@ class ScaffoldMakeCommand extends Command
 
         // Generate files
         $this->makeMigration();
-        $this->makeSeed();
-        $this->makeModel();
-        $this->makeController();
-        $this->makeViewLayout();
-        $this->makeViews();
-        $this->makeRoute();
-        $this->makeRouteServiceProvider();
+        //$this->makeSeed();
+        //$this->makeModel();
+        //$this->makeController();
+        //$this->makeViewLayout();
+        //$this->makeViews();
+        //$this->makeRoute();
+        //$this->makeRouteServiceProvider();
     }
 
     /**
