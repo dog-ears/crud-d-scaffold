@@ -37,6 +37,8 @@ class MakeModel {
 
     protected function start()
     {
+        //(i) Model
+
         //get_stub_path and filename
         $stub_path = __DIR__.'/../Stubs/model/';
         $stub_filename = 'app.stub';
@@ -53,5 +55,22 @@ class MakeModel {
 
         //output(use OutputTrait)
         $this->outputPut( $output_path, $output_filename, $stub_compiled, $message_success='Model created successfully', $debug=false );
+
+
+
+        //(ii) RelationManagerTrait
+
+        //get_stub_path and filename
+        $stub_path = __DIR__.'/../Stubs/model/';
+        $stub_filename = 'RelationManagerTrait.stab';
+        $src = $this->files->get($stub_path.$stub_filename);
+
+        //get output_path and filename
+        $output_path = './app/';
+        $output_filename = 'RelationManagerTrait.php';
+
+        //output(use OutputTrait)
+        $this->outputPutWithoutAlert( $output_path, $output_filename, $src, $message_success='', $debug=false );
+
     }
 }

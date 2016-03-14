@@ -27,7 +27,8 @@ class {{app_controller_class}}Controller extends Controller {
 	 */
 	public function create()
 	{
-		return view('{{app_route}}.create');
+		return view('{{app_route}}.create')
+			->with( 'list', {{app_model_class}}::getListFromAllRelationApps() );
 	}
 
 	/**
@@ -64,7 +65,8 @@ class {{app_controller_class}}Controller extends Controller {
 	 */
 	public function edit({{app_model_class}} ${{app_model_var}})
 	{
-		return view('{{app_route}}.edit', compact('{{app_model_var}}'));
+		return view('{{app_route}}.edit', compact('{{app_model_var}}'))
+			->with( 'list', {{app_model_class}}::getListFromAllRelationApps() );
 	}
 
 	/**
@@ -75,7 +77,8 @@ class {{app_controller_class}}Controller extends Controller {
 	 */
 	public function duplicate({{app_model_class}} ${{app_model_var}})
 	{
-		return view('{{app_route}}.duplicate', compact('{{app_model_var}}'));
+		return view('{{app_route}}.duplicate', compact('{{app_model_var}}'))
+			->with( 'list', {{app_model_class}}::getListFromAllRelationApps() );
 	}
 
 	/**

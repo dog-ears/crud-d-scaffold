@@ -49,5 +49,18 @@ class GeneratorsServiceProvider extends ServiceProvider {
 			return $app['dogears\L5scaffold\Commands\ScaffoldDeleteCommand'];
 		});
 		$this->commands('command.larascaf.scaffold_delete');
+
+		//make:relation
+		$this->app->singleton('command.larascaf.make_relation', function ($app) {
+			return $app['dogears\L5scaffold\Commands\MakeRelationCommand'];
+		});
+		$this->commands('command.larascaf.make_relation');
+
+		//delete:relation
+		$this->app->singleton('command.larascaf.delete_relation', function ($app) {
+			return $app['dogears\L5scaffold\Commands\DeleteRelationCommand'];
+		});
+		$this->commands('command.larascaf.delete_relation');
+
 	}
 }

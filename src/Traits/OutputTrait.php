@@ -50,7 +50,9 @@ trait OutputTrait {
         $this->files->append($output_path.$output_filename.$postfix, $stub_compiled);
     
         //end message
-        $this->commandObj->info($message_success);
+        if($message_success){
+            $this->commandObj->info($message_success);
+        }
     }
 
     /**
@@ -90,7 +92,9 @@ trait OutputTrait {
         $this->files->put($output_path.$output_filename.$postfix, $src);
 
         //end message
-        $this->commandObj->info($message_success);
+        if($message_success){
+            $this->commandObj->info($message_success);
+        }
     }
 
     /**
@@ -101,7 +105,7 @@ trait OutputTrait {
      * @param string $output_path, string $output_filename, string $stub_compiled, string $message_success, bool $debug=false
      * @return none
      */
-    public function outputPut( $output_path, $output_filename, $stub_compiled, $message_success, $debug=false ){
+    public function outputPut( $output_path, $output_filename, $stub_compiled, $message_success, $debug=false, $alert=true ){
 
         //postfix for debug
         if( $debug ){ $postfix = '_'; }else{ $postfix = ''; }
@@ -114,27 +118,41 @@ trait OutputTrait {
             $this->files->put($output_path.$output_filename.$postfix, $stub_compiled);            
 
             //end message
-            $this->commandObj->info($message_success);
+            if($message_success){
+                $this->commandObj->info($message_success);
+            }
         };
 
         //output_exist_check
         if( $this->files->exists($output_path.$output_filename) ){
 
-            //[!] abort exist check in case view-layout file
-            if( $output_path === './resources/views/' ){
-                $this->commandObj->info( 'view-layout is already exists' );
-            }else{
+            if( $alert ){
                 if ($this->commandObj->confirm($output_path.$output_filename. ' already exists! Do you wish to overwrite? [yes|no]')) {
     
                     //call output_func
                     $output_func();
                 }
+            }else{
+                $this->commandObj->info( 'file is already exists' );
             }
         }else{
             //call output_func
             $output_func();
         }
+    }
 
+    /**
+     * outputPutWithoutAlert()
+     *
+     * put $stub_compiled at $output_path.$output_filename and put message.
+     * if file is exist no alert
+     *
+     * @param string $output_path, string $output_filename, string $stub_compiled, string $message_success, bool $debug=false
+     * @return none
+     */
+    public function outputPutWithoutAlert( $output_path, $output_filename, $stub_compiled, $message_success, $debug=false ){
+
+        $this->outputPut( $output_path, $output_filename, $stub_compiled, $message_success, $debug=false, $alert=false );
     }
 
     /**
@@ -148,9 +166,13 @@ trait OutputTrait {
     public function outputDelete( $output_path, $output_filename, $message_success, $debug=false ){
 
         if ($this->files->exists($output_path.$output_filename)) {
+
             //Delete
             $this->files->delete($output_path.$output_filename);
-            $this->commandObj->info($message_success);
+
+            if($message_success){
+                $this->commandObj->info($message_success);
+            }
         }else{
             $this->commandObj->info($output_path.$output_filename.' is not exists!');
         }
@@ -168,14 +190,15 @@ trait OutputTrait {
     public function outputDeleteDirectory( $output_path, $message_success, $debug=false ){
 
         if ($this->files->isDirectory($output_path)) {
+
             //Delete
             $this->files->deleteDirectory($output_path);
-            $this->commandObj->info($message_success);
+
+            if($message_success){
+                $this->commandObj->info($message_success);
+            }
         }else{
             $this->commandObj->info('View ('.$output_path.') is not exists!');
         }
-
-
     }
-    
 }
