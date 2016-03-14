@@ -97,13 +97,13 @@ class ScaffoldMakeCommand extends Command
 
         // Generate files
         $this->makeMigration();
-        //$this->makeSeed();
-        //$this->makeModel();
-        //$this->makeController();
-        //$this->makeViewLayout();
-        //$this->makeViews();
-        //$this->makeRoute();
-        //$this->makeRouteServiceProvider();
+        $this->makeSeed();
+        $this->makeModel();
+        $this->makeController();
+        $this->makeViewLayout();
+        $this->makeViews();
+        $this->makeRoute();
+        $this->makeRouteServiceProvider();
     }
 
     /**
