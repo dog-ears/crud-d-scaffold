@@ -28,15 +28,15 @@ class StubController {
 
     use NameSolverTrait;
 
-    protected $scaffoldCommandObj;
+    protected $commandObj;
     protected $files;
     protected $stub_pathname;
     protected $schema_repalce_type;
     protected $custom_replace;
 
-    public function __construct(ScaffoldMakeCommand $scaffoldCommand, Filesystem $files, $stub_pathname, $schema_repalce_type = null, $custom_replace = null)
+    public function __construct($command, Filesystem $files, $stub_pathname, $schema_repalce_type = null, $custom_replace = null)
     {
-        $this->scaffoldCommandObj = $scaffoldCommand;
+        $this->commandObj = $command;
         $this->files = $files;
         $this->stub_pathname = $stub_pathname;
         $this->schema_repalce_type = $schema_repalce_type;
@@ -66,25 +66,48 @@ class StubController {
 
     protected function compileAppName(&$stub){
 
+        //get command name
+        $commandObjNames = explode('\\',get_class($this->commandObj));
+        $this->commandObjName = end( $commandObjNames );
+
         //config取得
         $app_name_rules = config('l5scaffold.app_name_rules');
 
-        foreach($app_name_rules as $keyword => $type){
+        if( $this->commandObjName === 'MakeRelationCommand' || $this->commandObjName === 'DeleteRelationCommand' ){ //for RelationCommand
 
-            $stub = str_replace(
-                '{{'.$keyword.'}}',
-                $this->solveName( $this->scaffoldCommandObj->argument('name'), $type ),
-                $stub
-            );
+            foreach($app_name_rules as $keyword => $type){
+    
+                $stub = str_replace(
+                    '{{model_A.'.$keyword.'}}',
+                    $this->solveName( $this->commandObj->argument('model_A'), $type ),
+                    $stub
+                );
+                $stub = str_replace(
+                    '{{model_B.'.$keyword.'}}',
+                    $this->solveName( $this->commandObj->argument('model_B'), $type ),
+                    $stub
+                );
+            }
+
+        }else{  //for sccafoldCommand
+            
+            foreach($app_name_rules as $keyword => $type){
+    
+                $stub = str_replace(
+                    '{{'.$keyword.'}}',
+                    $this->solveName( $this->commandObj->argument('name'), $type ),
+                    $stub
+                );
+            }
         }
-        return $this;
 
+        return $this;
     }
 
     protected function compileSchema(&$stub, $type='migration')
     {
         //スキーマの取得
-        if ($schema = $this->scaffoldCommandObj->option('schema')) {
+        if ($schema = $this->commandObj->option('schema')) {
             $schema = (new SchemaParser)->parse($schema);
         }
 
@@ -92,19 +115,19 @@ class StubController {
         if($type === 'migration'){
 
             // Create migration fields
-            $schema = (new SyntaxBuilder)->create($schema, $this->scaffoldCommandObj->getMeta());
+            $schema = (new SyntaxBuilder)->create($schema, $this->commandObj->getMeta());
             $stub = str_replace(['{{schema_up}}', '{{schema_down}}'], $schema, $stub);
 
         } else if($type === 'factory'){
 
             // Create controllers fields
-            $schema = (new SyntaxBuilder)->create($schema, $this->scaffoldCommandObj->getMeta(), 'factory');
+            $schema = (new SyntaxBuilder)->create($schema, $this->commandObj->getMeta(), 'factory');
             $stub = str_replace('{{schema_factory}}', $schema, $stub);
 
         } else if($type === 'model'){
 
             // Create mass assignment fields in model
-            $schema = (new SyntaxBuilder)->create($schema, $this->scaffoldCommandObj->getMeta(), 'model');
+            $schema = (new SyntaxBuilder)->create($schema, $this->commandObj->getMeta(), 'model');
             $stub = str_replace('{{schema_model}}', $schema, $stub);
 
         } else {}

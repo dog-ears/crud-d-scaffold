@@ -54,7 +54,7 @@ class MakeLayout {
         $output_filename = 'layout.blade.php';
 
         //output(use OutputTrait)
-        $this->outputPut( $output_path, $output_filename, $stub_compiled, $message_success='view_layout_layout created successfully', $debug=false );
+        $this->outputPutWithoutAlert( $output_path, $output_filename, $stub_compiled, $message_success='view_layout_layout created successfully', $debug=false );
 
 
 
@@ -75,7 +75,7 @@ class MakeLayout {
         $output_filename = 'error.blade.php';
 
         //output(use OutputTrait)
-        $this->outputPut( $output_path, $output_filename, $stub_compiled, $message_success='view_layout_error created successfully', $debug=false );
+        $this->outputPutWithoutAlert( $output_path, $output_filename, $stub_compiled, $message_success='view_layout_error created successfully', $debug=false );
 
 
 
@@ -96,7 +96,7 @@ class MakeLayout {
         $output_filename = 'navi.blade.php';
 
         //output(use OutputTrait)
-        $this->outputPut( $output_path, $output_filename, $stub_compiled, $message_success='view_layout_navi created successfully', $debug=false );
+        $this->outputPutWithoutAlert( $output_path, $output_filename, $stub_compiled, $message_success='view_layout_navi created successfully', $debug=false );
 
         //(iv)navi - add --------------------------------------------------
 

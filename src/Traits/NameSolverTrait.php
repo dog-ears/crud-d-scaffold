@@ -41,6 +41,10 @@ trait NameSolverTrait {
             $result = str_replace('__', '_', snake_case( str_singular($input) ) );
         }elseif( $type === 'name_names' ){
             $result = str_replace('__', '_', snake_case( str_plural($input) ) );
+        }elseif( $type === 'NAME_NAME' ){
+            $result = mb_strtoupper( str_replace('__', '_', snake_case( str_singular($input) ) ) );
+        }elseif( $type === 'NAME_NAMES' ){
+            $result = mb_strtoupper( str_replace('__', '_', snake_case( str_plural($input) ) ) );
         }else{
             throw new \Exception("NameSolver accept invalid type");
         }

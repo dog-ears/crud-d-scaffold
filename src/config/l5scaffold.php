@@ -29,7 +29,9 @@ return [
         'nameNames' => 'nameNames',
         'NameNames' => 'NameNames',
         'name_name' => 'name_name',
-        'name_names' => 'name_names'
+        'name_names' => 'name_names',
+        'NAME_NAME' => 'NAME_NAME',
+        'NAME_NAMES' => 'NAME_NAMES'
     ],
 
 ];

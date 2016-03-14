@@ -6,6 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class {{app_model_class}} extends Model
 {
+    use RelationManagerTrait;
+
+    public function __construct(array $attributes = array())
+    {
+        parent::__construct($attributes);
+    } 
+
 	//Mass Assignment
 	protected $fillable = [{{schema_model}}];
 }
