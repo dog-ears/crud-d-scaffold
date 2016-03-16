@@ -12,15 +12,13 @@ class GeneratorsServiceProvider extends ServiceProvider {
 	 */
 	public function boot()
 	{
-		//config publish
-	    $this->publishes([
-	        __DIR__.'/config/l5scaffold.php' => config_path('l5scaffold.php'),
-	    ]);
-
+		//asset publish
 	    $this->publishes([
 	        __DIR__.'/Assets' => public_path('dog-ears/l5scaffold'),
 	    ], 'public');
-
+	    
+		//define resource view folder
+	    $this->loadViewsFrom(__DIR__.'/Resource/views', 'l5scaffold');
 	}
 
 	/**

@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace dogears\L5scaffold\Traits;
 
 trait RelationManagerTrait {
 
