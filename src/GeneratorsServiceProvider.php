@@ -16,6 +16,11 @@ class GeneratorsServiceProvider extends ServiceProvider {
 	    $this->publishes([
 	        __DIR__.'/config/l5scaffold.php' => config_path('l5scaffold.php'),
 	    ]);
+
+	    $this->publishes([
+	        __DIR__.'/Assets' => public_path('dog-ears/l5scaffold'),
+	    ], 'public');
+
 	}
 
 	/**

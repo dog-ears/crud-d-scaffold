@@ -120,5 +120,22 @@ class MakeLayout {
 
         //output(use OutputTrait)
         $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $message_success='view_layout_navi updated successfully', $debug=false );
+
+        //(iv)_getOrderlink.blade.php --------------------------------------------------
+
+        //(iii) GetAllDataTrait
+
+        //get_stub_path and filename
+        $stub_path = __DIR__.'/../Stubs/view_layout/';
+        $stub_filename = '_getOrderlink.blade.stub';
+        $src = $this->files->get($stub_path.$stub_filename);
+
+        //get output_path and filename
+        $output_path = './resources/views/';
+        $output_filename = '_getOrderlink.blade.php';
+
+        //output(use OutputTrait)
+        $this->outputPutWithoutAlert( $output_path, $output_filename, $src, $message_success='view_layout_GetAllDataTrait updated successfully', $debug=false );
+
     }
 }

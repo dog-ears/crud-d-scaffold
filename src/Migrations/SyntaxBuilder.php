@@ -56,6 +56,11 @@ class SyntaxBuilder
             return compact('up', 'down');
 
 
+        } else if ($type == "view-index-search") {
+
+            $fieldsc = $this->createSchemaForViewMethod($schema, $meta, 'index-search');
+            return $fieldsc;
+
         } else if ($type == "view-index-header") {
 
             $fieldsc = $this->createSchemaForViewMethod($schema, $meta, 'index-header');
@@ -259,17 +264,41 @@ class SyntaxBuilder
 
             $syntax .= ';';
 
-        } elseif ($type == 'view-index-header') {
-
-            // Fields to index view
-            $syntax = sprintf("<th>%s", strtoupper($field['name']));
-            $syntax .= '</th>';
-
         } elseif ($type == 'view-index-content') {
 
             // Fields to index view
             $syntax = sprintf("<td>{{\$%s->%s", $meta['var_name'], strtolower($field['name']));
             $syntax .= '}}</td>';
+
+        } elseif ($type == 'view-index-header') {
+
+            // Fields to index view
+            $syntax = sprintf("<th>@include('_getOrderlink', ['column' => '%s', 'title' => '%s'])</th>", $field['name'], strtoupper($field['name']));
+
+        } elseif ($type == 'view-index-search') {
+
+            // Fields to index view
+            $syntax = <<<EOT
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="q_[[columnName_small]]_gt">[[columnName_large]]</label>
+                                <div class=" col-sm-4">
+                                    <input class="form-control input-sm" type="search" value="{{ @(Request::input('q')['[[columnName_small]]_gt']) ?: '' }}" name="q[[[columnName_small]]_gt]" id="q_[[columnName_small]]_gt" />
+                                </div>
+                                <div class=" col-sm-1 text-center"> - </div>
+                                <div class=" col-sm-4">
+                                    <input class="form-control input-sm" type="search" value="{{ @(Request::input('q')['[[columnName_small]]_lt']) ?: '' }}" name="q[[[columnName_small]]_lt]" id="q_[[columnName_small]]_lt" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="q_[[columnName_small]]_cont">[[columnName_large]]</label>
+                                <div class=" col-sm-9">
+                                    <input class="form-control input-sm" type="search" value="{{ @(Request::input('q')['[[columnName_small]]_cont']) ?: '' }}" name="q[[[columnName_small]]_cont]" id="q_[[columnName_small]]_cont" />
+                                </div>
+                            </div>
+EOT;
+
+            $syntax = str_replace( '[[columnName_small]]', $field['name'], $syntax );
+            $syntax = str_replace( '[[columnName_large]]', strtoupper($field['name']), $syntax );
 
         } elseif ($type == 'view-show-content') {
 
@@ -378,23 +407,21 @@ class SyntaxBuilder
      */
     private function createSchemaForViewMethod($schema, $meta, $type = 'index-header')
     {
-
-
         if (!$schema) return '';
 
         $fields = array_map(function ($field) use ($meta, $type) {
             return $this->AddColumn($field, 'view-' . $type, $meta);
         }, $schema);
 
-
         // Format code
         if ($type == 'index-header') {
             return implode("\n" . str_repeat(' ', 24), $fields);
-        } else {
+        }elseif ($type == 'index-search') {
+            return implode("\n" . str_repeat(' ', 24), $fields);
+        }else {
             // index-content
             return implode("\n" . str_repeat(' ', 20), $fields);
         }
-
     }
     
     private function htmlField($column, $variable, $field, $type)

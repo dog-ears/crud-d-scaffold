@@ -4,7 +4,22 @@
 
     <ol class="breadcrumb">
     	<li><a href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span></a></li>
-        <li class="active">{{app_model_class}}</li>
+
+        @if ( Request::input('q') )
+            {{-- */$query_params =  Request::input('q')/* --}}
+            <li class="active"><a href="{{ route('apples.index') }}">{{app_model_class}}</a></li>
+            <li class="active">condition(  
+
+            {{-- */ $loop = 0 /* --}}
+            @foreach( $query_params as $key => $value )
+                @if ( $loop != 0 ) / @endif {{ $key }} : {{ $value }}
+                {{-- */ $loop++ /* --}}
+            @endforeach
+            )</li>
+        @else
+            <li class="active">{{app_model_class}}</li>
+        @endif
+
     </ol>
 
     <div class="page-header clearfix">
@@ -14,6 +29,36 @@
         </h1>
 
     </div>
+
+    <div aria-multiselectable="true" role="tablist" id="accordion" class="panel-group">
+        <div class="panel panel-default">
+            <div id="headingOne" role="tab" class="panel-heading">
+                <h4 class="panel-title">
+                <a aria-controls="collapseOne" aria-expanded="true" href="#collapseOne" data-parent="#accordion" data-toggle="collapse" role="button">
+                    <span aria-hidden="true" class="glyphicon glyphicon-search"></span> Search
+                </a>
+                </h4>
+            </div>
+            <div aria-labelledby="headingOne" role="tabpanel" class="panel-collapse collapse" id="collapseOne">
+                <div class="panel-body">
+                    <form class="{{app_model_class}}_search" id="search" action="{{ route('{{app_route}}.index') }}" accept-charset="UTF-8" method="get">
+                        <input type="hidden" name="q[s]" value="{{ @(Request::input('q')['s']) ?: '' }}" />
+                        <div class="form-horizontal">
+
+{{search_fields}}
+
+                            <div class="form-group">
+                                <div class="col-sm-10 col-sm-offset-2">
+                                    <input type="submit" name="commit" value="Search" class="btn btn-default btn-xs" />
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 @endsection
 
 @section('content')
@@ -23,7 +68,7 @@
                 <table class="table table-condensed table-striped">
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <th>@include('_getOrderlink', ['column' => 'id', 'title' => 'ID'])</th>
                             {{header_fields}}
                             <th class="text-right">OPTIONS</th>
                         </tr>
@@ -45,7 +90,7 @@
                         @endforeach
                     </tbody>
                 </table>
-                {!! ${{app_model_vars}}->render() !!}
+                {!! ${{app_model_vars}}->appends(Request::except('page'))->render() !!}
             @else
                 <h3 class="text-center alert alert-info">Empty!</h3>
             @endif

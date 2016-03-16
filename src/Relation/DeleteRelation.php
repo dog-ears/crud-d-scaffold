@@ -37,12 +37,13 @@ class DeleteRelation {
         $this->deleteView();
     }
 
+
+
     protected function deleteModel(){
 
         $this->deleteModel_modelA();
         $this->deleteModel_modelB();
         $this->deleteModel_modelB2();
-
     }
 
     protected function deleteModel_modelA(){
@@ -87,6 +88,8 @@ class DeleteRelation {
         $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $message_success='model_B2 updated successfully', $debug=false );
     }
 
+
+
     protected function deleteView(){
 
         $this->deleteView_index();
@@ -96,19 +99,33 @@ class DeleteRelation {
 
     protected function deleteView_index(){
 
+        //(i) APPLE_TYPE_NAME => APPLE_TYPE_ID
+
         //get output_path and filename
         $output_path = './resources/views/apples/';
         $output_filename = 'index.blade.php';
 
         //replace word
-        $pattern = '#(.*)(<th>'.
-                    $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.NAME_NAME')).'_NAME</th>)(.*)(<td>{{\$'.
-                    $this->solveName($this->commandObj->argument('model_B'), config('l5scaffold.app_name_rules.app_model_var')).'->'.
-                    $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.app_model_var')).'->name}}</td>)(.*)#s';
-        $replacement = '\1<th>'.
-                    $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.NAME_NAME')).'_ID</th>\3<td>{{$'.
-                    $this->solveName($this->commandObj->argument('model_B'), config('l5scaffold.app_name_rules.app_model_var')).'->'.
-                    $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.name_name')).'_id}}</td>\5';
+        $pattern = '#'.$this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.NAME_NAME')).'_NAME#';
+        $replacement = $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.NAME_NAME')).'_ID';
+
+        //output(use OutputTrait)
+        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $message_success='View_index updated successfully', $debug=false );
+
+        //(ii) apple_types.name => apple_type_id
+
+        //replace word
+        $pattern = '#'.$this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.app_migrate_tablename')).'.name#';
+        $replacement = $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.name_name')).'_id';
+
+        //output(use OutputTrait)
+        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $message_success='View_index updated successfully', $debug=false );
+
+        //(iii) appleType->name => apple_type_id
+
+        //replace word
+        $pattern = '#'.$this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.app_model_var')).'->name#s';
+        $replacement = $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.name_name')).'_id';
 
         //output(use OutputTrait)
         $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $message_success='View_index updated successfully', $debug=false );
