@@ -1,12 +1,14 @@
 <?php
 
+/**
+Copyright (c) 2016 dog-ears
+
+This software is released under the MIT License.
+http://dog-ears.net/
+*/
+
 namespace dogears\L5scaffold\Migrations;
 
-/**
- * Class NameParser
- * @package Laralib\L5scaffold\Migrations with modifications by Fernando
- * @author Jeffrey Way <jeffrey@jeffrey-way.com>
- */
 class NameParser
 {
 

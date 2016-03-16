@@ -1,15 +1,14 @@
 <?php
 
+/**
+ * Class SyntaxBuilder with modifications by Fernando and modificated by dog-ears
+ * @author Jeffrey Way <jeffrey@jeffrey-way.com>
+ */
+
 namespace dogears\L5scaffold\Migrations;
 
 use dogears\L5scaffold\GeneratorException;
 
-
-/**
- * Class SyntaxBuilder with modifications by Fernando
- * @package Laralib\L5scaffold\Migrations
- * @author Jeffrey Way <jeffrey@jeffrey-way.com>
- */
 class SyntaxBuilder
 {
 

@@ -1,13 +1,11 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: fernandobritofl
- * Date: 4/22/15
- * Time: 10:34 PM
+Copyright (c) 2016 dog-ears
 
- 削除処理
-
- */
+This software is released under the MIT License.
+http://dog-ears.net/
+*/
  
 namespace dogears\L5scaffold\Makes;
 

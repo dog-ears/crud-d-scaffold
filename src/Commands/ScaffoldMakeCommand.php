@@ -1,5 +1,12 @@
 <?php
 
+/**
+Copyright (c) 2016 dog-ears
+
+This software is released under the MIT License.
+http://dog-ears.net/
+*/
+
 namespace dogears\L5scaffold\Commands;
 
 use Illuminate\Console\AppNamespaceDetectorTrait;

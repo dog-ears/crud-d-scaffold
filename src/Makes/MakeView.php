@@ -1,17 +1,11 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: fernandobritofl
- * Date: 4/21/15
- * Time: 4:58 PM
+Copyright (c) 2016 dog-ears
 
-ビューに関する処理を担当
-・出力先の決定
-・スタブコントローラーへの発注、データの受け取り
-・実際の出力
-・終了メッセージ
-
- */
+This software is released under the MIT License.
+http://dog-ears.net/
+*/
 
 namespace dogears\L5scaffold\Makes;
 
