@@ -18,5 +18,11 @@
     "psr-4": {
       "dogears\\L5scaffold\\": "src/"
     }
+  },
+  "scripts": {
+      "post-update-cmd": [
+          "php artisan vendor:publish --tag=public --force"
+      ]
   }
+  
 }

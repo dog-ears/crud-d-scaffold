@@ -13,9 +13,9 @@ class {{app_controller_class}}Controller extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function index()
+	public function index(Request $request)
 	{
-		${{app_model_vars}} = {{app_model_class}}::orderBy('id', 'desc')->paginate(10);
+		${{app_model_vars}} = {{app_model_class}}::getAllData($request);
 
 		return view('{{app_route}}.index', compact('{{app_model_vars}}'));
 	}

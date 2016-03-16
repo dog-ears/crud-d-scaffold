@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class {{app_model_class}} extends Model
 {
-    use RelationManagerTrait;
+    use RelationManagerTrait,GetAllDataTrait;
 
     public function __construct(array $attributes = array())
     {

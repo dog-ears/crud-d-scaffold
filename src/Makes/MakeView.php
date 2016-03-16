@@ -43,6 +43,7 @@ class MakeView
 
     private function start()
     {
+
         //get_stub_path and filename
         $stub_path = __DIR__.'/../Stubs/view_app/';
         $stub_filename = $this->viewName.'.stub';
@@ -54,6 +55,7 @@ class MakeView
 
         $custom_replace = [
             'index' => [
+                'search_fields' => (new SyntaxBuilder)->create($schemaArray, $this->commandObj->getMeta(), 'view-index-search'),
                 'header_fields' => (new SyntaxBuilder)->create($schemaArray, $this->commandObj->getMeta(), 'view-index-header'),
                 'content_fields' => (new SyntaxBuilder)->create($schemaArray, $this->commandObj->getMeta(), 'view-index-content'),
             ],
