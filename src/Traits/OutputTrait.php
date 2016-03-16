@@ -1,22 +1,15 @@
 <?php
 
 /**
- * Created by dog-ears
+Copyright (c) 2016 dog-ears
 
-[処理]
-ファイル出力を担当
-
-[出力]
-
- 
- */
-//use dogears\L5scaffold\Traits\MakerTrait;
+This software is released under the MIT License.
+http://dog-ears.net/
+*/
  
 namespace dogears\L5scaffold\Traits;
 
 trait OutputTrait {
-
-    //use MakerTrait;
 
     /**
      * @param command $command
@@ -145,7 +138,7 @@ trait OutputTrait {
      * outputPutWithoutAlert()
      *
      * put $stub_compiled at $output_path.$output_filename and put message.
-     * if file is exist no alert
+     * if file is exist, no alert
      *
      * @param string $output_path, string $output_filename, string $stub_compiled, string $message_success, bool $debug=false
      * @return none
@@ -176,7 +169,6 @@ trait OutputTrait {
         }else{
             $this->commandObj->info($output_path.$output_filename.' is not exists!');
         }
-
     }
 
     /**

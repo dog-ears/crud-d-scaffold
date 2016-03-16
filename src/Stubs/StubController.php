@@ -1,20 +1,11 @@
 <?php
+
 /**
- * Created by dog-ears
+Copyright (c) 2016 dog-ears
 
-[入力]
-・スタブパス
-・カスタムリプレース（配列）
-・
-[処理]
-スタブを取得し、
-リプレースをし、
-出力する。
-
-[出力]
-・コンパイルされたスタブ（テキスト）
- 
- */
+This software is released under the MIT License.
+http://dog-ears.net/
+*/
 
 namespace dogears\L5scaffold\Stubs;
 

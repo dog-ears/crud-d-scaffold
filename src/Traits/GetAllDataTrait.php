@@ -1,5 +1,12 @@
 <?php
 
+/**
+Copyright (c) 2016 dog-ears
+
+This software is released under the MIT License.
+http://dog-ears.net/
+*/
+
 namespace dogears\L5scaffold\Traits;
 
 use App\Http\Requests;
@@ -13,9 +20,10 @@ trait GetAllDataTrait {
     /**
      * Get all data with condition formated like ransack
      *
-     * @param  string  $path
-     * @return string
+     * @param  string $request, integer $paginate
+     * @return LengthAwarePaginator Class
      */
+
     public static function getAllData( Request $request, $paginate=10 ){
 
         $myObj = new self;

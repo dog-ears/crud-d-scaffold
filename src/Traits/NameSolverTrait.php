@@ -1,28 +1,20 @@
 <?php
 
 /**
- * Created by dog-ears
+Copyright (c) 2016 dog-ears
 
-[入力]
-なし
-
-[処理]
-Scaffold作成時に入力されたアプリ名を、
-各種形式にあわせて変換。
-ストックする。
-
-[出力]
-
- 
- */
+This software is released under the MIT License.
+http://dog-ears.net/
+*/
  
 namespace dogears\L5scaffold\Traits;
 
 trait NameSolverTrait {
 
     /**
-     * Get the Name.
-     *
+     * solveName()
+     * return $input formed with $type rule.
+     * 
      * @param string $input,$type
      * @return string
      * @throws \Exception
@@ -53,35 +45,35 @@ trait NameSolverTrait {
     }
 
     /**
-     * Get the Name Test.
+     * solveName_test()
      *
      * @param string $config
      */
     public function solveName_test($type){
 
         $test_words = array(
-                //"appletype",  //無理
-                //"APPLETYPE",  //無理
+                //"appletype",  //It can't solve.
+                //"APPLETYPE",  //It can't solve.
     
                 "apple_type",
                 "apple_Type",
                 "Apple_Type",
-                //"APPLE_TYPE", //厳しい
+                //"APPLE_TYPE", //It can't solve.
     
                 "appleType",
-                //"Appletype",  //無理
+                //"Appletype",  //It can't solve.
                 "AppleType",
     
-                //"appletypes",  //無理
-                //"APPLETYPES",  //無理
+                //"appletypes",  //It can't solve.
+                //"APPLETYPES",  //It can't solve.
     
                 "apple_types",
                 "apple_Types",
                 "Apple_Types",
-                //"APPLE_TYPES", //厳しい
+                //"APPLE_TYPES", //It can't solve.
     
                 "appleTypes",
-                //"Appletypes", //無理
+                //"Appletypes", //It can't solve.
                 "AppleTypes",
                 );
                 

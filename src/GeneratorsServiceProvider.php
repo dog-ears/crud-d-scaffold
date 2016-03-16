@@ -1,4 +1,12 @@
 <?php
+
+/**
+Copyright (c) 2016 dog-ears
+
+This software is released under the MIT License.
+http://dog-ears.net/
+*/
+
 namespace dogears\L5scaffold;
 
 use Illuminate\Support\ServiceProvider;
@@ -41,13 +49,13 @@ class GeneratorsServiceProvider extends ServiceProvider {
 	 */
 	private function registerScaffoldGenerator()
 	{
-		//Create
+		//Create scaffold
 		$this->app->singleton('command.larascaf.scaffold', function ($app) {
 			return $app['dogears\L5scaffold\Commands\ScaffoldMakeCommand'];
 		});
 		$this->commands('command.larascaf.scaffold');
 
-		//Delete
+		//Delete scaffold
 		$this->app->singleton('command.larascaf.scaffold_delete', function ($app) {
 			return $app['dogears\L5scaffold\Commands\ScaffoldDeleteCommand'];
 		});
