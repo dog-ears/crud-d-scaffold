@@ -273,7 +273,7 @@ class SyntaxBuilder
         } elseif ($type == 'view-index-header') {
 
             // Fields to index view
-            $syntax = sprintf("<th>@include('_getOrderlink', ['column' => '%s', 'title' => '%s'])</th>", $field['name'], strtoupper($field['name']));
+            $syntax = sprintf("<th>@include('l5scaffold::getOrderlink', ['column' => '%s', 'title' => '%s'])</th>", $field['name'], strtoupper($field['name']));
 
         } elseif ($type == 'view-index-search') {
 

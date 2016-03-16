@@ -1,5 +1,0 @@
-
-	//リレーション設定
-	public function webBills() {
-		return $this->hasMany('App\WebBill');
-	}
