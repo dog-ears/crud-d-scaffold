@@ -45,9 +45,6 @@ class DeleteAll
         $this->deleteViewLayoutNavi();
         $this->deleteRoute();
         $this->deleteRouteServiceProvider();
-
-        $this->commandObj->info('Delete is done.');
-        $this->commandObj->info('Rollback migration and delete migrate file if you need.');
     }
 
     private function deleteFactory(){
@@ -60,7 +57,7 @@ class DeleteAll
         $replacement = "";
         
         //output(use OutputTrait)
-        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $message_success='Seeding - DatabaseSeeder updated successfully', $debug=false );
+        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
     }
 
     private function deleteDatabaseSeeder(){
@@ -73,7 +70,7 @@ class DeleteAll
         $replacement = "";
         
         //output(use OutputTrait)
-        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $message_success='remove generated data from DatabaseSeeder', $debug=false );
+        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
     }
 
     private function deleteSeed(){
@@ -82,7 +79,7 @@ class DeleteAll
         $output_filename = $this->solveName($this->commandObj->argument('name'), config('l5scaffold.app_name_rules.app_seeder_class')).'TableSeeder.php';
 
         //output(use OutputTrait)
-        $this->outputDelete( $output_path, $output_filename, $message_success = 'Seeding is Deleted', $debug=false );
+        $this->outputDelete( $output_path, $output_filename, $debug=false );
     }
 
     private function deleteModel(){
@@ -91,7 +88,7 @@ class DeleteAll
         $output_filename = $this->solveName($this->commandObj->argument('name'), config('l5scaffold.app_name_rules.app_model_class')).'.php';
 
         //output(use OutputTrait)
-        $this->outputDelete( $output_path, $output_filename, $message_success = 'Model is Deleted', $debug=false );
+        $this->outputDelete( $output_path, $output_filename, $debug=false );
     }
 
     private function deleteController(){
@@ -100,7 +97,7 @@ class DeleteAll
         $output_filename = $this->solveName($this->commandObj->argument('name'), config('l5scaffold.app_name_rules.app_controller_class')).'Controller.php';
 
         //output(use OutputTrait)
-        $this->outputDelete( $output_path, $output_filename, $message_success = 'Controller is Deleted', $debug=false );
+        $this->outputDelete( $output_path, $output_filename, $debug=false );
     }
 
     private function deleteViews(){
@@ -109,7 +106,7 @@ class DeleteAll
         $output_path = './resources/views/'.$this->solveName($this->commandObj->argument('name'), config('l5scaffold.app_name_rules.app_route'));
 
         //output(use OutputTrait)
-        $this->outputDeleteDirectory( $output_path, $message_success = 'View is Deleted', $debug=false );
+        $this->outputDeleteDirectory( $output_path, $debug=false );
     }
 
     private function deleteViewLayoutNavi(){
@@ -122,7 +119,7 @@ class DeleteAll
         $replacement = "";
 
         //output(use OutputTrait)
-        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $message_success='remove generated data from DatabaseSeeder', $debug=false );
+        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
     }
 
     private function deleteRoute(){
@@ -135,7 +132,7 @@ class DeleteAll
         $replacement = "";
 
         //output(use OutputTrait)
-        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $message_success='remove generated data from Route', $debug=false );
+        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
     }
 
     private function deleteRouteServiceProvider(){
@@ -148,6 +145,6 @@ class DeleteAll
         $replacement = "";
 
         //output(use OutputTrait)
-        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $message_success='remove generated data from RouteServiceProvider', $debug=false );
+        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
     }
 }

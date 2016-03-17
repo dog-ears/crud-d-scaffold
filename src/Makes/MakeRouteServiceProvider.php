@@ -50,6 +50,6 @@ class MakeRouteServiceProvider {
         $replacement = '\1\2\3'."\n".$stub_compiled.'\4\5';
 
         //output(use OutputTrait)
-        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $message_success='RouteServiceProvider updated successfully', $debug=false );
+        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
     }
 }

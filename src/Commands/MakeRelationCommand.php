@@ -69,7 +69,10 @@ class MakeRelationCommand extends Command
         // Message of Start
         $this->info('Configuring...');
 
-        // make Relation
+        // Make Relation
         new MakeRelation($this, $this->files);
+
+        // End Message
+        $this->info('Configuring is done');
     }
 }

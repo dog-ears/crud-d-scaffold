@@ -49,6 +49,6 @@ class MakeController
         $output_filename = $this->solveName($this->commandObj->argument('name'), config('l5scaffold.app_name_rules.app_controller_class')).'Controller.php';
 
         //output(use OutputTrait)
-        $this->outputPut( $output_path, $output_filename, $stub_compiled, $message_success='Controller created successfully', $debug=false );
+        $this->outputPut( $output_path, $output_filename, $stub_compiled, $debug=false );
     }
 }

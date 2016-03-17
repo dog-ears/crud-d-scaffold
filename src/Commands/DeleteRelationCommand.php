@@ -69,7 +69,11 @@ class DeleteRelationCommand extends Command
         // Message of Start
         $this->info('Configuring...');
 
-        // make Relation
+        // Delete Relation
         new DeleteRelation($this, $this->files);
+
+        // End Message
+        $this->info('Deleting is done');
+
     }
 }

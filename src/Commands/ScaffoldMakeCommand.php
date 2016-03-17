@@ -111,6 +111,9 @@ class ScaffoldMakeCommand extends Command
         $this->makeViews();
         $this->makeRoute();
         $this->makeRouteServiceProvider();
+
+        // End Message
+        $this->info('Configuring is done');
     }
 
     /**
@@ -166,7 +169,6 @@ class ScaffoldMakeCommand extends Command
             new MakeView($this, $this->files, $view);
         }
 
-        $this->info('Views created successfully.');
         $this->info('Dump-autoload...');
         $this->composer->dumpAutoloads();
     }
