@@ -68,7 +68,7 @@
                 <table class="table table-condensed table-striped">
                     <thead>
                         <tr>
-                            <th>@include('_getOrderlink', ['column' => 'id', 'title' => 'ID'])</th>
+                            <th>@include('l5scaffold::getOrderlink', ['column' => 'id', 'title' => 'ID'])</th>
                             {{header_fields}}
                             <th class="text-right">OPTIONS</th>
                         </tr>
