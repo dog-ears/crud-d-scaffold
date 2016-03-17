@@ -25,10 +25,10 @@ trait OutputTrait {
      *
      * Append $stub_compiled to $output_path.$output_filename and put message.
      *
-     * @param string $output_path, string $output_filename, string $stub_compiled, string $message_success, bool $debug=false
+     * @param string $output_path, string $output_filename, string $stub_compiled, bool $debug=false
      * @return none
      */
-    public function outputAppend( $output_path, $output_filename, $stub_compiled, $message_success, $debug=false ){
+    public function outputAppend( $output_path, $output_filename, $stub_compiled, $debug=false ){
 
         //postfix for debug
         if( $debug ){ $postfix = '_'; }else{ $postfix = ''; }
@@ -36,16 +36,14 @@ trait OutputTrait {
         //output_exist_check
         if( !$this->files->exists($output_path.$output_filename) ){
             $this->commandObj->error($output_path.$output_filename. ' is not found!');
-            exit();
+            return;
         }
 
         //output(append)
         $this->files->append($output_path.$output_filename.$postfix, $stub_compiled);
     
         //end message
-        if($message_success){
-            $this->commandObj->info($message_success);
-        }
+        $this->commandObj->info('[modify] '. $output_path.$output_filename.$postfix);
     }
 
     /**
@@ -53,10 +51,10 @@ trait OutputTrait {
      *
      * replace $pattern to $replacement in $output_path.$output_filename and put message.
      *
-     * @param string $output_path, string $output_filename, string $pattern, string $replacement, string $message_success, bool $debug=false
+     * @param string $output_path, string $output_filename, string $pattern, string $replacement, bool $debug=false
      * @return none
      */
-    public function outputReplace( $output_path, $output_filename, $pattern, $replacement, $message_success, $debug=false ){
+    public function outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false ){
 
         //postfix for debug
         if( $debug ){ $postfix = '_'; }else{ $postfix = ''; }
@@ -64,7 +62,7 @@ trait OutputTrait {
         //output_exist_check
         if( !$this->files->exists($output_path.$output_filename) ){
             $this->commandObj->error($output_path.$output_filename. ' is not found!');
-            exit();
+            return;
         }
 
         //get source
@@ -78,16 +76,14 @@ trait OutputTrait {
                 $this->commandObj->info( '------------------------------' );
                 $this->commandObj->info( "src :\n".$src );
             }
-            exit();
+            return;
         }
 
         $src = preg_replace($pattern, $replacement, $src);
         $this->files->put($output_path.$output_filename.$postfix, $src);
 
         //end message
-        if($message_success){
-            $this->commandObj->info($message_success);
-        }
+        $this->commandObj->info('[modify] '. $output_path.$output_filename.$postfix);
     }
 
     /**
@@ -95,42 +91,41 @@ trait OutputTrait {
      *
      * put $stub_compiled at $output_path.$output_filename and put message.
      *
-     * @param string $output_path, string $output_filename, string $stub_compiled, string $message_success, bool $debug=false
+     * @param string $output_path, string $output_filename, string $stub_compiled, bool $debug=false
      * @return none
      */
-    public function outputPut( $output_path, $output_filename, $stub_compiled, $message_success, $debug=false, $alert=true ){
+    public function outputPut( $output_path, $output_filename, $stub_compiled, $debug=false, $alert=true ){
 
         //postfix for debug
         if( $debug ){ $postfix = '_'; }else{ $postfix = ''; }
 
         //output_func
-        $output_func = function () use($output_path, $output_filename, $stub_compiled, $message_success, $postfix){
+        $output_func = function () use($output_path, $output_filename, $stub_compiled, $postfix){
 
             //output
             $this->makeDirectory($output_path.$output_filename);
             $this->files->put($output_path.$output_filename.$postfix, $stub_compiled);            
-
-            //end message
-            if($message_success){
-                $this->commandObj->info($message_success);
-            }
         };
 
         //output_exist_check
         if( $this->files->exists($output_path.$output_filename) ){
 
             if( $alert ){
-                if ($this->commandObj->confirm($output_path.$output_filename. ' already exists! Do you wish to overwrite? [yes|no]')) {
+                if ($this->commandObj->confirm( $output_path. $output_filename. $postfix. ' already exists! Do you wish to overwrite? [yes|no]')) {
     
                     //call output_func
                     $output_func();
+
+                    //end message
+                    $this->commandObj->info( '[modify]'. $output_path. $output_filename. $postfix );
                 }
-            }else{
-                $this->commandObj->info( 'file is already exists' );
             }
         }else{
             //call output_func
             $output_func();
+
+            //end message
+            $this->commandObj->info( '[create]'. $output_path. $output_filename. $postfix );
         }
     }
 
@@ -140,12 +135,12 @@ trait OutputTrait {
      * put $stub_compiled at $output_path.$output_filename and put message.
      * if file is exist, no alert
      *
-     * @param string $output_path, string $output_filename, string $stub_compiled, string $message_success, bool $debug=false
+     * @param string $output_path, string $output_filename, string $stub_compiled, bool $debug=false
      * @return none
      */
-    public function outputPutWithoutAlert( $output_path, $output_filename, $stub_compiled, $message_success, $debug=false ){
+    public function outputPutWithoutAlert( $output_path, $output_filename, $stub_compiled, $debug=false ){
 
-        $this->outputPut( $output_path, $output_filename, $stub_compiled, $message_success, $debug=false, $alert=false );
+        $this->outputPut( $output_path, $output_filename, $stub_compiled, $debug=false, $alert=false );
     }
 
     /**
@@ -153,21 +148,22 @@ trait OutputTrait {
      *
      * Delete $output_path.$output_filename and put message.
      *
-     * @param string $output_path, string $output_filename, string $stub_compiled, string $message_success, bool $debug=false
+     * @param string $output_path, string $output_filename, string $stub_compiled, bool $debug=false
      * @return none
      */
-    public function outputDelete( $output_path, $output_filename, $message_success, $debug=false ){
+    public function outputDelete( $output_path, $output_filename, $debug=false ){
 
         if ($this->files->exists($output_path.$output_filename)) {
 
             //Delete
             $this->files->delete($output_path.$output_filename);
 
-            if($message_success){
-                $this->commandObj->info($message_success);
-            }
+            //end message
+            $this->commandObj->info( '[delete] '. $output_path.$output_filename );
+
         }else{
-            $this->commandObj->info($output_path.$output_filename.' is not exists!');
+            //end message
+            $this->commandObj->info('[skip] '. $output_path.$output_filename.' is not exists!');
         }
     }
 
@@ -176,21 +172,22 @@ trait OutputTrait {
      *
      * Delete $output_path directory and put message.
      *
-     * @param string $output_path, string $message_success, bool $debug=false
+     * @param string $output_path, bool $debug=false
      * @return none
      */
-    public function outputDeleteDirectory( $output_path, $message_success, $debug=false ){
+    public function outputDeleteDirectory( $output_path, $debug=false ){
 
         if ($this->files->isDirectory($output_path)) {
 
             //Delete
             $this->files->deleteDirectory($output_path);
 
-            if($message_success){
-                $this->commandObj->info($message_success);
-            }
+            //end message
+            $this->commandObj->info( '[delete] '. $output_path );
+
         }else{
-            $this->commandObj->info('View ('.$output_path.') is not exists!');
+            //end message
+            $this->commandObj->info('[skip] '.$output_path. ' is not exists!');
         }
     }
 }

@@ -33,11 +33,6 @@ class MakeSeed{
     {
         if( $this->commandObj->option('seeding') ){
 
-            //message create seeding
-            $this->commandObj->info('--Create Seeding');
-
-
-
             //(i)Factory --------------------------------------------------
 
             //get_stub_path and filename
@@ -55,7 +50,7 @@ class MakeSeed{
             $output_filename = 'ModelFactory.php';
 
             //output(use OutputTrait)
-            $this->outputAppend( $output_path, $output_filename, $stub_compiled, $message_success='Seeding - Factory updated successfully', $debug=false );
+            $this->outputAppend( $output_path, $output_filename, $stub_compiled, $debug=false );
 
 
 
@@ -80,7 +75,7 @@ class MakeSeed{
             $replacement = $stub_compiled."\n    }\n}";
 
             //output(use OutputTrait)
-            $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $message_success='Seeding - DatabaseSeeder updated successfully', $debug=false );
+            $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
 
 
 
@@ -101,7 +96,7 @@ class MakeSeed{
             $output_filename = $this->solveName($this->commandObj->argument('name'), config('l5scaffold.app_name_rules.app_seeder_class')).'TableSeeder.php';
 
             //output(use OutputTrait)
-            $this->outputPut( $output_path, $output_filename, $stub_compiled, $message_success='Seeding - DatabaseSeeder updated successfully', $debug=false );
+            $this->outputPut( $output_path, $output_filename, $stub_compiled, $debug=false );
         }
     }
 }

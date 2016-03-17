@@ -50,6 +50,6 @@ class MakeRoute{
         $replacement = '\1\2    '.$stub_compiled. "\n". '\3';
 
         //output(use OutputTrait)
-        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $message_success='Route updated successfully', $debug=false );
+        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
     }
 }

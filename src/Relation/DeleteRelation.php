@@ -31,8 +31,6 @@ class DeleteRelation {
 
     protected function start()
     {
-        $this->commandObj->info('delete');
-
         //short cut
         $this->model_A_name = $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.app_model_class'));
         $this->model_B_name = $this->solveName($this->commandObj->argument('model_B'), config('l5scaffold.app_name_rules.app_model_class'));
@@ -61,7 +59,7 @@ class DeleteRelation {
         $replacement = '';
 
         //output(use OutputTrait)
-        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $message_success='model_A updated successfully', $debug=false );
+        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
     }
 
     protected function deleteModel_modelB(){
@@ -75,7 +73,7 @@ class DeleteRelation {
         $replacement = '';
 
         //output(use OutputTrait)
-        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $message_success='model_B updated successfully', $debug=false );
+        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
     }
 
     protected function deleteModel_modelB2(){
@@ -89,7 +87,7 @@ class DeleteRelation {
         $replacement = '';
 
         //output(use OutputTrait)
-        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $message_success='model_B2 updated successfully', $debug=false );
+        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
     }
 
 
@@ -114,7 +112,7 @@ class DeleteRelation {
         $replacement = $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.NAME_NAME')).'_ID';
 
         //output(use OutputTrait)
-        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $message_success='View_index updated successfully', $debug=false );
+        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
 
         //(ii) apple_types.name => apple_type_id
 
@@ -123,7 +121,7 @@ class DeleteRelation {
         $replacement = $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.name_name')).'_id';
 
         //output(use OutputTrait)
-        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $message_success='View_index updated successfully', $debug=false );
+        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
 
         //(iii) appleType->name => apple_type_id
 
@@ -132,7 +130,7 @@ class DeleteRelation {
         $replacement = $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.name_name')).'_id';
 
         //output(use OutputTrait)
-        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $message_success='View_index updated successfully', $debug=false );
+        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
     }
 
     protected function deleteView_show(){
@@ -154,7 +152,7 @@ class DeleteRelation {
                     $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.name_name')).'_id}}</p>\3';
 
         //output(use OutputTrait)
-        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $message_success='View_index updated successfully', $debug=false );
+        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
     }
 
     protected function deleteView_form(){
@@ -173,6 +171,6 @@ class DeleteRelation {
                     $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.name_name')).'_id", null,\4';
 
         //output(use OutputTrait)
-        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $message_success='View_form updated successfully', $debug=false );
+        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
     }
 }

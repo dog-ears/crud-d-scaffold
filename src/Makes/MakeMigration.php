@@ -51,6 +51,6 @@ class MakeMigration {
         $output_filename = date('Y_m_d_His'). '_create_'. $this->solveName($this->commandObj->argument('name'), config('l5scaffold.app_name_rules.app_migrate_filename')). '_table.php';
 
         //output(use OutputTrait)
-        $this->outputPut( $output_path, $output_filename, $stub_compiled, $message_success='Migration created successfully', $debug=false );
+        $this->outputPut( $output_path, $output_filename, $stub_compiled, $debug=false );
     }
 }

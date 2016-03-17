@@ -67,8 +67,12 @@ class ScaffoldDeleteCommand extends Command
         // Start Scaffold
         $this->info('Deleting ' . $this->solveName( $this->argument('name'), 'NameName' ) . '...');
 
-        //Delete
+        // Delete
         new DeleteAll($this, $this->files);
+
+        // End Message
+        $this->info('Deleting is done');
+        $this->info('Rollback migration and delete migrate file if you need.');
     }
 
     /**

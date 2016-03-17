@@ -48,7 +48,7 @@ class MakeLayout {
         $output_filename = 'layout.blade.php';
 
         //output(use OutputTrait)
-        $this->outputPutWithoutAlert( $output_path, $output_filename, $stub_compiled, $message_success='view_layout_layout created successfully', $debug=false );
+        $this->outputPutWithoutAlert( $output_path, $output_filename, $stub_compiled, $debug=false );
 
 
 
@@ -69,7 +69,7 @@ class MakeLayout {
         $output_filename = 'error.blade.php';
 
         //output(use OutputTrait)
-        $this->outputPutWithoutAlert( $output_path, $output_filename, $stub_compiled, $message_success='view_layout_error created successfully', $debug=false );
+        $this->outputPutWithoutAlert( $output_path, $output_filename, $stub_compiled, $debug=false );
 
 
 
@@ -90,7 +90,7 @@ class MakeLayout {
         $output_filename = 'navi.blade.php';
 
         //output(use OutputTrait)
-        $this->outputPutWithoutAlert( $output_path, $output_filename, $stub_compiled, $message_success='view_layout_navi created successfully', $debug=false );
+        $this->outputPutWithoutAlert( $output_path, $output_filename, $stub_compiled, $debug=false );
 
         //(iv)navi - add --------------------------------------------------
 
@@ -113,6 +113,6 @@ class MakeLayout {
         $replacement = '\1\2'.$stub_compiled.'\3';
 
         //output(use OutputTrait)
-        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $message_success='view_layout_navi updated successfully', $debug=false );
+        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
     }
 }

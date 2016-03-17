@@ -75,6 +75,6 @@ class MakeView
         $output_filename = $this->viewName.'.blade.php';
 
         //output(use OutputTrait)
-        $this->outputPut( $output_path, $output_filename, $stub_compiled, $message_success='View-'.$this->viewName.' created successfully', $debug=false );
+        $this->outputPut( $output_path, $output_filename, $stub_compiled, $debug=false );
     }
 }
