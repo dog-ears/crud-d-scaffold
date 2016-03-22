@@ -13,6 +13,7 @@ use Illuminate\Console\AppNamespaceDetectorTrait;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Composer;
+use Illuminate\Support\Facades\Artisan;
 use dogears\CrudDscaffold\Makes\MakeMigration;
 use dogears\CrudDscaffold\Makes\MakeController;
 use dogears\CrudDscaffold\Makes\MakeLayout;
@@ -169,6 +170,11 @@ class ScaffoldMakeCommand extends Command
             new MakeView($this, $this->files, $view);
         }
 
+        //publish html resource
+        $this->info('Dump-autoload...');
+        Artisan::call('vendor:publish', ['--tag=public','--force']);
+
+        //Dump autoload
         $this->info('Dump-autoload...');
         $this->composer->dumpAutoloads();
     }
