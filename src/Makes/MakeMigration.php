@@ -7,14 +7,14 @@ This software is released under the MIT License.
 http://dog-ears.net/
 */
 
-namespace dogears\L5scaffold\Makes;
+namespace dogears\CrudDscaffold\Makes;
 
 use Illuminate\Filesystem\Filesystem;
-use dogears\L5scaffold\Commands\ScaffoldMakeCommand;
-use dogears\L5scaffold\Stubs\StubController;
-use dogears\L5scaffold\Traits\MakerTrait;
-use dogears\L5scaffold\Traits\NameSolverTrait;
-use dogears\L5scaffold\Traits\OutputTrait;
+use dogears\CrudDscaffold\Commands\ScaffoldMakeCommand;
+use dogears\CrudDscaffold\Stubs\StubController;
+use dogears\CrudDscaffold\Traits\MakerTrait;
+use dogears\CrudDscaffold\Traits\NameSolverTrait;
+use dogears\CrudDscaffold\Traits\OutputTrait;
 
 class MakeMigration {
     use MakerTrait,NameSolverTrait,OutputTrait;
@@ -37,7 +37,7 @@ class MakeMigration {
 
         //set custom replace
         $custom_replace = [
-            'table' => $this->solveName($this->commandObj->argument('name'), config('l5scaffold.app_name_rules.app_migrate_filename')),
+            'table' => $this->solveName($this->commandObj->argument('name'), config('CrudDscaffold.app_name_rules.app_migrate_filename')),
         ];
 
         //create new stub
@@ -48,7 +48,7 @@ class MakeMigration {
 
         //get output_path and filename
         $output_path = './database/migrations/';
-        $output_filename = date('Y_m_d_His'). '_create_'. $this->solveName($this->commandObj->argument('name'), config('l5scaffold.app_name_rules.app_migrate_filename')). '_table.php';
+        $output_filename = date('Y_m_d_His'). '_create_'. $this->solveName($this->commandObj->argument('name'), config('CrudDscaffold.app_name_rules.app_migrate_filename')). '_table.php';
 
         //output(use OutputTrait)
         $this->outputPut( $output_path, $output_filename, $stub_compiled, $debug=false );

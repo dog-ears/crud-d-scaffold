@@ -7,14 +7,14 @@ This software is released under the MIT License.
 http://dog-ears.net/
 */
 
-namespace dogears\L5scaffold\Relation;
+namespace dogears\CrudDscaffold\Relation;
 
 use Illuminate\Filesystem\Filesystem;
-use dogears\L5scaffold\Commands\ScaffoldMakeCommand;
-use dogears\L5scaffold\Stubs\StubController;
-use dogears\L5scaffold\Traits\MakerTrait;
-use dogears\L5scaffold\Traits\NameSolverTrait;
-use dogears\L5scaffold\Traits\OutputTrait;
+use dogears\CrudDscaffold\Commands\ScaffoldMakeCommand;
+use dogears\CrudDscaffold\Stubs\StubController;
+use dogears\CrudDscaffold\Traits\MakerTrait;
+use dogears\CrudDscaffold\Traits\NameSolverTrait;
+use dogears\CrudDscaffold\Traits\OutputTrait;
 
 class DeleteRelation {
     use MakerTrait,NameSolverTrait,OutputTrait;
@@ -32,8 +32,8 @@ class DeleteRelation {
     protected function start()
     {
         //short cut
-        $this->model_A_name = $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.app_model_class'));
-        $this->model_B_name = $this->solveName($this->commandObj->argument('model_B'), config('l5scaffold.app_name_rules.app_model_class'));
+        $this->model_A_name = $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.app_model_class'));
+        $this->model_B_name = $this->solveName($this->commandObj->argument('model_B'), config('CrudDscaffold.app_name_rules.app_model_class'));
 
         $this->deleteModel();
         $this->deleteView();
@@ -108,8 +108,8 @@ class DeleteRelation {
         $output_filename = 'index.blade.php';
 
         //replace word
-        $pattern = '#'.$this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.NAME_NAME')).'_NAME#';
-        $replacement = $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.NAME_NAME')).'_ID';
+        $pattern = '#'.$this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.NAME_NAME')).'_NAME#';
+        $replacement = $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.NAME_NAME')).'_ID';
 
         //output(use OutputTrait)
         $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
@@ -117,8 +117,8 @@ class DeleteRelation {
         //(ii) apple_types.name => apple_type_id
 
         //replace word
-        $pattern = '#'.$this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.app_migrate_tablename')).'.name#';
-        $replacement = $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.name_name')).'_id';
+        $pattern = '#'.$this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.app_migrate_tablename')).'.name#';
+        $replacement = $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.name_name')).'_id';
 
         //output(use OutputTrait)
         $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
@@ -126,8 +126,8 @@ class DeleteRelation {
         //(iii) appleType->name => apple_type_id
 
         //replace word
-        $pattern = '#'.$this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.app_model_var')).'->name#s';
-        $replacement = $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.name_name')).'_id';
+        $pattern = '#'.$this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.app_model_var')).'->name#s';
+        $replacement = $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.name_name')).'_id';
 
         //output(use OutputTrait)
         $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
@@ -141,15 +141,15 @@ class DeleteRelation {
 
         //replace word
         $pattern = '#(.*<label for=")'.
-                    $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.name_name')).'_name">'.
-                    $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.NAME_NAME')).'_NAME</label>(.*)<p class="form-control-static">{{\$'.
-                    $this->solveName($this->commandObj->argument('model_B'), config('l5scaffold.app_name_rules.app_model_var')).'->'.
-                    $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.app_model_var')).'->name}}</p>(.*)#s';
+                    $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.name_name')).'_name">'.
+                    $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.NAME_NAME')).'_NAME</label>(.*)<p class="form-control-static">{{\$'.
+                    $this->solveName($this->commandObj->argument('model_B'), config('CrudDscaffold.app_name_rules.app_model_var')).'->'.
+                    $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.app_model_var')).'->name}}</p>(.*)#s';
         $replacement = '\1'.
-                    $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.name_name')).'_id">'.
-                    $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.NAME_NAME')).'_ID</label>\2<p class="form-control-static">{{$'.
-                    $this->solveName($this->commandObj->argument('model_B'), config('l5scaffold.app_name_rules.app_model_var')).'->'.
-                    $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.name_name')).'_id}}</p>\3';
+                    $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.name_name')).'_id">'.
+                    $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.NAME_NAME')).'_ID</label>\2<p class="form-control-static">{{$'.
+                    $this->solveName($this->commandObj->argument('model_B'), config('CrudDscaffold.app_name_rules.app_model_var')).'->'.
+                    $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.name_name')).'_id}}</p>\3';
 
         //output(use OutputTrait)
         $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
@@ -163,12 +163,12 @@ class DeleteRelation {
 
         //replace word
         $pattern = '#(.*)<label for="'.
-                    $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.name_name')).'_id-field">(.*)_name</label>(.*){!! Form::select\("'.
-                    $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.name_name')).'_id", \$list\["'.
-                    $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.app_model_class')).'"\], null,(.*)#s';
+                    $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.name_name')).'_id-field">(.*)_name</label>(.*){!! Form::select\("'.
+                    $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.name_name')).'_id", \$list\["'.
+                    $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.app_model_class')).'"\], null,(.*)#s';
         $replacement = '\1<label for="'.
-                    $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.name_name')).'_id-field">\2_id</label>\3{!! Form::text("'.
-                    $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.name_name')).'_id", null,\4';
+                    $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.name_name')).'_id-field">\2_id</label>\3{!! Form::text("'.
+                    $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.name_name')).'_id", null,\4';
 
         //output(use OutputTrait)
         $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );

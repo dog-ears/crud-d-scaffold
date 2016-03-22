@@ -1,9 +1,10 @@
 {
-  "name": "dog-ears/l5scaffold",
+  "name": "dog-ears/crud-d-scaffold",
   "description": "Extend Laravel 5.2's generators scaffold.",
-  "keywords": ["laravel", "generators", "scaffold" , "laravel5.2"],
+  "keywords": ["laravel", "generators", "scaffold" , "laravel5.2" , "CRUD" , "crud"],
   "license": "MIT",
   "minimum-stability": "dev",
+  "homepage": "http://dog-ears.net/",
   "authors": [
     {
       "name": "dog-ears",
@@ -16,7 +17,7 @@
   },
   "autoload": {
     "psr-4": {
-      "dogears\\L5scaffold\\": "src/"
+      "dogears\\CrudDscaffold\\": "src/"
     }
   },
   "scripts": {

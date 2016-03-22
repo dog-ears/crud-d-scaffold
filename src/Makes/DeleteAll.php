@@ -7,15 +7,15 @@ This software is released under the MIT License.
 http://dog-ears.net/
 */
  
-namespace dogears\L5scaffold\Makes;
+namespace dogears\CrudDscaffold\Makes;
 
 use Illuminate\Console\AppNamespaceDetectorTrait;
 use Illuminate\Filesystem\Filesystem;
-use dogears\L5scaffold\Commands\ScaffoldMakeCommand;
-use dogears\L5scaffold\Stubs\StubController;
-use dogears\L5scaffold\Traits\MakerTrait;
-use dogears\L5scaffold\Traits\NameSolverTrait;
-use dogears\L5scaffold\Traits\OutputTrait;
+use dogears\CrudDscaffold\Commands\ScaffoldMakeCommand;
+use dogears\CrudDscaffold\Stubs\StubController;
+use dogears\CrudDscaffold\Traits\MakerTrait;
+use dogears\CrudDscaffold\Traits\NameSolverTrait;
+use dogears\CrudDscaffold\Traits\OutputTrait;
 
 class DeleteAll
 {
@@ -34,7 +34,7 @@ class DeleteAll
     private function start()
     {
         //app_model_class
-        $this->app_model_class = $this->solveName($this->commandObj->argument('name'),config('l5scaffold.app_name_rules.app_model_class'));
+        $this->app_model_class = $this->solveName($this->commandObj->argument('name'),config('CrudDscaffold.app_name_rules.app_model_class'));
 
         $this->deleteFactory();
         $this->deleteDatabaseSeeder();
@@ -76,7 +76,7 @@ class DeleteAll
     private function deleteSeed(){
 
         $output_path = './database/seeds/';
-        $output_filename = $this->solveName($this->commandObj->argument('name'), config('l5scaffold.app_name_rules.app_seeder_class')).'TableSeeder.php';
+        $output_filename = $this->solveName($this->commandObj->argument('name'), config('CrudDscaffold.app_name_rules.app_seeder_class')).'TableSeeder.php';
 
         //output(use OutputTrait)
         $this->outputDelete( $output_path, $output_filename, $debug=false );
@@ -85,7 +85,7 @@ class DeleteAll
     private function deleteModel(){
 
         $output_path = './app/';
-        $output_filename = $this->solveName($this->commandObj->argument('name'), config('l5scaffold.app_name_rules.app_model_class')).'.php';
+        $output_filename = $this->solveName($this->commandObj->argument('name'), config('CrudDscaffold.app_name_rules.app_model_class')).'.php';
 
         //output(use OutputTrait)
         $this->outputDelete( $output_path, $output_filename, $debug=false );
@@ -94,7 +94,7 @@ class DeleteAll
     private function deleteController(){
         //Controller -------------------- 
         $output_path = './app/Http/Controllers/';
-        $output_filename = $this->solveName($this->commandObj->argument('name'), config('l5scaffold.app_name_rules.app_controller_class')).'Controller.php';
+        $output_filename = $this->solveName($this->commandObj->argument('name'), config('CrudDscaffold.app_name_rules.app_controller_class')).'Controller.php';
 
         //output(use OutputTrait)
         $this->outputDelete( $output_path, $output_filename, $debug=false );
@@ -103,7 +103,7 @@ class DeleteAll
     private function deleteViews(){
 
         // Get path
-        $output_path = './resources/views/'.$this->solveName($this->commandObj->argument('name'), config('l5scaffold.app_name_rules.app_route'));
+        $output_path = './resources/views/'.$this->solveName($this->commandObj->argument('name'), config('CrudDscaffold.app_name_rules.app_route'));
 
         //output(use OutputTrait)
         $this->outputDeleteDirectory( $output_path, $debug=false );

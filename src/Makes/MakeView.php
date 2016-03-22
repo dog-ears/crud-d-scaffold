@@ -7,17 +7,16 @@ This software is released under the MIT License.
 http://dog-ears.net/
 */
 
-namespace dogears\L5scaffold\Makes;
+namespace dogears\CrudDscaffold\Makes;
 
 use Illuminate\Filesystem\Filesystem;
-use dogears\L5scaffold\Commands\ScaffoldMakeCommand;
-use dogears\L5scaffold\Stubs\StubController;
-use dogears\L5scaffold\Traits\MakerTrait;
-use dogears\L5scaffold\Traits\NameSolverTrait;
-
-use dogears\L5scaffold\Migrations\SchemaParser;
-use dogears\L5scaffold\Migrations\SyntaxBuilder;
-use dogears\L5scaffold\Traits\OutputTrait;
+use dogears\CrudDscaffold\Commands\ScaffoldMakeCommand;
+use dogears\CrudDscaffold\Stubs\StubController;
+use dogears\CrudDscaffold\Traits\MakerTrait;
+use dogears\CrudDscaffold\Traits\NameSolverTrait;
+use dogears\CrudDscaffold\Traits\OutputTrait;
+use dogears\CrudDscaffold\Migrations\SchemaParser;
+use dogears\CrudDscaffold\Migrations\SyntaxBuilder;
 
 class MakeView
 {
@@ -71,7 +70,7 @@ class MakeView
         $stub_compiled = $stub->getCompiled();
 
         //get output_path and filename
-        $output_path = './resources/views/'.$this->solveName($this->commandObj->argument('name'), config('l5scaffold.app_name_rules.app_model_vars')).'/';
+        $output_path = './resources/views/'.$this->solveName($this->commandObj->argument('name'), config('CrudDscaffold.app_name_rules.app_model_vars')).'/';
         $output_filename = $this->viewName.'.blade.php';
 
         //output(use OutputTrait)
