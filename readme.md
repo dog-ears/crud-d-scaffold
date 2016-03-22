@@ -46,7 +46,11 @@ You're all set. Run `php artisan` from the console, and you'll see the new comma
 
 ## Examples 1 - Create Application and make relationship.
 
-(i) Scaffold 2 Model [AppleType] and [Apple].
+(i) publish public resource.
+```
+php artisan vendor:publish --tag=public --force
+```
+(ii) Scaffold 2 Model [AppleType] and [Apple].
   Apple has apple_type_id column for relationship.
 ```
 php artisan make:scaffold AppleType --schema="name:string" --seeding
@@ -54,14 +58,14 @@ php artisan make:scaffold AppleType --schema="name:string" --seeding
 ```
 php artisan make:scaffold Apple --schema="name:string,apple_type_id:integer:unsigned" --seeding
 ```
-(ii) migrate and seeding
+(iii) migrate and seeding
 ```
 php artisan migrate
 ```
 ```
 php artisan db:seed
 ```
-(iii) Make Relationship [AppleType] has many [Apple]s.
+(iv) Make Relationship [AppleType] has many [Apple]s.
 ```
 php artisan make:relation AppleType Apple
 ```
