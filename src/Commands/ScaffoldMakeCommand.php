@@ -170,10 +170,6 @@ class ScaffoldMakeCommand extends Command
             new MakeView($this, $this->files, $view);
         }
 
-        //publish html resource
-        $this->info('Dump-autoload...');
-        Artisan::call('vendor:publish', ['--tag=public','--force']);
-
         //Dump autoload
         $this->info('Dump-autoload...');
         $this->composer->dumpAutoloads();

@@ -7,7 +7,7 @@ This software is released under the MIT License.
 http://dog-ears.net/
 */
 
-namespace dogears\L5scaffold\Makes;
+namespace dogears\CrudDscaffold\Makes;
 
 use Illuminate\Filesystem\Filesystem;
 use dogears\CrudDscaffold\Commands\ScaffoldMakeCommand;
