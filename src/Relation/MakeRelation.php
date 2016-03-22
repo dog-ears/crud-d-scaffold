@@ -10,6 +10,7 @@ http://dog-ears.net/
 namespace dogears\L5scaffold\Relation;
 
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\Schema;
 use dogears\L5scaffold\Commands\ScaffoldMakeCommand;
 use dogears\L5scaffold\Stubs\StubController;
 use dogears\L5scaffold\Traits\MakerTrait;
@@ -35,11 +36,37 @@ class MakeRelation {
         $this->model_A_name = $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.app_model_class'));
         $this->model_B_name = $this->solveName($this->commandObj->argument('model_B'), config('l5scaffold.app_name_rules.app_model_class'));
 
+        $this->validate();
         $this->editModel();
         $this->editView();
     }
 
 
+
+    protected function validate(){
+
+        $error = false;
+
+        $this->model_B_tablename = $this->solveName($this->commandObj->argument('model_B'), config('l5scaffold.app_name_rules.app_migrate_tablename'));
+        $this->model_B_columnname = $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.name_name')). '_id';
+        
+        //check model exist
+        if( !$this->files->exists('./app/'.$this->model_A_name.'.php' ) ){
+            $this->commandObj->error( 'Model('. $this->model_A_name. ') is not found!');
+            $error = true;
+        }
+        if( !$this->files->exists('./app/'.$this->model_B_name.'.php' ) ){
+            $this->commandObj->error( 'Model('. $this->model_B_name. ') is not found!');
+            $error = true;
+        }
+        if (!Schema::hasColumn($this->model_B_tablename, $this->model_B_columnname)){
+            $this->commandObj->error( 'Model('. $this->model_B_name. ') should have '. $this->model_B_columnname. ' column!');
+            $error = true;
+        }
+        if( $error ){
+            exit();
+        }
+    }
 
     protected function editModel(){
 
