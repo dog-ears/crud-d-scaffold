@@ -3,8 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use dogears\L5scaffold\Traits\GetAllDataTrait;
-use dogears\L5scaffold\Traits\RelationManagerTrait;
+use dogears\CrudDscaffold\Traits\GetAllDataTrait;
+use dogears\CrudDscaffold\Traits\RelationManagerTrait;
 
 class {{app_model_class}} extends Model
 {

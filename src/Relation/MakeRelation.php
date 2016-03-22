@@ -7,15 +7,15 @@ This software is released under the MIT License.
 http://dog-ears.net/
 */
 
-namespace dogears\L5scaffold\Relation;
+namespace dogears\CrudDscaffold\Relation;
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Schema;
-use dogears\L5scaffold\Commands\ScaffoldMakeCommand;
-use dogears\L5scaffold\Stubs\StubController;
-use dogears\L5scaffold\Traits\MakerTrait;
-use dogears\L5scaffold\Traits\NameSolverTrait;
-use dogears\L5scaffold\Traits\OutputTrait;
+use dogears\CrudDscaffold\Commands\ScaffoldMakeCommand;
+use dogears\CrudDscaffold\Stubs\StubController;
+use dogears\CrudDscaffold\Traits\MakerTrait;
+use dogears\CrudDscaffold\Traits\NameSolverTrait;
+use dogears\CrudDscaffold\Traits\OutputTrait;
 
 class MakeRelation {
     use MakerTrait,NameSolverTrait,OutputTrait;
@@ -33,8 +33,8 @@ class MakeRelation {
     protected function start()
     {
         //short cut
-        $this->model_A_name = $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.app_model_class'));
-        $this->model_B_name = $this->solveName($this->commandObj->argument('model_B'), config('l5scaffold.app_name_rules.app_model_class'));
+        $this->model_A_name = $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.app_model_class'));
+        $this->model_B_name = $this->solveName($this->commandObj->argument('model_B'), config('CrudDscaffold.app_name_rules.app_model_class'));
 
         $this->validate();
         $this->editModel();
@@ -47,8 +47,8 @@ class MakeRelation {
 
         $error = false;
 
-        $this->model_B_tablename = $this->solveName($this->commandObj->argument('model_B'), config('l5scaffold.app_name_rules.app_migrate_tablename'));
-        $this->model_B_columnname = $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.name_name')). '_id';
+        $this->model_B_tablename = $this->solveName($this->commandObj->argument('model_B'), config('CrudDscaffold.app_name_rules.app_migrate_tablename'));
+        $this->model_B_columnname = $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.name_name')). '_id';
         
         //check model exist
         if( !$this->files->exists('./app/'.$this->model_A_name.'.php' ) ){
@@ -167,10 +167,10 @@ class MakeRelation {
 
         //replace word
         $pattern = '#^(\s*)<td>{{\$'.
-                    $this->solveName($this->commandObj->argument('model_B'), config('l5scaffold.app_name_rules.app_model_var')).'->'.
-                    $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.name_name')).'_id}}</td>$#m';
-        $replacement = '\1<td>{{$'.$this->solveName($this->commandObj->argument('model_B'), config('l5scaffold.app_name_rules.app_model_var')).'->'.
-                    $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.app_model_var')).'->name}}</td>';
+                    $this->solveName($this->commandObj->argument('model_B'), config('CrudDscaffold.app_name_rules.app_model_var')).'->'.
+                    $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.name_name')).'_id}}</td>$#m';
+        $replacement = '\1<td>{{$'.$this->solveName($this->commandObj->argument('model_B'), config('CrudDscaffold.app_name_rules.app_model_var')).'->'.
+                    $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.app_model_var')).'->name}}</td>';
 
         //output(use OutputTrait)
         $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
@@ -178,8 +178,8 @@ class MakeRelation {
         //(ii) apple_type_id => apple_types.name
 
         //replace word
-        $pattern = '#'.$this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.name_name')).'_id#m';
-        $replacement = $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.app_migrate_tablename')).'.name';
+        $pattern = '#'.$this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.name_name')).'_id#m';
+        $replacement = $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.app_migrate_tablename')).'.name';
 
         //output(use OutputTrait)
         $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
@@ -187,8 +187,8 @@ class MakeRelation {
         //(iii) APPLE_TYPE_ID => APPLE_TYPE_NAME
 
         //replace word
-        $pattern = '#'.$this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.NAME_NAME')).'_ID#m';
-        $replacement = $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.NAME_NAME')).'_NAME';
+        $pattern = '#'.$this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.NAME_NAME')).'_ID#m';
+        $replacement = $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.NAME_NAME')).'_NAME';
 
         //output(use OutputTrait)
         $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
@@ -203,15 +203,15 @@ class MakeRelation {
 
         //replace word
         $pattern = '#(.*<label for=")'.
-                    $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.name_name')).'_id">'.
-                    $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.NAME_NAME')).'_ID</label>(.*)<p class="form-control-static">{{\$'.
-                    $this->solveName($this->commandObj->argument('model_B'), config('l5scaffold.app_name_rules.app_model_var')).'->'.
-                    $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.name_name')).'_id}}</p>(.*)#s';
+                    $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.name_name')).'_id">'.
+                    $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.NAME_NAME')).'_ID</label>(.*)<p class="form-control-static">{{\$'.
+                    $this->solveName($this->commandObj->argument('model_B'), config('CrudDscaffold.app_name_rules.app_model_var')).'->'.
+                    $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.name_name')).'_id}}</p>(.*)#s';
         $replacement = '\1'.
-                    $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.name_name')).'_name">'.
-                    $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.NAME_NAME')).'_NAME</label>\2<p class="form-control-static">{{$'.
-                    $this->solveName($this->commandObj->argument('model_B'), config('l5scaffold.app_name_rules.app_model_var')).'->'.
-                    $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.app_model_var')).'->name}}</p>\3';
+                    $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.name_name')).'_name">'.
+                    $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.NAME_NAME')).'_NAME</label>\2<p class="form-control-static">{{$'.
+                    $this->solveName($this->commandObj->argument('model_B'), config('CrudDscaffold.app_name_rules.app_model_var')).'->'.
+                    $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.app_model_var')).'->name}}</p>\3';
 
         //output(use OutputTrait)
         $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
@@ -225,12 +225,12 @@ class MakeRelation {
 
         //replace word
         $pattern = '#(.*)<label for="'.
-                    $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.name_name')).'_id-field">(.*)_id</label>(.*){!! Form::text\("'.
-                    $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.name_name')).'_id", null,(.*)#s';
+                    $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.name_name')).'_id-field">(.*)_id</label>(.*){!! Form::text\("'.
+                    $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.name_name')).'_id", null,(.*)#s';
         $replacement = '\1<label for="'.
-                    $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.name_name')).'_id-field">\2_name</label>\3{!! Form::select("'.
-                    $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.name_name')).'_id", $list["'.
-                    $this->solveName($this->commandObj->argument('model_A'), config('l5scaffold.app_name_rules.app_model_class')).'"], null,\4';
+                    $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.name_name')).'_id-field">\2_name</label>\3{!! Form::select("'.
+                    $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.name_name')).'_id", $list["'.
+                    $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.app_model_class')).'"], null,\4';
 
         //output(use OutputTrait)
         $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );

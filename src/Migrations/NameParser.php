@@ -7,7 +7,7 @@ This software is released under the MIT License.
 http://dog-ears.net/
 */
 
-namespace dogears\L5scaffold\Migrations;
+namespace dogears\CrudDscaffold\Migrations;
 
 class NameParser
 {

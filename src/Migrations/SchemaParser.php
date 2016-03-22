@@ -5,7 +5,7 @@
  * @author Jeffrey Way <jeffrey@jeffrey-way.com>
  */
 
-namespace dogears\L5scaffold\Migrations;
+namespace dogears\CrudDscaffold\Migrations;
 
 class SchemaParser
 {

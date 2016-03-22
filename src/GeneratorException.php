@@ -7,7 +7,7 @@ This software is released under the MIT License.
 http://dog-ears.net/
 */
 
-namespace dogears\L5scaffold;
+namespace dogears\CrudDscaffold;
 
 class GeneratorException extends \Exception {
 

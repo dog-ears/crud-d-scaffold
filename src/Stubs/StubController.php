@@ -7,13 +7,13 @@ This software is released under the MIT License.
 http://dog-ears.net/
 */
 
-namespace dogears\L5scaffold\Stubs;
+namespace dogears\CrudDscaffold\Stubs;
 
 use Illuminate\Filesystem\Filesystem;
-use dogears\L5scaffold\Commands\ScaffoldMakeCommand;
-use dogears\L5scaffold\Migrations\SchemaParser;
-use dogears\L5scaffold\Migrations\SyntaxBuilder;
-use dogears\L5scaffold\Traits\NameSolverTrait;
+use dogears\CrudDscaffold\Commands\ScaffoldMakeCommand;
+use dogears\CrudDscaffold\Migrations\SchemaParser;
+use dogears\CrudDscaffold\Migrations\SyntaxBuilder;
+use dogears\CrudDscaffold\Traits\NameSolverTrait;
 
 class StubController {
 
@@ -62,7 +62,7 @@ class StubController {
         $this->commandObjName = end( $commandObjNames );
 
         //config取得
-        $app_name_rules = config('l5scaffold.app_name_rules');
+        $app_name_rules = config('CrudDscaffold.app_name_rules');
 
         if( $this->commandObjName === 'MakeRelationCommand' || $this->commandObjName === 'DeleteRelationCommand' ){ //for RelationCommand
 

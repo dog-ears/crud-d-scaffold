@@ -7,14 +7,14 @@ This software is released under the MIT License.
 http://dog-ears.net/
 */
 
-namespace dogears\L5scaffold\Makes;
+namespace dogears\CrudDscaffold\Makes;
 
 use Illuminate\Filesystem\Filesystem;
-use dogears\L5scaffold\Commands\ScaffoldMakeCommand;
-use dogears\L5scaffold\Stubs\StubController;
-use dogears\L5scaffold\Traits\MakerTrait;
-use dogears\L5scaffold\Traits\NameSolverTrait;
-use dogears\L5scaffold\Traits\OutputTrait;
+use dogears\CrudDscaffold\Commands\ScaffoldMakeCommand;
+use dogears\CrudDscaffold\Stubs\StubController;
+use dogears\CrudDscaffold\Traits\MakerTrait;
+use dogears\CrudDscaffold\Traits\NameSolverTrait;
+use dogears\CrudDscaffold\Traits\OutputTrait;
 
 class MakeModel {
     use MakerTrait,NameSolverTrait,OutputTrait;
@@ -43,7 +43,7 @@ class MakeModel {
 
         //get output_path and filename
         $output_path = './app/';
-        $output_filename = $this->solveName($this->commandObj->argument('name'), config('l5scaffold.app_name_rules.app_model_class')).'.php';
+        $output_filename = $this->solveName($this->commandObj->argument('name'), config('CrudDscaffold.app_name_rules.app_model_class')).'.php';
 
         //output(use OutputTrait)
         $this->outputPut( $output_path, $output_filename, $stub_compiled, $debug=false );

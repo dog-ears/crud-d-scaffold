@@ -7,7 +7,7 @@ This software is released under the MIT License.
 http://dog-ears.net/
 */
  
-namespace dogears\L5scaffold\Traits;
+namespace dogears\CrudDscaffold\Traits;
 
 trait NameSolverTrait {
 

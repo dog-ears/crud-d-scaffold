@@ -7,22 +7,22 @@ This software is released under the MIT License.
 http://dog-ears.net/
 */
 
-namespace dogears\L5scaffold\Commands;
+namespace dogears\CrudDscaffold\Commands;
 
 use Illuminate\Console\AppNamespaceDetectorTrait;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Composer;
-use dogears\L5scaffold\Makes\MakeMigration;
-use dogears\L5scaffold\Makes\MakeController;
-use dogears\L5scaffold\Makes\MakeLayout;
-use dogears\L5scaffold\Makes\MakeModel;
-use dogears\L5scaffold\Makes\MakeSeed;
-use dogears\L5scaffold\Makes\MakeView;
-use dogears\L5scaffold\Makes\MakeRoute;
-use dogears\L5scaffold\Makes\MakeRouteServiceProvider;
-use dogears\L5scaffold\Traits\MakerTrait;
-use dogears\L5scaffold\Traits\NameSolverTrait;
+use dogears\CrudDscaffold\Makes\MakeMigration;
+use dogears\CrudDscaffold\Makes\MakeController;
+use dogears\CrudDscaffold\Makes\MakeLayout;
+use dogears\CrudDscaffold\Makes\MakeModel;
+use dogears\CrudDscaffold\Makes\MakeSeed;
+use dogears\CrudDscaffold\Makes\MakeView;
+use dogears\CrudDscaffold\Makes\MakeRoute;
+use dogears\CrudDscaffold\Makes\MakeRouteServiceProvider;
+use dogears\CrudDscaffold\Traits\MakerTrait;
+use dogears\CrudDscaffold\Traits\NameSolverTrait;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
@@ -97,7 +97,7 @@ class ScaffoldMakeCommand extends Command
         //set meta data for schema
         $this->meta['action'] = 'create';
         $this->meta['var_name'] = $this->solveName($this->argument('name'),'nameName');
-        $this->meta['table'] = $this->solveName($this->argument('name'),config('l5scaffold.app_name_rules.app_migrate_tablename')); // Store table name
+        $this->meta['table'] = $this->solveName($this->argument('name'),config('CrudDscaffold.app_name_rules.app_migrate_tablename')); // Store table name
 
         // Message of Start Scaffold
         $this->info('Configuring ' . $this->solveName($this->argument('name'),'NameName') . '...');

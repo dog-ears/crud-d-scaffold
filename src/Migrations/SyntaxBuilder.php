@@ -5,9 +5,9 @@
  * @author Jeffrey Way <jeffrey@jeffrey-way.com>
  */
 
-namespace dogears\L5scaffold\Migrations;
+namespace dogears\CrudDscaffold\Migrations;
 
-use dogears\L5scaffold\GeneratorException;
+use dogears\CrudDscaffold\GeneratorException;
 
 class SyntaxBuilder
 {
@@ -272,7 +272,7 @@ class SyntaxBuilder
         } elseif ($type == 'view-index-header') {
 
             // Fields to index view
-            $syntax = sprintf("<th>@include('l5scaffold::getOrderlink', ['column' => '%s', 'title' => '%s'])</th>", $field['name'], strtoupper($field['name']));
+            $syntax = sprintf("<th>@include('CrudDscaffold::getOrderlink', ['column' => '%s', 'title' => '%s'])</th>", $field['name'], strtoupper($field['name']));
 
         } elseif ($type == 'view-index-search') {
 

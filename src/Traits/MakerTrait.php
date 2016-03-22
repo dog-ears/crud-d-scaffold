@@ -1,9 +1,9 @@
 <?php
 
-namespace dogears\L5scaffold\Traits;
+namespace dogears\CrudDscaffold\Traits;
 
 use Illuminate\Filesystem\Filesystem;
-use dogears\L5scaffold\Commands\ScaffoldMakeCommand;
+use dogears\CrudDscaffold\Commands\ScaffoldMakeCommand;
 
 trait MakerTrait {
 

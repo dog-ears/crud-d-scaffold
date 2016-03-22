@@ -7,11 +7,11 @@ This software is released under the MIT License.
 http://dog-ears.net/
 */
 
-namespace dogears\L5scaffold\Traits;
+namespace dogears\CrudDscaffold\Traits;
 
 use App\Http\Requests;
 use Illuminate\Http\Request;
-use dogears\L5scaffold\Traits\NameSolverTrait;
+use dogears\CrudDscaffold\Traits\NameSolverTrait;
 
 trait GetAllDataTrait {
 
@@ -29,7 +29,7 @@ trait GetAllDataTrait {
         $myObj = new self;
 
         $names = explode('\\', get_class($myObj) );
-        $baseTable = $myObj->solveName( end($names), config('l5scaffold.app_name_rules.app_migrate_tablename') );    //ex).apples
+        $baseTable = $myObj->solveName( end($names), config('CrudDscaffold.app_name_rules.app_migrate_tablename') );    //ex).apples
 
         //(i) join relation table
 
@@ -37,8 +37,8 @@ trait GetAllDataTrait {
 
             foreach( $myObj->relationApps as $className => $classObj ){
     
-                $relationTable = $myObj->solveName( $className, config('l5scaffold.app_name_rules.app_migrate_tablename') );    //ex).apple_types
-                $relationColumnInBaseTable = $myObj->solveName( $className, config('l5scaffold.app_name_rules.name_name') ).'_id';    //ex).apple_type_id
+                $relationTable = $myObj->solveName( $className, config('CrudDscaffold.app_name_rules.app_migrate_tablename') );    //ex).apple_types
+                $relationColumnInBaseTable = $myObj->solveName( $className, config('CrudDscaffold.app_name_rules.name_name') ).'_id';    //ex).apple_type_id
     
                 $myObj = $myObj->leftJoin( $relationTable, $baseTable.'.'.$relationColumnInBaseTable, '=', $relationTable.'.id' );  //ex).leftJoin( 'apple_types', 'apples.apple_type_id', '=', 'apple_types.id' )
             }
