@@ -39,6 +39,11 @@ trait OutputTrait {
             return;
         }
 
+        //copy for debug
+        if( $debug ){
+            $this->files->copy($output_path.$output_filename, $output_path.$output_filename.$postfix);
+        }
+
         //output(append)
         $this->files->append($output_path.$output_filename.$postfix, $stub_compiled);
     

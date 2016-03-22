@@ -46,8 +46,8 @@ class MakeRoute{
         $output_filename = 'routes.php';
 
         //replace word
-        $pattern = '/(Route::group\(\[\'middleware\' => \[\'web\'\]\], function \(\) {\n)(.*\n)(}\);)/s';
-        $replacement = '\1\2    '.$stub_compiled. "\n". '\3';
+        $pattern = '#(Route::group\(\[\'middleware\' => \[\'web\'\]\], function \(\)\s*{)(([^{}]*{[^}]*?}[^{}]*?)*)(.*?)(\s*})#s';     //append at block end
+        $replacement = '\1\2\4'.$stub_compiled.'\5';
 
         //output(use OutputTrait)
         $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );

@@ -71,8 +71,8 @@ class MakeSeed{
             $output_filename = 'DatabaseSeeder.php';
 
             //replace word
-            $pattern = '/\n    }\n}/';
-            $replacement = $stub_compiled."\n    }\n}";
+            $pattern = '#(public function run\(\)\s*{)(([^{}]*{[^}]*?}[^{}]*?)*)(.*?)(\s*})#s';   //append at block end
+            $replacement = '\1\2\4'. $stub_compiled. '\5';
 
             //output(use OutputTrait)
             $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
@@ -80,7 +80,7 @@ class MakeSeed{
 
 
             //(iii)DatabaseSeeder --------------------------------------------------
-    
+
             //get_stub_path and filename
             $stub_path = __DIR__.'/../Stubs/seed/';
             $stub_filename = 'app.stub';
@@ -97,6 +97,7 @@ class MakeSeed{
 
             //output(use OutputTrait)
             $this->outputPut( $output_path, $output_filename, $stub_compiled, $debug=false );
+
         }
     }
 }
