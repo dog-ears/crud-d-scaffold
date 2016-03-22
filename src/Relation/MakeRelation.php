@@ -65,8 +65,8 @@ class MakeRelation {
         $output_filename = $this->model_A_name.'.php';
 
         //replace word
-        $pattern = '#(class '.$this->model_A_name.' extends Model\n{\n)(.*)(\n})#s';
-        $replacement = '\1\2'.$stub_compiled.'\3';
+        $pattern = '#(class '. $this->model_A_name. ' extends Model\s*{)(([^{}]*{[^}]*?}[^{}]*?)*)(.*?)(\s*})#s';       //append at block end
+        $replacement = '\1\2\4'.$stub_compiled.'\5';
 
         //output(use OutputTrait)
         $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
@@ -89,8 +89,8 @@ class MakeRelation {
         $output_filename = $this->model_B_name.'.php';
 
         //replace word
-        $pattern = '#(class '.$this->model_B_name.' extends Model\n{\n)(.*)(\n})#s';
-        $replacement = '\1\2'.$stub_compiled.'\3';
+        $pattern = '#(class '. $this->model_B_name. ' extends Model\s*{)(([^{}]*{[^}]*?}[^{}]*?)*)(.*?)(\s*})#s';       //append at block end
+        $replacement = '\1\2\4'.$stub_compiled.'\5';
 
         //output(use OutputTrait)
         $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
@@ -113,11 +113,12 @@ class MakeRelation {
         $output_filename = $this->model_B_name.'.php';
 
         //replace word
-        $pattern = '#(public function __construct\(array \$attributes = array\(\)\)\n\s*{)([^{}]*?)({.*?})*([^{}]*?)(\n\s*})#s';    //append at block end
-        $replacement = '\1\2\3\4'. $stub_compiled. '\5';
+        $pattern = '#(public function __construct\(array \$attributes = array\(\)\)\s*{)(([^{}]*{[^}]*?}[^{}]*?)*)(.*?)(\s*})#s';       //append at block end
+        $replacement = '\1\2\4'.$stub_compiled.'\5';
 
         //output(use OutputTrait)
         $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
+
     }
 
 
