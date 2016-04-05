@@ -7,7 +7,7 @@
 
         @if ( Request::input('q') )
             {{-- */$query_params =  Request::input('q')/* --}}
-            <li class="active"><a href="{{ route('apples.index') }}">{{app_model_class}}</a></li>
+            <li class="active"><a href="{{ route('{{app_route}}.index') }}">{{app_model_class}}</a></li>
             <li class="active">condition(  
 
             {{-- */ $loop = 0 /* --}}

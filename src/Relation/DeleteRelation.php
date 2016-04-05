@@ -21,11 +21,13 @@ class DeleteRelation {
 
     protected $files;
     protected $commandObj;
+    protected $debug;
 
     public function __construct($command, Filesystem $files)
     {
         $this->files = $files;
         $this->commandObj = $command;
+        $this->debug = false;
         $this->start();
     }
 
@@ -59,7 +61,7 @@ class DeleteRelation {
         $replacement = '';
 
         //output(use OutputTrait)
-        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
+        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug = $this->debug );
     }
 
     protected function deleteModel_modelB(){
@@ -73,7 +75,7 @@ class DeleteRelation {
         $replacement = '';
 
         //output(use OutputTrait)
-        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
+        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug = $this->debug );
     }
 
     protected function deleteModel_modelB2(){
@@ -87,64 +89,76 @@ class DeleteRelation {
         $replacement = '';
 
         //output(use OutputTrait)
-        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
+        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug = $this->debug );
     }
 
 
 
     protected function deleteView(){
 
-        $this->deleteView_index();
-        $this->deleteView_show();
-        $this->deleteView_form();
+        //get relation_display_column
+        $output_path = './resources/views/'. $this->solveName($this->commandObj->argument('model_B'), config('CrudDscaffold.app_name_rules.app_route')). '/';
+        $output_filename = 'index.blade.php';
+        $src = $this->files->get($output_path. $output_filename);
+
+        preg_match('#->'. $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.app_model_var')). '->([^}]*)#', $src, $m); 
+        $relation_display_column = $m[1];
+
+        $this->deleteView_index($relation_display_column);
+        $this->deleteView_show($relation_display_column);
+        $this->deleteView_form($relation_display_column);
     }
 
-    protected function deleteView_index(){
+    protected function deleteView_index( $relation_display_column ){
 
-        //(i) APPLE_TYPE_NAME => APPLE_TYPE_ID
+        //(i) APPLE_TYPE_*** => APPLE_TYPE_ID
 
         //get output_path and filename
-        $output_path = './resources/views/apples/';
+        $output_path = './resources/views/'. $this->solveName($this->commandObj->argument('model_B'), config('CrudDscaffold.app_name_rules.app_route')). '/';
         $output_filename = 'index.blade.php';
 
         //replace word
-        $pattern = '#'.$this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.NAME_NAME')).'_NAME#';
+        $pattern = '#'.$this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.NAME_NAME')).'_'.mb_strtoupper($relation_display_column).'#';
         $replacement = $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.NAME_NAME')).'_ID';
 
         //output(use OutputTrait)
-        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
+        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug = $this->debug );
+
+
 
         //(ii) apple_types.name => apple_type_id
 
         //replace word
-        $pattern = '#'.$this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.app_migrate_tablename')).'.name#';
+        $pattern = '#'.$this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.app_migrate_tablename')). '.'. $relation_display_column. '#';
         $replacement = $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.name_name')).'_id';
 
         //output(use OutputTrait)
-        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
+        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug = $this->debug );
 
-        //(iii) appleType->name => apple_type_id
+
+
+        //(iii) appleType->*** => apple_type_id
 
         //replace word
-        $pattern = '#'.$this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.app_model_var')).'->name#s';
+        $pattern = '#'.$this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.app_model_var')). '->'. $relation_display_column. '#s';
         $replacement = $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.name_name')).'_id';
 
         //output(use OutputTrait)
-        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
+        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug = $this->debug );
     }
 
-    protected function deleteView_show(){
+    protected function deleteView_show( $relation_display_column ){
 
         //get output_path and filename
-        $output_path = './resources/views/apples/';
+        $output_path = './resources/views/'. $this->solveName($this->commandObj->argument('model_B'), config('CrudDscaffold.app_name_rules.app_route')). '/';
         $output_filename = 'show.blade.php';
 
         //replace word
         $pattern = '#(.*<label for=")'.
-                    $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.name_name')).'_name">'.
-                    $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.NAME_NAME')).'_NAME</label>(.*)<p class="form-control-static">{{\$'.
+                    $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.name_name')).'_'. $relation_display_column. '">'.
+                    $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.NAME_NAME')).'_'. mb_strtoupper($relation_display_column). '</label>(.*)<p class="form-control-static">{{\$'.
                     $this->solveName($this->commandObj->argument('model_B'), config('CrudDscaffold.app_name_rules.app_model_var')).'->'.
-                    $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.app_model_var')).'->name}}</p>(.*)#s';
+                    $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.app_model_var')).'->'. $relation_display_column. '}}</p>(.*)#s';
         $replacement = '\1'.
                     $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.name_name')).'_id">'.
                     $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.NAME_NAME')).'_ID</label>\2<p class="form-control-static">{{$'.
@@ -152,18 +166,18 @@ class DeleteRelation {
                     $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.name_name')).'_id}}</p>\3';
 
         //output(use OutputTrait)
-        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
+        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug = $this->debug );
     }
 
-    protected function deleteView_form(){
+    protected function deleteView_form( $relation_display_column ){
 
         //get output_path and filename
-        $output_path = './resources/views/apples/';
+        $output_path = './resources/views/'. $this->solveName($this->commandObj->argument('model_B'), config('CrudDscaffold.app_name_rules.app_route')). '/';
         $output_filename = '_form.blade.php';
 
         //replace word
         $pattern = '#(.*)<label for="'.
-                    $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.name_name')).'_id-field">(.*)_name</label>(.*){!! Form::select\("'.
+                    $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.name_name')).'_id-field">(.*)_'. $relation_display_column. '</label>(.*){!! Form::select\("'.
                     $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.name_name')).'_id", \$list\["'.
                     $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.app_model_class')).'"\], null,(.*)#s';
         $replacement = '\1<label for="'.
@@ -171,6 +185,6 @@ class DeleteRelation {
                     $this->solveName($this->commandObj->argument('model_A'), config('CrudDscaffold.app_name_rules.name_name')).'_id", null,\4';
 
         //output(use OutputTrait)
-        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
+        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug = $this->debug );
     }
 }
