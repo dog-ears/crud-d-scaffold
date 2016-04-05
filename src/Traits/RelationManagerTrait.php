@@ -24,7 +24,7 @@ trait RelationManagerTrait {
      * @param  string  $path
      * @return string
      */
-    protected function addRelationApp($app){
+    protected function addRelationApp($app, $relation_display_column = 'name'){
 
 		if( !is_object($app) ){
 			throw new \Exception( "Argument is not Object!" );
@@ -33,7 +33,8 @@ trait RelationManagerTrait {
 		$appNames = explode( '\\', get_class($app) );
 		$appName = end($appNames);
 
-    	$this->relationApps[$appName] = $app;
+    	$this->relationApps[$appName]['app'] = $app;
+    	$this->relationApps[$appName]['relation_display_column'] = $relation_display_column;
     }
 
     /**
@@ -47,9 +48,8 @@ trait RelationManagerTrait {
     	$list = [];
 
         if( $this->relationApps ){
-    		foreach ( $this->relationApps as $relationAppName => $relationApp ){
-    
-    			$relatedObjList = $relationApp::lists('name','id');
+    		foreach ( $this->relationApps as $relationAppName => $relationAppArray ){
+    			$relatedObjList = $relationAppArray['app']::lists($relationAppArray['relation_display_column'], 'id');
     			$list[$relationAppName] = $relatedObjList;
     		}
         }
