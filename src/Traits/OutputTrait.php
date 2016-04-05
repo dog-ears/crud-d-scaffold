@@ -30,25 +30,37 @@ trait OutputTrait {
      */
     public function outputAppend( $output_path, $output_filename, $stub_compiled, $debug=false ){
 
-        //postfix for debug
-        if( $debug ){ $postfix = '_'; }else{ $postfix = ''; }
+        // Replace uses same file for input and output.
+        $input_filename = $output_filename;
 
-        //output_exist_check
-        if( !$this->files->exists($output_path.$output_filename) ){
-            $this->commandObj->error($output_path.$output_filename. ' is not found!');
+        //input_exist_check
+        if( !$this->files->exists($output_path.$input_filename) ){
+            $this->commandObj->error($output_path.$input_filename. ' is not found!');
             return;
+        }
+
+        //postfix for debug
+        if( $debug ){
+
+            //$input_filename
+            if( $this->files->exists( $output_path. $input_filename. '_' ) ){
+                $input_filename .= '_';
+            }
+
+            //$output_filename
+            $output_filename .= '_';
         }
 
         //copy for debug
         if( $debug ){
-            $this->files->copy($output_path.$output_filename, $output_path.$output_filename.$postfix);
+            $this->files->copy($output_path.$input_filename, $output_path.$output_filename);
         }
 
         //output(append)
-        $this->files->append($output_path.$output_filename.$postfix, $stub_compiled);
+        $this->files->append($output_path.$output_filename, $stub_compiled);
     
         //end message
-        $this->commandObj->info('[modify] '. $output_path.$output_filename.$postfix);
+        $this->commandObj->info('[modify] '. $output_path.$output_filename);
     }
 
     /**
@@ -61,21 +73,33 @@ trait OutputTrait {
      */
     public function outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false ){
 
-        //postfix for debug
-        if( $debug ){ $postfix = '_'; }else{ $postfix = ''; }
+        // Replace uses same file for input and output.
+        $input_filename = $output_filename;
 
-        //output_exist_check
-        if( !$this->files->exists($output_path.$output_filename) ){
-            $this->commandObj->error($output_path.$output_filename. ' is not found!');
+        //input_exist_check
+        if( !$this->files->exists( $output_path. $input_filename ) && !$debug ){
+            $this->commandObj->error( $output_path. $input_filename. ' is not found!' );
             return;
         }
 
+        //postfix for debug
+        if( $debug ){
+
+            //$input_filename
+            if( $this->files->exists( $output_path. $input_filename. '_' ) ){
+                $input_filename .= '_';
+            }
+
+            //$output_filename
+            $output_filename .= '_';
+        }
+
         //get source
-        $src = $this->files->get($output_path.$output_filename);
+        $src = $this->files->get( $output_path. $input_filename );
 
         //matching
         if( !preg_match($pattern, $src)){
-            $this->commandObj->error( 'pattern is not match! in '.$output_path.$output_filename );
+            $this->commandObj->error( 'pattern is not match! in '.$output_path.$input_filename );
             if($debug){
                 $this->commandObj->info( "pattern :\n".$pattern );
                 $this->commandObj->info( '------------------------------' );
@@ -85,10 +109,10 @@ trait OutputTrait {
         }
 
         $src = preg_replace($pattern, $replacement, $src);
-        $this->files->put($output_path.$output_filename.$postfix, $src);
+        $this->files->put($output_path.$output_filename, $src);
 
         //end message
-        $this->commandObj->info('[modify] '. $output_path.$output_filename.$postfix);
+        $this->commandObj->info('[modify] '. $output_path.$output_filename);
     }
 
     /**
