@@ -31,6 +31,25 @@ class MakeRoute{
 
     protected function start()
     {
+        //check routefile has "web middleware".
+        $output_path = './app/Http/';
+        $output_filename = 'routes.php';
+
+        $src = $this->files->get( $output_path. $output_filename );
+        
+        if( strpos($src,"Route::group(['middleware' => ['web']], function () {") !== false ){
+
+            $this->editRouteMiddlewareExist();
+
+        }else{
+
+            $this->editRoute();
+
+        }
+    }
+
+    protected function editRouteMiddlewareExist(){
+
         //get_stub_path and filename
         $stub_path = __DIR__.'/../Stubs/route/';
         $stub_filename = 'route_insert.stub';
@@ -50,6 +69,26 @@ class MakeRoute{
         $replacement = '\1\2\4'.$stub_compiled.'\5';
 
         //output(use OutputTrait)
-        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
+        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );        
     }
+
+    protected function editRoute(){
+
+        //get_stub_path and filename
+        $stub_path = __DIR__.'/../Stubs/route/';
+        $stub_filename = 'route_without_web_middleware_append.stub';
+
+        //create new stub
+        $stub = new StubController( $this->commandObj, $this->files, $stub_path.$stub_filename, $schema_repalce_type = null, $custom_replace = null );
+
+        //compile
+        $stub_compiled = $stub->getCompiled();
+
+        //get output_path and filename
+        $output_path = './app/Http/';
+        $output_filename = 'routes.php';
+
+        //output(use OutputTrait)
+        $this->outputAppend( $output_path, $output_filename, $stub_compiled, $debug=false );
+    }    
 }
