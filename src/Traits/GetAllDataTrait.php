@@ -27,6 +27,7 @@ trait GetAllDataTrait {
     public static function getAllData( Request $request, $paginate=10 ){
 
         $myObj = new self;
+        $myQuery = $myObj;
 
         $names = explode('\\', get_class($myObj) );
         $baseTable = $myObj->solveName( end($names), config('CrudDscaffold.app_name_rules.app_migrate_tablename') );    //ex).apples
@@ -39,8 +40,9 @@ trait GetAllDataTrait {
     
                 $relationTable = $myObj->solveName( $className, config('CrudDscaffold.app_name_rules.app_migrate_tablename') );    //ex).apple_types
                 $relationColumnInBaseTable = $myObj->solveName( $className, config('CrudDscaffold.app_name_rules.name_name') ).'_id';    //ex).apple_type_id
-    
-                $myObj = $myObj->leftJoin( $relationTable, $baseTable.'.'.$relationColumnInBaseTable, '=', $relationTable.'.id' );  //ex).leftJoin( 'apple_types', 'apples.apple_type_id', '=', 'apple_types.id' )
+
+                $myQuery = $myQuery->leftJoin( $relationTable, $baseTable.'.'.$relationColumnInBaseTable, '=', $relationTable.'.id' );  //ex).leftJoin( 'apple_types', 'apples.apple_type_id', '=', 'apple_types.id' )
+
             }
         }
 
@@ -69,11 +71,11 @@ trait GetAllDataTrait {
                 }
 
                 if( $operator === 'cont' ){
-                    $myObj = $myObj->where($column, 'LIKE', '%'.$value.'%');
+                    $myQuery = $myQuery->where($column, 'LIKE', '%'.$value.'%');
                 }elseif( $operator === 'lt' ){
-                    $myObj = $myObj->where($column, '<=', $value);                
+                    $myQuery = $myQuery->where($column, '<=', $value);                
                 }elseif( $operator === 'gt' ){
-                    $myObj = $myObj->where($column, '>=', $value);                
+                    $myQuery = $myQuery->where($column, '>=', $value);                
                 }
             }
         }
@@ -103,15 +105,15 @@ trait GetAllDataTrait {
             $order_dir = 'DESC';
         }
 
-        $myObj = $myObj->orderBy( $column, $order_dir);
+        $myQuery = $myQuery->orderBy( $column, $order_dir);
 
         //(iv) get base table data
 
-        $myObj = $myObj->select([ $baseTable.'.*' ]);
+        $myQuery = $myQuery->select([ $baseTable.'.*' ]);
 
         //(v) pagenate
 
-        return $myObj->paginate($paginate);
+        return $myQuery->paginate($paginate);
 
     }
 }
