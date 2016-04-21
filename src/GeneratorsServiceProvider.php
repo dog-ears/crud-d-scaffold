@@ -73,5 +73,11 @@ class GeneratorsServiceProvider extends ServiceProvider {
 		});
 		$this->commands('command.CrudDscaffold.delete_relation');
 
+		//test:crud-d-scaffold
+		$this->app->singleton('command.CrudDscaffold.test', function ($app) {
+			return $app['dogears\CrudDscaffold\Commands\SettingTestMyPackageCommand'];
+		});
+		$this->commands('command.CrudDscaffold.test');
+
 	}
 }
