@@ -39,13 +39,6 @@ class Case01Test extends \TestCase
         $cmd = 'php artisan db:seed';
         exec($cmd, $output);
 
-        //php artisan make:relation AppleType Apple
-/*
-        Artisan::call('make:relation', (array)[
-            'model_A' => 'AppleType',
-            'model_B' => 'Apple',
-            ]);
-*/
         $cmd = 'php artisan make:relation AppleType Apple';
         exec($cmd, $output);
     }
