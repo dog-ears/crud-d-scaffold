@@ -36,18 +36,18 @@ class StubController {
 
     public function getCompiled(){
 
-        //スタブの取得
+        //get stab
         $stub = $this->files->get($this->stub_pathname);
         
-        //アプリ名コンパイル
+        //compile app name
         $this->compileAppName($stub);
         
-        //スキーマコンパイル
+        //compile schema
         if( $this->schema_repalce_type ){
             $this->compileSchema($stub, $this->schema_repalce_type);
         }
 
-        //カスタムコンパイル
+        //custom compile
         if( $this->custom_replace ){
             $this->compileCustomReplace($stub);
         }
@@ -61,7 +61,7 @@ class StubController {
         $commandObjNames = explode('\\',get_class($this->commandObj));
         $this->commandObjName = end( $commandObjNames );
 
-        //config取得
+        //get config
         $app_name_rules = config('CrudDscaffold.app_name_rules');
 
         if( $this->commandObjName === 'MakeRelationCommand' || $this->commandObjName === 'DeleteRelationCommand' ){ //for RelationCommand
@@ -97,12 +97,12 @@ class StubController {
 
     protected function compileSchema(&$stub, $type='migration')
     {
-        //スキーマの取得
+        //get schema
         if ($schema = $this->commandObj->option('schema')) {
             $schema = (new SchemaParser)->parse($schema);
         }
 
-        //状況に応じて、スキーマ処理
+        //schema in each case
         if($type === 'migration'){
 
             // Create migration fields

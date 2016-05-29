@@ -39,13 +39,6 @@ class Case02Test extends \TestCase
         $cmd = 'php artisan db:seed';
         exec($cmd, $output);
 
-        //php artisan make:relation OrangeType Orange
-/*
-        Artisan::call('make:relation', (array)[
-            'model_A' => 'OrangeType',
-            'model_B' => 'Orange',
-            ]);
-*/
         $cmd = 'php artisan make:relation OrangeType Orange';
         exec($cmd, $output);
 
