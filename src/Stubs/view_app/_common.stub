@@ -1,3 +1,1 @@
-@section('{{app_route}}AppTitle')
-{{app_model_class}}
-@endsection
+@section('{{app_route}}AppTitle','{{app_model_class}}')
