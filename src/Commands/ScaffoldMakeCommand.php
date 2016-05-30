@@ -66,7 +66,7 @@ class ScaffoldMakeCommand extends Command
      *
      * @var array
      */
-    private $views = ['index', 'create', 'show', 'edit', 'duplicate', '_form'];
+    private $views = ['index', 'create', 'show', 'edit', 'duplicate', '_form', '_common'];
 
     /**
      * Store name from Model
@@ -166,7 +166,7 @@ class ScaffoldMakeCommand extends Command
     private function makeViews()
     {
         foreach ($this->views as $view) {
-            // index, create, show, edit, duplicate, _form
+            // index, create, show, edit, duplicate, _form, _common
             new MakeView($this, $this->files, $view);
         }
 
