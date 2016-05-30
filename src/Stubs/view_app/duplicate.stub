@@ -1,15 +1,17 @@
 @extends('layout')
 
+@include('{{app_route}}._common')
+
 @section('header')
 
 	<ol class="breadcrumb">
 		<li><a href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span></a></li>
-	    <li><a href="{{ route('{{app_route}}.index') }}">{{app_model_class}}</a></li>
+	    <li><a href="{{ route('{{app_route}}.index') }}">@yield('{{app_route}}AppTitle')</a></li>
 	    <li class="active">Duplicate</li>
 	</ol>
 
     <div class="page-header">
-        <h1><i class="glyphicon glyphicon-duplicate"></i> {{app_model_class}} / Duplicate #{{${{app_model_var}}->id}}</h1>
+        <h1><i class="glyphicon glyphicon-duplicate"></i> @yield('{{app_route}}AppTitle') / Duplicate #{{${{app_model_var}}->id}}</h1>
     </div>
 @endsection
 

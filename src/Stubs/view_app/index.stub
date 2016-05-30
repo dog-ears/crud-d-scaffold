@@ -1,5 +1,7 @@
 @extends('layout')
 
+@include('{{app_route}}._common')
+
 @section('header')
 
     <ol class="breadcrumb">
@@ -7,7 +9,7 @@
 
         @if ( Request::input('q') )
             {{-- */$query_params =  Request::input('q')/* --}}
-            <li class="active"><a href="{{ route('{{app_route}}.index') }}">{{app_model_class}}</a></li>
+            <li class="active"><a href="{{ route('{{app_route}}.index') }}">@yield('{{app_route}}AppTitle')</a></li>
             <li class="active">condition(  
 
             {{-- */ $loop = 0 /* --}}
@@ -17,14 +19,14 @@
             @endforeach
             )</li>
         @else
-            <li class="active">{{app_model_class}}</li>
+            <li class="active">@yield('{{app_route}}AppTitle')</li>
         @endif
 
     </ol>
 
     <div class="page-header clearfix">
         <h1>
-            <i class="glyphicon glyphicon-align-justify"></i> {{app_model_class}}
+            <i class="glyphicon glyphicon-align-justify"></i> @yield('{{app_route}}AppTitle')
             <a class="btn btn-success pull-right" href="{{ route('{{app_model_vars}}.create') }}"><i class="glyphicon glyphicon-plus"></i> Create</a>
         </h1>
 

@@ -114,5 +114,29 @@ class MakeLayout {
 
         //output(use OutputTrait)
         $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
+
+        //(v)navi - add2 --------------------------------------------------
+
+        //get_stub_path and filename
+        $stub_path = __DIR__.'/../Stubs/view_layout/';
+        $stub_filename = 'navi_add2.stub';
+
+        //create new stub
+        $stub = new StubController( $this->commandObj, $this->files, $stub_path.$stub_filename, $schema_repalce_type = null, $custom_replace = null );
+
+        //compile
+        $stub_compiled = $stub->getCompiled();
+
+        //get output_path and filename
+        $output_path = './resources/views/';
+        $output_filename = 'navi.blade.php';
+
+        //replace word
+        $pattern = '#({{-- include_area_app_common_end --}})#s';
+        $replacement = $stub_compiled.'\1';
+
+        //output(use OutputTrait)
+        $this->outputReplace( $output_path, $output_filename, $pattern, $replacement, $debug=false );
+
     }
 }
