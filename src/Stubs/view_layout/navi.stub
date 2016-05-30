@@ -1,3 +1,6 @@
+{{-- include_area_app_common_start --}}
+{{-- include_area_app_common_end --}}
+
     <nav class="navbar navbar-default">
         <div class="container">
             <div class="navbar-header">
