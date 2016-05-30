@@ -60,7 +60,8 @@ class MakeView
             'duplicate' => [ 'content_fields' => '', ],
             '_form' => [
                 'content_fields' => (new SyntaxBuilder)->create($schemaArray, $this->commandObj->getMeta(), 'view-edit-content', true),
-            ]
+            ],
+            '_common' => []
         ];
 
         //create new stub
