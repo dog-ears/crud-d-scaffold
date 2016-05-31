@@ -96,3 +96,10 @@ Some files remains.
 ![image](https://github.com/dog-ears/crud-d-scaffold/wiki/img/cap01.jpg)
 ![image](https://github.com/dog-ears/crud-d-scaffold/wiki/img/cap02.jpg)
 ![image](https://github.com/dog-ears/crud-d-scaffold/wiki/img/cap03.jpg)
+
+
+
+## Update History
+
+visit my blog
+<http://dog-ears.net/en/category/laravel/package/scaffold/history/>
