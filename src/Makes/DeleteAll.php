@@ -36,9 +36,18 @@ class DeleteAll
         //app_model_class
         $this->app_model_class = $this->solveName($this->commandObj->argument('name'),config('CrudDscaffold.app_name_rules.app_model_class'));
 
-        $this->deleteFactory();
-        $this->deleteDatabaseSeeder();
-        $this->deleteSeed();
+        //check seeding file exist
+        $output_path = './database/seeds/';
+        $output_filename = $this->solveName($this->commandObj->argument('name'), config('CrudDscaffold.app_name_rules.app_seeder_class')).'TableSeeder.php';
+
+        if( $this->files->exists( $output_path. $output_filename ) ){
+            $this->deleteFactory();
+            $this->deleteDatabaseSeeder();
+            $this->deleteSeed();
+        }else{
+            $this->commandObj->info('no seeding file.');
+        }
+
         $this->deleteModel();
         $this->deleteController();
         $this->deleteViews();
