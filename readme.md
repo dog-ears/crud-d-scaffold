@@ -20,8 +20,13 @@
 
 ```
 "require": {
+...
     "dog-ears/crud-d-scaffold": "1.*"
 }
+```
+  and update composer
+```
+composer update
 ```
 
 ### Step 2: Add the Service Provider
@@ -29,7 +34,10 @@
 Open `config/app.php` and, to your **providers** array at the bottom, add:
 
 ```
-dogears\CrudDscaffold\GeneratorsServiceProvider::class
+'providers' => [
+...
+  dogears\CrudDscaffold\GeneratorsServiceProvider::class,
+    ],
 ```
 
 ### Step 3: Run Artisan!
