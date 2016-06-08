@@ -71,7 +71,8 @@ class SchemaParser
      */
     private function splitIntoFields($schema)
     {
-        return preg_split('/,\s?(?![^()]*\))/', $schema);
+        $temp = preg_split('/,\s?(?![^()]*\))/', $schema);
+        return preg_replace('/\n/','',$temp);
     }
 
     /**
