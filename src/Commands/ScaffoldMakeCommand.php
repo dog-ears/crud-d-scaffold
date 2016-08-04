@@ -39,7 +39,8 @@ class ScaffoldMakeCommand extends Command
     protected $signature = 'make:scaffold
                             {name : The name of the model. (Ex: AppleType)}
                             {--s|schema=null : Schema to generate scaffold files. (Ex: --schema="title:string, body:nullable:, apple_type_id:integer:unsigned")}
-                            {--S|seeding : Create seeding files.}';
+                            {--S|seeding : Create seeding files.}
+                            {--d|softdelete : add soft delete function to model}';
 
     /**
      * The console command description.
