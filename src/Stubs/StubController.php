@@ -52,6 +52,9 @@ class StubController {
             $this->compileCustomReplace($stub);
         }
 
+        //delete by option compile
+        $this->compileDeleteByOption($stub);
+
         return $stub;
     }
 
@@ -136,6 +139,35 @@ class StubController {
 
     }
     
+    protected function compileDeleteByOption(&$stub){
+
+        $pattern = '#{{if\((.*?)\):}}([^{]*?){{endif;}}#';  //{{if:[option]):}}...{{endif;}}
+        if( preg_match_all( $pattern, $stub, $m ) ){
+
+            for($i=0;$i<count($m[0]);$i++){
+
+                //check option exists or not
+                if( array_key_exists( $m[1][$i], $this->commandObj->option() ) ){   //case. option exists.
+
+                    if( $this->commandObj->option($m[1][$i]) ){ //case option is true.
+
+                        //show line
+                        $stub = str_replace ( $m[0][$i] , $m[2][$i] , $stub);
+
+                    }else{
+
+                        //hide line
+                        $stub = str_replace ( $m[0][$i] , '' , $stub);
+                    }
+
+                }else{   //case. option do not exists.
+
+                    $this->commandObj->error('option ['. $m[1][$i]. '] is not exist. Please check spell in stub.');
+                }
+            }
+        }
+        return $this;
+    }
 }
 
 
