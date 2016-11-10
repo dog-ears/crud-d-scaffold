@@ -1,7 +1,7 @@
 {
   "name": "dog-ears/crud-d-scaffold",
-  "description": "Extend Laravel 5.2's generators scaffold.",
-  "keywords": ["laravel", "generators", "scaffold" , "laravel5.2" , "CRUD" , "crud"],
+  "description": "Extend Laravel 5.3's generators scaffold.",
+  "keywords": ["laravel", "generators", "scaffold" , "laravel5.3" , "CRUD" , "crud"],
   "license": "MIT",
   "minimum-stability": "dev",
   "homepage": "http://dog-ears.net/",
