@@ -7,15 +7,13 @@
     <ol class="breadcrumb">
     	<li><a href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span></a></li>
 
-        @if ( Request::input('q') )
-            {{-- */$query_params =  Request::input('q')/* --}}
+        @if ( $query_params = Request::input('q') )
+
             <li class="active"><a href="{{ route('{{app_route}}.index') }}">@yield('{{app_route}}AppTitle')</a></li>
             <li class="active">condition(  
 
-            {{-- */ $loop = 0 /* --}}
             @foreach( $query_params as $key => $value )
-                @if ( $loop != 0 ) / @endif {{ $key }} : {{ $value }}
-                {{-- */ $loop++ /* --}}
+                @if (!$loop->first) / @endif {{ $key }} : {{ $value }}
             @endforeach
             )</li>
         @else

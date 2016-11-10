@@ -46,7 +46,7 @@ class MakeRouteServiceProvider {
         $output_filename = 'RouteServiceProvider.php';
 
         //replace word
-        $pattern = '#(public function boot\(Router \$router\)\s*{)(([^{}]*{[^}]*?}[^{}]*?)*)(.*?)(\s*})#s';     //append at block end
+        $pattern = '#(public function boot\(\)\s*{)(([^{}]*{[^}]*?}[^{}]*?)*)(.*?)(\s*})#s';     //append at block end
         //$pattern = '#(.*)(public function boot\(Router \$router\)\n\s*\{\n)(.*?)(\s*}\n)(.*)#s';
         //$replacement = '\1\2\3'."\n".$stub_compiled.'\4\5';
         $replacement = '\1\2\4'. $stub_compiled. '\5';
