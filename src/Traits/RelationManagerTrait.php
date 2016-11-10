@@ -49,7 +49,7 @@ trait RelationManagerTrait {
 
         if( $this->relationApps ){
     		foreach ( $this->relationApps as $relationAppName => $relationAppArray ){
-    			$relatedObjList = $relationAppArray['app']::lists($relationAppArray['relation_display_column'], 'id');
+    			$relatedObjList = $relationAppArray['app']::pluck($relationAppArray['relation_display_column'], 'id');
     			$list[$relationAppName] = $relatedObjList;
     		}
         }
