@@ -9,7 +9,7 @@ http://dog-ears.net/
 
 namespace dogears\CrudDscaffold\Commands;
 
-use Illuminate\Console\AppNamespaceDetectorTrait;
+use Illuminate\Console\DetectsApplicationNamespace;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Composer;
@@ -22,7 +22,7 @@ use Symfony\Component\Console\Input\InputArgument;
 
 class SettingTestMyPackageCommand extends Command
 {
-    use AppNamespaceDetectorTrait, MakerTrait, NameSolverTrait, OutputTrait;
+    use DetectsApplicationNamespace, MakerTrait, NameSolverTrait, OutputTrait;
 
     /**
      * The console command name.

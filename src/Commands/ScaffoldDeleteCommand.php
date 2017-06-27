@@ -9,7 +9,7 @@ http://dog-ears.net/
 
 namespace dogears\CrudDscaffold\Commands;
 
-use Illuminate\Console\AppNamespaceDetectorTrait;
+use Illuminate\Console\DetectsApplicationNamespace;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Composer;
@@ -21,7 +21,7 @@ use Symfony\Component\Console\Input\InputArgument;
 
 class ScaffoldDeleteCommand extends Command
 {
-    use AppNamespaceDetectorTrait, MakerTrait, NameSolverTrait;
+    use DetectsApplicationNamespace, MakerTrait, NameSolverTrait;
 
     /**
      * The console command name.
