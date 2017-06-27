@@ -9,7 +9,7 @@ http://dog-ears.net/
  
 namespace dogears\CrudDscaffold\Makes;
 
-use Illuminate\Console\AppNamespaceDetectorTrait;
+use Illuminate\Console\DetectsApplicationNamespace;
 use Illuminate\Filesystem\Filesystem;
 use dogears\CrudDscaffold\Commands\ScaffoldMakeCommand;
 use dogears\CrudDscaffold\Stubs\StubController;
@@ -19,7 +19,7 @@ use dogears\CrudDscaffold\Traits\OutputTrait;
 
 class MakeController
 {
-    use AppNamespaceDetectorTrait, MakerTrait,NameSolverTrait,OutputTrait;
+    use DetectsApplicationNamespace, MakerTrait,NameSolverTrait,OutputTrait;
 
     protected $files;
     protected $commandObj;
