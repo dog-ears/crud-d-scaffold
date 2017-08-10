@@ -1,0 +1,59 @@
+@extends('layout')
+
+@include('{{{ $name|nameNames }}}._common')
+
+@section('header')
+
+<ol class="breadcrumb">
+	<li><a href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span></a></li>
+    <li><a href="{{ route('{{{ $name|nameNames }}}.index') }}">@yield('{{{ $name|nameNames }}}AppTitle')</a></li>
+    <li class="active">#{{ ${{{ $name|nameName }}}->id }}</li>
+</ol>
+
+<div class="page-header">
+        <h1>@yield('{{{ $name|nameNames }}}AppTitle') / Show #{{${{{ $name|nameName }}}->id}}
+
+            <form method="POST" action="{{ route('{{{ $name|nameNames }}}.destroy', ${{{ $name|nameName }}}->id) }}" accept-charset="UTF-8" style="display: inline;" onsubmit="if(confirm('Delete? Are you sure?')) { return true } else {return false };">
+                {{ method_field('DELETE') }}
+                {{ csrf_field() }}
+                <div class="btn-group pull-right" role="group" aria-label="...">
+                    <a class="btn btn-primary btn-group" role="group" href="{{ route('{{{ $name|nameNames }}}.duplicate', ${{{ $name|nameName }}}->id) }}"><i class="glyphicon glyphicon-duplicate"></i> Duplicate</a>
+                    <a class="btn btn-warning btn-group" role="group" href="{{ route('{{{ $name|nameNames }}}.edit', ${{{ $name|nameName }}}->id) }}"><i class="glyphicon glyphicon-edit"></i> Edit</a>
+                    <button type="submit" class="btn btn-danger">Delete <i class="glyphicon glyphicon-trash"></i></button>
+                </div>
+            </form>
+
+        </h1>
+    </div>
+@endsection
+
+@section('content')
+    <div class="row">
+        <div class="col-md-12">
+
+            <form action="#">
+                <div class="form-group">
+                    <label for="nome">ID</label>
+                    <p class="form-control-static">{{${{{ $name|nameName }}}->id}}</p>
+                </div>
+{{{ foreach($schemas): }}}{{{ if($this.show_in_detail==true): }}}
+{{{ if($this.belongsto!=): }}}
+                <div class="form-group">
+                     <label for="{{{ $this.belongsto|name_name }}}.{{{ $this.belongsto_column|name_name }}}">{{{ $this.display_name }}}</label>
+                     <p class="form-control-static">{{${{{ $name|nameName }}}->{{{ $this.belongsto|nameName }}}->{{{ $this.belongsto_column|name_name }}}}}</p>
+                </div>
+{{{ else: }}}
+                <div class="form-group">
+                     <label for="{{{ $this.name|name_name }}}">{{{ $this.display_name }}}</label>
+                     <p class="form-control-static">{{ ${{{ $name|nameName }}}->{{{ $this.name|name_name }}} }}</p>
+                </div>
+{{{ endif; }}}
+{{{ endif; }}}{{{ endforeach; }}}
+            </form>
+
+            <a class="btn btn-link" href="{{ route('{{{ $name|nameNames }}}.index') }}"><i class="glyphicon glyphicon-backward"></i>  Back</a>
+
+        </div>
+    </div>
+
+@endsection

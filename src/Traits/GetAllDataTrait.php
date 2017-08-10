@@ -11,109 +11,136 @@ namespace dogears\CrudDscaffold\Traits;
 
 use App\Http\Requests;
 use Illuminate\Http\Request;
-use dogears\CrudDscaffold\Traits\NameSolverTrait;
+
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 trait GetAllDataTrait {
-
-    use NameSolverTrait;
 
     /**
      * Get all data with condition formated like ransack
      *
-     * @param  string $request, integer $paginate
+     * @param  string $request
      * @return LengthAwarePaginator Class
      */
 
-    public static function getAllData( Request $request, $paginate=10 ){
+    public static function getAllData( Request $request ){
 
         $myObj = new self;
         $myQuery = $myObj;
+        $myTable_plural = snake_case(str_plural(str_replace('App\\', '', get_class())));
 
-        $names = explode('\\', get_class($myObj) );
-        $baseTable = $myObj->solveName( end($names), config('CrudDscaffold.app_name_rules.app_migrate_tablename') );    //ex).apples
-
-        //(i) join relation table
-
-        if( is_array( $myObj->relationApps ) ){
-
-            foreach( $myObj->relationApps as $className => $classObj ){
-    
-                $relationTable = $myObj->solveName( $className, config('CrudDscaffold.app_name_rules.app_migrate_tablename') );    //ex).apple_types
-                $relationColumnInBaseTable = $myObj->solveName( $className, config('CrudDscaffold.app_name_rules.name_name') ).'_id';    //ex).apple_type_id
-
-                $myQuery = $myQuery->leftJoin( $relationTable, $baseTable.'.'.$relationColumnInBaseTable, '=', $relationTable.'.id' );  //ex).leftJoin( 'apple_types', 'apples.apple_type_id', '=', 'apple_types.id' )
-
+        if( isset(self::$related_app) && is_array(self::$related_app) ){
+            foreach( self::$related_app['belongsto'] as $app_belongsto_key => $app_belongsto_value ){
+        		$myQuery = $myQuery->with( camel_case(str_singular($app_belongsto_key)) );
             }
         }
 
-        //(ii) add Constrain
+		//default order
+		if( !array_key_exists ( 'q', $request->all() ) || !array_key_exists ( 's', $request->all()['q'] ) ){
+			$myQuery = $myQuery->orderBy( 'id', 'desc' );
+		}
 
-        if( is_array($request->input('q')) ){
+		if( array_key_exists('q', $request->all()) ){
+			
+			foreach( $request->all()['q'] as $key => $value ){
 
-            foreach( $request->input('q') as $key => $value){
-    
-                //skip s value that is for ordering
-                if( $key === 's' ){ continue; }
+				//sort query
+				if($key === 's'){
+		
+					if( substr( $value, -4 ) === '_asc' ){
+		
+						$order_key = substr( $value, 0, strlen($value)-4 );
+						$order_dir = 'asc';
+		
+					}elseif( substr( $value, -5 ) === '_desc' ){
+		
+						$order_key = substr( $value, 0, strlen($value)-5 );
+						$order_dir = 'desc';
+		
+					}else{
+						throw new \Exception("query parameter is invalid!");
+					}
 
-                //skip if value is blank
-                if( $value === '' ){ continue; }
+					if( strpos($order_key, '.') === false ){	//order by original table column
 
-                if( preg_match('#(.*)_([^_]*?)$#', $key, $m) ){
-                    $column = $m[1];
-                    $operator = $m[2];
-                }else{
-                    abort(500, 'query parameter has wrong value');
-                }
+						$myQuery = $myQuery->orderBy( $order_key, $order_dir );
 
-                //if column is not relation table's column, add base table name at head.
-                if( strpos($column,'.') === false ){
-                    $column = $baseTable.'.'.$column;
-                }
+					}else{	//order by related table column
 
-                if( $operator === 'cont' ){
-                    $myQuery = $myQuery->where($column, 'LIKE', '%'.$value.'%');
-                }elseif( $operator === 'lt' ){
-                    $myQuery = $myQuery->where($column, '<=', $value);                
-                }elseif( $operator === 'gt' ){
-                    $myQuery = $myQuery->where($column, '>=', $value);                
-                }
-            }
-        }
+						$order_key_array = explode('.', $order_key);
+						if( count($order_key_array) > 2 ){
+		                    throw new \Exception("query parameter is invalid!");
+						}
 
-        //(iii) order setting
+						$targetTable_singular = snake_case(str_singular($order_key_array[0])); 
+						$targetTable_plural = snake_case(str_plural($order_key_array[0])); 
+						$myQuery = $myQuery->join($targetTable_plural, $myTable_plural.'.'.$targetTable_singular.'_id', '=', $targetTable_plural.'.id')->orderBy( $targetTable_plural.'.'.$order_key_array[1], $order_dir );
 
-        if( is_array($request->input('q')) && array_key_exists( 's', $request->input('q')) && $request->input('q')['s'] !== '' ){
+					}
 
-            if( preg_match('#(.*)_([^_]*?)$#', $request->input('q')['s'], $m) ){
-                $column = $m[1];
-                $order_dir = $m[2];
+				// [like] query with related table
+				}elseif( strpos($key, '.') !== false && substr($key, -5) === '_cont' ){
 
-                if( mb_strtoupper($order_dir) !== 'ASC' && mb_strtoupper($order_dir) !== 'DESC' ){
-                    abort(500, 'query parameter q[s] has wrong value');
-                }
-            }else{
-                abort(500, 'query parameter q[s] has wrong value');
-            }
+					$new_key = substr( $key, 0, strlen($key)-5 );
+					$key_array = explode('.', $new_key);
 
-            //if column is not relation table's column, add base table name at head.
-            if( strpos($column,'.') === false ){
-                $column = $baseTable.'.'.$column;
-            }
+					if( count($key_array) > 2 ){
+	                    throw new \Exception("query parameter is invalid!");
+					}
 
-        }else{
-            $column = $baseTable.'.id';
-            $order_dir = 'DESC';
-        }
+					$myQuery = $myQuery->whereHas($key_array[0], function($q) use(&$key_array, &$value){
+						$q->where($key_array[1], 'like', '%'.$value.'%');
+					});
 
-        $myQuery = $myQuery->orderBy( $column, $order_dir);
+				// [gt] query with related table
+				}elseif( strpos($key, '.') !== false && substr($key, -3) === '_gt' ){
 
-        //(iv) get base table data
+					$new_key = substr( $key, 0, strlen($key)-3 );
+					$key_array = explode('.', $new_key);
 
-        $myQuery = $myQuery->select([ $baseTable.'.*' ]);
+					if( count($key_array) > 2 ){
+	                    throw new \Exception("query parameter is invalid!");
+					}
 
-        //(v) pagenate
+					$myQuery = $myQuery->whereHas($key_array[0], function($q) use(&$key_array, &$value){
+						$q->where($key_array[1], '>=', $value);
+					});
 
-        return $myQuery->paginate($paginate);
+				// [lt] query with related table
+				}elseif( strpos($key, '.') !== false && substr($key, -3) === '_lt' ){
 
+					$new_key = substr( $key, 0, strlen($key)-3 );
+					$key_array = explode('.', $new_key);
+
+					if( count($key_array) > 2 ){
+	                    throw new \Exception("query parameter is invalid!");
+					}
+
+					$myQuery = $myQuery->whereHas($key_array[0], function($q) use(&$key_array, &$value){
+						$q->where($key_array[1], '<=', $value);
+					});
+
+				// [like] query with original table
+				}elseif( substr($key, -5) === '_cont' ){
+	
+					$new_key = substr( $key, 0, strlen($key)-5 );
+					$myQuery = $myQuery->where($new_key, 'like', '%'.$value.'%');
+
+				// [gt] query with original table	
+				}elseif(substr($key, -3) === '_gt'){
+	
+					$new_key = substr( $key, 0, strlen($key)-3 );
+					$myQuery = $myQuery->where($new_key, '>=', $value);
+
+				// [lt] query with original table		
+				}elseif(substr($key, -3) === '_lt'){
+	
+					$new_key = substr( $key, 0, strlen($key)-3 );
+					$myQuery = $myQuery->where($new_key, '<=', $value);
+				}
+			}
+		}
+		return $myQuery;
     }
 }

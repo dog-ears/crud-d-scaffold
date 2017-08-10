@@ -1,0 +1,25 @@
+{{{ foreach($schemas): }}}
+                    <div class="form-group @if($errors->has('{{{ $this.name|name_name }}}')) has-error @endif">
+                       <label for="{{{ $this.name|name_name }}}-field">{{{ $this.display_name }}}</label>
+{{{ if($this.belongsto!=): }}}
+                        <select class="form-control" id="{{{ $this.name|name_name }}}-field" name="{{{ $this.name|name_name }}}">
+                        @foreach( $list["{{{ $this.belongsto|NameName }}}"] as $list_key => $list_item )
+                         <option value="{{ $list_key }}"
+                          @if( isset(${{{ $name|nameName }}}->{{{ $this.name|name_name }}}) && $list_key==${{{ $name|nameName }}}->{{{ $this.name|name_name }}} )
+                           selected='selected'
+                          @endif
+                         >{{ $list_item }}</option>
+                        @endforeach
+                        </select>
+{{{ else: }}}
+{{{ if($this.input_type==text): }}}
+                       <input class="form-control" id="{{{ $this.name|name_name }}}-field" name="{{{ $this.name|name_name }}}" type="text" value="{{ ${{{ $name|nameName }}}->{{{ $this.name|name_name }}} or '' }}">
+{{{ elseif($this.input_type==textarea): }}}
+                       <textarea class="form-control" id="{{{ $this.name|name_name }}}-field" name="{{{ $this.name|name_name }}}" type="text">{{ ${{{ $name|nameName }}}->{{{ $this.name|name_name }}} or '' }}</textarea>
+{{{ endif; }}}
+{{{ endif; }}}
+                       @if($errors->has("{{{ $this.name|name_name }}}"))
+                        <span class="help-block">{{ $errors->first("{{{ $this.name|name_name }}}") }}</span>
+                       @endif
+                    </div>
+{{{ endforeach; }}}

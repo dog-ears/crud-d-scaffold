@@ -1,0 +1,37 @@
+@extends('layout')
+
+@include('{{{ $name|nameNames }}}._common')
+
+@section('header')
+
+	<ol class="breadcrumb">
+		<li><a href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span></a></li>
+	    <li><a href="{{ route('{{{ $name|nameNames }}}.index') }}">@yield('{{{ $name|nameNames }}}AppTitle')</a></li>
+	    <li class="active">Create</li>
+	</ol>
+
+    <div class="page-header">
+        <h1><i class="glyphicon glyphicon-plus"></i> @yield('{{{ $name|nameNames }}}AppTitle') / Create </h1>
+    </div>
+@endsection
+
+@section('content')
+    @include('error')
+
+    <div class="row">
+        <div class="col-md-12">
+
+            <form method="POST" action="{{ route('{{{ $name|nameNames }}}.store') }}" accept-charset="UTF-8">
+                {{ csrf_field() }}
+
+@include('{{{ $name|nameNames }}}._form')
+
+                <div class="well well-sm">
+                    <button type="submit" class="btn btn-primary">Create</button>
+                    <a class="btn btn-link pull-right" href="{{ route('{{{ $name|nameNames }}}.index') }}"><i class="glyphicon glyphicon-backward"></i> Back</a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+@endsection

@@ -1,0 +1,45 @@
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+use dogears\CrudDscaffold\Traits\GetAllDataTrait;
+use dogears\CrudDscaffold\Traits\GetListFromAllRelationAppsTrait;
+{{{ if($use_soft_delete==true): }}}
+use Illuminate\Database\Eloquent\SoftDeletes;
+{{{ endif; }}}
+
+class {{{ $name|NameName }}} extends Model
+{
+    use GetAllDataTrait,GetListFromAllRelationAppsTrait;
+{{{ if($use_soft_delete==true): }}}
+    use SoftDeletes;
+{{{ endif; }}}
+
+	public static $related_app = [
+		"belongsto" =>	[ {{{ foreach($schemas): }}}{{{ if($this.belongsto!=): }}} "{{{ $this.belongsto|NameName }}}" => "{{{ $this.belongsto_column|name_name }}}", {{{ endif; }}}{{{ endforeach; }}} ],
+		"hasmany"	=>	[ {{{ foreach($has_many): }}}"{{{ $this|NameName }}}",{{{ endforeach; }}} ]
+	];
+
+
+
+	//Mass Assignment
+	protected $fillable = [{{{ foreach($schemas): }}}'{{{ $this.name|name_name }}}',{{{ endforeach; }}}];
+{{{ if($use_soft_delete==true): }}}
+    protected $dates = ['deleted_at'];
+{{{ endif; }}}
+
+{{{ foreach($schemas): }}}
+{{{ if($this.belongsto!=): }}}
+	public function {{{ $this.belongsto|nameName }}}() {
+		return $this->belongsTo('App\{{{ $this.belongsto|NameName }}}');
+	}
+{{{ endif; }}}
+{{{ endforeach; }}}
+
+{{{ foreach($has_many): }}}
+	public function {{{ $this|nameNames }}}() {
+		return $this->hasMany('App\{{{ $this|NameName }}}');
+	}
+{{{ endforeach; }}}
+}

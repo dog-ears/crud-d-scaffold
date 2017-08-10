@@ -2,7 +2,6 @@
 
 /**
 Copyright (c) 2016 dog-ears
-
 This software is released under the MIT License.
 http://dog-ears.net/
 */
@@ -20,13 +19,15 @@ class GeneratorsServiceProvider extends ServiceProvider {
 	 */
 	public function boot()
 	{
+
 		//asset publish
 	    $this->publishes([
 	        __DIR__.'/Assets' => public_path('dog-ears/CrudDscaffold'),
 	    ], 'public');
-	    
+/*	    
 		//define resource view folder
 	    $this->loadViewsFrom(__DIR__.'/Resource/views', 'CrudDscaffold');
+*/
 	}
 
 	/**
@@ -37,11 +38,6 @@ class GeneratorsServiceProvider extends ServiceProvider {
 	public function register()
 	{
 		$this->registerScaffoldGenerator();
-
-		//config setting
-	    $this->mergeConfigFrom(
-	        __DIR__.'/config/CrudDscaffold.php', 'CrudDscaffold'
-	    );
 	}
 
 	/**
@@ -49,35 +45,10 @@ class GeneratorsServiceProvider extends ServiceProvider {
 	 */
 	private function registerScaffoldGenerator()
 	{
-		//Create scaffold
-		$this->app->singleton('command.CrudDscaffold.scaffold', function ($app) {
-			return $app['dogears\CrudDscaffold\Commands\ScaffoldMakeCommand'];
+		//Setup my scaffold
+		$this->app->singleton('command.CrudDscaffold.setup', function ($app) {
+			return $app['dogears\CrudDscaffold\Commands\CrudDscaffoldSetupCommand'];
 		});
-		$this->commands('command.CrudDscaffold.scaffold');
-
-		//Delete scaffold
-		$this->app->singleton('command.CrudDscaffold.scaffold_delete', function ($app) {
-			return $app['dogears\CrudDscaffold\Commands\ScaffoldDeleteCommand'];
-		});
-		$this->commands('command.CrudDscaffold.scaffold_delete');
-
-		//make:relation
-		$this->app->singleton('command.CrudDscaffold.make_relation', function ($app) {
-			return $app['dogears\CrudDscaffold\Commands\MakeRelationCommand'];
-		});
-		$this->commands('command.CrudDscaffold.make_relation');
-
-		//delete:relation
-		$this->app->singleton('command.CrudDscaffold.delete_relation', function ($app) {
-			return $app['dogears\CrudDscaffold\Commands\DeleteRelationCommand'];
-		});
-		$this->commands('command.CrudDscaffold.delete_relation');
-
-		//test:crud-d-scaffold
-		$this->app->singleton('command.CrudDscaffold.test', function ($app) {
-			return $app['dogears\CrudDscaffold\Commands\SettingTestMyPackageCommand'];
-		});
-		$this->commands('command.CrudDscaffold.test');
-
+		$this->commands('command.CrudDscaffold.setup');
 	}
 }
