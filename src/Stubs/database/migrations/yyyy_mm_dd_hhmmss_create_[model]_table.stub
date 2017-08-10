@@ -1,0 +1,44 @@
+<?php
+
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class Create{{{ $name|NameNames }}}Table extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('{{{ $name|name_names }}}', function (Blueprint $table) {
+
+            $table->increments('id');
+            $table->timestamps();
+
+{{{ foreach($schemas): }}}
+{{{ if($this.belongsto!=): }}}
+            $table->integer('{{{ $this.name|name_name }}}')->unsigned();
+            $table->foreign('{{{ $this.name|name_name }}}')->references('id')->on('{{{ $this.belongsto|name_names }}}');
+{{{ else: }}}
+            $table->{{{ $this.type }}}('{{{ $this.name|name_name }}}'){{{ if($this.nullable==true): }}}->nullable(){{{ endif; }}};
+{{{ endif; }}}
+{{{ endforeach; }}}
+{{{ if($use_soft_delete==true): }}}
+            $table->softDeletes();
+{{{ endif; }}}
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::drop('{{{ $name|name_names }}}');
+    }
+}
