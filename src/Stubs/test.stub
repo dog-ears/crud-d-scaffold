@@ -1,0 +1,28 @@
+
+[c-data01]
+
+{{{ $schemas.1.name|name_names }}}
+
+[c-data02]
+
+{{{ if($display_name==Country): }}}
+    [c-data03-1]
+{{{ elseif($display_name==ccc): }}}
+    [c-data03-2]
+{{{ else: }}}
+    [c-data03-3]
+{{{ endif; }}}
+
+[c-data04]
+
+{{{ foreach($schemas): }}}
+    [c-data05]
+    {{{ foreach($this.display_name): }}}
+        [c-data06]
+        {{{ $this }}}
+        [c-data07]
+    {{{ endforeach; }}}
+    [c-data08]
+{{{ endforeach; }}}
+
+[c-data09]

@@ -1,0 +1,30 @@
+<?php
+
+use Illuminate\Database\Seeder;
+
+class {{{ $name|NameNames }}}TableSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+
+        $faker = Faker\Factory::create();
+
+        for($i=0;$i<30;$i++){
+            DB::table('{{{ $name|name_names }}}')->insert([
+{{{ foreach($schemas): }}}
+{{{ if($this.faker_type!=): }}}
+                '{{{ $this.name|name_name }}}' => $faker->{{{ $this.faker_type }}},
+{{{ else: }}}
+                '{{{ $this.name|name_name }}}' => '',
+{{{ endif; }}}
+{{{ endforeach; }}}
+            ]);
+        }
+
+    }
+}
