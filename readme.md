@@ -87,7 +87,7 @@ php artisan vendor:publish --tag=public --force
 ```
 ##### (ii) Copy /vendor/dog-ears/crud-d-scaffold/crud-d-scaffold.json.sample to your laravel project root
 ```
-cp ./vendor/dog-ears/crud-d-scaffold/crud-d-scaffold.json.sample ./crud-d-scaffold.jsona
+cp ./vendor/dog-ears/crud-d-scaffold/crud-d-scaffold.json.sample ./crud-d-scaffold.json
 ```
 ##### (iii) run crud-d-scaffold:setup
 ```
