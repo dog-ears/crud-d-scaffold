@@ -135,7 +135,7 @@ class CrudDscaffold
 
             //create model file
             $stub_txt = $this->files->get( __DIR__. '/../Stubs/app/[Model].stub');
-            $output_path = base_path().'/app/'. NameResolver::solveName($model['name'], 'NameNames'). '.php';
+            $output_path = base_path().'/app/'. NameResolver::solveName($model['name'], 'NameName'). '.php';
             $stub_obj = new StubCompiler( $stub_txt, $model );
             $output = $stub_obj->compile();
 
