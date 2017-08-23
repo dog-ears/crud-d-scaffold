@@ -91,7 +91,7 @@ cp ./vendor/dog-ears/crud-d-scaffold/crud-d-scaffold.json.sample ./crud-d-scaffo
 ```
 ##### (iii) run crud-d-scaffold:setup
 ```
-crud-d-scaffold:setup -f
+php artisan crud-d-scaffold:setup -f
 ```
   Overwriting the file with -f option.  
   For the first time, the f option is unnecessary. (No problem with putting on)
