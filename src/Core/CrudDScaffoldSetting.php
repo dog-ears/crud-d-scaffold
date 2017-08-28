@@ -20,7 +20,6 @@ class CrudDscaffoldSetting
     public $setting_array;   /* array */
     public $force;
 
-
     public function __construct( Filesystem $files )
     {
         $this->files = $files;
@@ -30,17 +29,15 @@ class CrudDscaffoldSetting
 
     public function loadSettingFromCommand( CrudDscaffoldSetupCommand $command )
     {
+        
+        // set data
         $this->command = $command;
-
-        //get force option
         $this->force = $this->command->option('force');
-
-        //get setting file path
         $file_path = $this->command->argument('filePath');
 
         $this->command->info( 'reading setting file... ('. $file_path. ')' );
 
-        //setting.json - exist check
+        // setting.json - exist check
         if( !$this->files->exists( $file_path ) ){
             $this->command->error( 'setting file is not found ('. $file_path. ')' );
             exit();
@@ -51,6 +48,8 @@ class CrudDscaffoldSetting
             $this->command->error( 'setting file must be json file ('. $file_path. ')' );
             exit();
         }
+
+
 
         //delete comment
         $data = $this->files->get( $file_path );
@@ -77,7 +76,6 @@ class CrudDscaffoldSetting
 
     private function checkFormatOfSettingJson( $file_path ){
 
-        //format check
         if( !array_key_exists('app_type',$this->setting_array) ){
             $this->setting_array['app_type'] = 'web';
         }
@@ -101,9 +99,6 @@ class CrudDscaffoldSetting
             }
             if( !array_key_exists('use_soft_delete', $model) ){
                 $model['use_soft_delete'] = 'false';
-            }
-            if( !array_key_exists('has_many', $model) ){
-                $model['has_many'] = [];
             }
 
             foreach( $model['schemas'] as &$schema){
@@ -135,6 +130,40 @@ class CrudDscaffoldSetting
                 }
                 if( !array_key_exists('belongsto', $schema) ){
                     $schema['belongsto'] = '';
+                }else{
+
+                    if($schema['belongsto'] !== ""){     // case -  $schema has belongsto
+
+                        //target model exist check
+                        $error = true;
+                        foreach( $this-> setting_array["models"] as &$target_model ){
+                            if( $target_model["name"] === $schema['belongsto'] ){
+                                $error = false;
+
+                                // belongsto_column exist check
+                                if( !array_key_exists('belongsto_column', $schema) || $schema['belongsto_column'] == "" ){
+                                    $this->command->error( 'schema with belongsto needs belongsto_column propaty ('. $file_path. ')' );
+                                    return false;
+                                }
+                                
+                                // check target_model has column same as belongsto_column
+                                $result_array = array_filter ( $target_model["schemas"], function($s) use($schema){
+                                    return $schema['belongsto_column'] === $s['name'];
+                                });
+                                if( !count($result_array) ){
+                                    $this->command->error( 'target_model('. $target_model["name"]. ') need column ('. $schema['belongsto_column']. ') ('. $file_path. ')' );
+                                    return false;
+                                }
+
+                                //add has_many data
+                                $target_model["has_many"][] = $model["name"];
+                            }
+                        }unset($target_model);
+                        if($error){
+                            $this->command->error( 'belongsto target model ('. $schema['belongsto'] .') is not exitst! ('. $file_path. ')' );
+                            return false;
+                        }
+                    }
                 }
                 if( !array_key_exists('belongsto_column', $schema) ){
                     $schema['belongsto_column'] = '';
@@ -144,5 +173,4 @@ class CrudDscaffoldSetting
         }unset($model);
         return true;
     }
-
 }
