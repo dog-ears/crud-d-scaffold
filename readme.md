@@ -125,8 +125,6 @@ php artisan db:seed
         {
             "name": "jointAuthor",              /* [required] format[nameName] */				<-  Name of model
             "display_name": "JOINT AUTHOR",     /* [required] */								<-  Display name of the model
-            "use_soft_delete": "true",          /* [default:false] ex( true, false ) */			<-  Whether to use software delete
-            "has_many": ["nicePost"],           /* [default:[]] format[nameName] */				<-  If there is a has_many relationship, describe the target model name as an array.
             "schemas": [
                 {
                     "name": "realName",         /* [required] */								<-  Column name (In the case of relation, make it model name _id)
