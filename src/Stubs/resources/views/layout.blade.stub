@@ -32,6 +32,14 @@
 @include('navi')
 
     <div class="container">
+
+        @if (session('message'))
+        <div class="row"><div class="col-sm-12"><div class="alert alert-success alert-dismissible fade in">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            {{ session('message') }}
+        </div></div></div>
+        @endif
+
         @yield('header')
         @yield('content')
     </div><!-- /.container -->
