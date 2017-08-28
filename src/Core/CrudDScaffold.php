@@ -13,7 +13,6 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-
 use dogears\CrudDscaffold\Commands\CrudDscaffoldSetupCommand;
 use dogears\CrudDscaffold\Core\CrudDscaffoldSetting ;
 use dogears\CrudDscaffold\Core\StubCompiler ;
@@ -53,7 +52,7 @@ class CrudDscaffold
         $this->command->info('Now Generating...');
 
         $this->setupMigration();
-        $this->setupSeeding();    //skip.
+        $this->setupSeeding();
         $this->setupModel();
         $this->setupController();
         $this->setupViewLayout();

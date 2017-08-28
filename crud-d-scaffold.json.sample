@@ -5,7 +5,6 @@
             "name": "jointAuthor",              /* [required] format[nameName] */
             "display_name": "JOINT AUTHOR",     /* [required] */
             "use_soft_delete": "true",          /* [default:false] ex( true, false ) */
-            "has_many": ["nicePost"],           /* [default:[]] format[nameName] */
             "schemas": [
                 {
                     "name": "realName",         /* [required] */
@@ -46,7 +45,6 @@
             "name": "nicePost",
             "display_name": "NICE POST",
             "use_soft_delete": "false",
-            "has_many": ["goodComment"],
             "schemas": [
                 {
                     "name": "bigTitle",
@@ -87,7 +85,6 @@
             "name": "goodComment",
             "display_name": "GOOD COMMENT",
             "use_soft_delete": "true",
-            "has_many": [],
             "schemas": [
                 {
                     "name": "commenterName",
