@@ -45,6 +45,13 @@
                         <input type="hidden" name="q[s]" value="{{ @(Request::input('q')['s']) ?: '' }}" />
                         <div class="form-horizontal">
 
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="q_id_eq">ID</label>
+                                <div class=" col-sm-9">
+                                    <input class="form-control input-sm" type="search" value="{{ @(Request::input('q')['id_eq']) ?: '' }}" name="q[id_eq]" id="q_id_eq" />
+                                </div>
+                            </div>
+
 {{{ foreach($schemas): }}}{{{ if($this.show_in_list==true): }}}
 {{{ if($this.belongsto!=): }}}
                             <div class="form-group">
