@@ -121,6 +121,20 @@ trait GetAllDataTrait {
 						$q->where($key_array[1], '<=', $value);
 					});
 
+				// [eq] query with related table
+				}elseif( strpos($key, '.') !== false && substr($key, -3) === '_eq' ){
+
+					$new_key = substr( $key, 0, strlen($key)-3 );
+					$key_array = explode('.', $new_key);
+
+					if( count($key_array) > 2 ){
+	                    throw new \Exception("query parameter is invalid!");
+					}
+
+					$myQuery = $myQuery->whereHas($key_array[0], function($q) use(&$key_array, &$value){
+						$q->where($key_array[1], $value);
+					});
+
 				// [like] query with original table
 				}elseif( substr($key, -5) === '_cont' ){
 	
@@ -138,6 +152,12 @@ trait GetAllDataTrait {
 	
 					$new_key = substr( $key, 0, strlen($key)-3 );
 					$myQuery = $myQuery->where($new_key, '<=', $value);
+
+				// [eq] query with original table		
+				}elseif(substr($key, -3) === '_eq'){
+	
+					$new_key = substr( $key, 0, strlen($key)-3 );
+					$myQuery = $myQuery->where($new_key, $value);
 				}
 			}
 		}
