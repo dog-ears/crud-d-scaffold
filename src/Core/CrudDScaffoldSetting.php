@@ -79,7 +79,7 @@ class CrudDscaffoldSetting
         if( !array_key_exists('app_type',$this->setting_array) ){
             $this->setting_array['app_type'] = 'web';
         }
-        if( !array_key_exists('app_type',$this->setting_array) ){
+        if( !array_key_exists('use_laravel_auth',$this->setting_array) ){
             $this->setting_array['use_laravel_auth'] = 'false';
         }
         if( !array_key_exists('models',$this->setting_array) ){
