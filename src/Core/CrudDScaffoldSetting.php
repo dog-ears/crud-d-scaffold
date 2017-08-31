@@ -79,6 +79,9 @@ class CrudDscaffoldSetting
         if( !array_key_exists('app_type',$this->setting_array) ){
             $this->setting_array['app_type'] = 'web';
         }
+        if( !array_key_exists('app_type',$this->setting_array) ){
+            $this->setting_array['use_laravel_auth'] = 'false';
+        }
         if( !array_key_exists('models',$this->setting_array) ){
             $this->command->error( 'json format error! models is not found  ('. $file_path. ')' );
             return false;
@@ -89,11 +92,12 @@ class CrudDscaffoldSetting
         }
         foreach( $this->setting_array['models'] as &$model ){
 
+            // required property
             if( !array_key_exists('name', $model) ||
                 !array_key_exists('display_name', $model) ||
                 !array_key_exists('schemas', $model) ){
 
-                    $this->command->error( 'json format error! model propaty is not correct   ('. $file_path. ')' );
+                    $this->command->error( 'json format error! model property is not correct   ('. $file_path. ')' );
                     return false;
 
             }
@@ -101,12 +105,31 @@ class CrudDscaffoldSetting
                 $model['use_soft_delete'] = 'false';
             }
 
+
+            if( $this-> setting_array["use_laravel_auth"] === "true" && $model['name'] === "user" ){
+
+                //add property
+                $model['use_laravel_auth'] = "true";
+            }
+
             foreach( $model['schemas'] as &$schema){
 
+                /* Don't write property [ name', 'email', 'password ] In model laravel Auth "user"  */
+                if( $this-> setting_array["use_laravel_auth"] === "true" && $model['name'] === "user" ){
+    
+                    // unable to use default schema
+                    if( $schema["name"] === "name" || $schema["name"] === "email" || $schema["name"] === "password" ){
+
+                        $this->command->error( 'User model with laravel Auth cannot have schema "name" or "email" or "password" ('. $file_path. ')' );
+                        return false;
+                    }
+                }
+
+                // required property
                 if( !array_key_exists('name', $schema) ||
                     !array_key_exists('display_name', $schema) ){
                     
-                        $this->command->error( 'json format error! schema propaty is not correct   ('. $file_path. ')' );
+                        $this->command->error( 'json format error! schema property is not correct   ('. $file_path. ')' );
                         return false;
 
                 }
@@ -142,7 +165,7 @@ class CrudDscaffoldSetting
 
                                 // belongsto_column exist check
                                 if( !array_key_exists('belongsto_column', $schema) || $schema['belongsto_column'] == "" ){
-                                    $this->command->error( 'schema with belongsto needs belongsto_column propaty ('. $file_path. ')' );
+                                    $this->command->error( 'schema with belongsto needs belongsto_column property ('. $file_path. ')' );
                                     return false;
                                 }
                                 
@@ -151,8 +174,13 @@ class CrudDscaffoldSetting
                                     return $schema['belongsto_column'] === $s['name'];
                                 });
                                 if( !count($result_array) ){
-                                    $this->command->error( 'target_model('. $target_model["name"]. ') need column ('. $schema['belongsto_column']. ') ('. $file_path. ')' );
-                                    return false;
+                                    
+                                    // pass check if using laravel auth and belongsto_column is name
+                                    if( $this-> setting_array["use_laravel_auth"] !== "true" || $schema['belongsto_column'] !== "name" ){
+                                    
+                                        $this->command->error( 'target_model('. $target_model["name"]. ') need column ('. $schema['belongsto_column']. ') ('. $file_path. ')' );
+                                        return false;
+                                    }
                                 }
 
                                 //add has_many data
