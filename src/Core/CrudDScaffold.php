@@ -78,12 +78,33 @@ class CrudDscaffold
             // second state is not-created migration.
             // this program ignore first state.
 
-                //create migration file
-                $stub_txt = $this->files->get( __DIR__. '/../Stubs/database/migrations/yyyy_mm_dd_hhmmss_create_[model]_table.stub');
-                $output_path = base_path().'/database/migrations/'. date('Y_m_d_His'). '_create_'. NameResolver::solveName($model['name'], 'name_names'). '_table.php';
-                $stub_obj = new StubCompiler( $stub_txt, $model );
-                $output = $stub_obj->compile();
-                $this->files->put($output_path, $output );
+                // case using laravel auth
+                if( $this->setting->setting_array["use_laravel_auth"] === "true" && $model['name'] === "user" ){
+                    
+                    $stub_txt = $this->files->get( __DIR__. '/../Stubs/database/migrations/Auth/create_users_table01_schema.stub');
+                    
+                    $output_path = $this->files->glob('./database/migrations/*create_users_table.php');
+                    $output_path = base_path().substr( $output_path[0], 1 );
+
+                    $stub_obj = new StubCompiler( $stub_txt, $model );
+                    $add_src = $stub_obj->compile();
+        
+                    $original_src = $this->files->get( $output_path );
+                    $replace_pattern = "#(Schema::create\('users')([^}]*)#";
+                    $output = preg_replace ( $replace_pattern, '$1$2'.$add_src, $original_src );
+                    if( !strpos( $original_src, $add_src) ){
+                        $this->files->put( $output_path, $output );
+                    }
+                    
+                }else{
+
+                    //create migration file
+                    $stub_txt = $this->files->get( __DIR__. '/../Stubs/database/migrations/yyyy_mm_dd_hhmmss_create_[model]_table.stub');
+                    $output_path = base_path().'/database/migrations/'. date('Y_m_d_His'). '_create_'. NameResolver::solveName($model['name'], 'name_names'). '_table.php';
+                    $stub_obj = new StubCompiler( $stub_txt, $model );
+                    $output = $stub_obj->compile();
+                    $this->files->put($output_path, $output );
+                }
             }
         }
     }
@@ -95,7 +116,6 @@ class CrudDscaffold
         foreach( $this->setting->setting_array['models'] as $model ){
 
             // (i) /database/seeds/DatabaseSeeder.php
-            
             $stub_txt = $this->files->get( __DIR__. '/../Stubs/database/seeds/DatabaseSeeder_add.stub');
             $output_path = base_path().'/database/seeds/DatabaseSeeder.php';
             $stub_obj = new StubCompiler( $stub_txt, $model );
@@ -121,7 +141,6 @@ class CrudDscaffold
                     throw new \Exception("Seed File is already exists![".$output_path."]");
                 }
             }
-
             $this->files->put($output_path, $output );
         }
     }
@@ -132,19 +151,53 @@ class CrudDscaffold
 
         foreach( $this->setting->setting_array['models'] as $model ){
 
-            //create model file
-            $stub_txt = $this->files->get( __DIR__. '/../Stubs/app/[Model].stub');
-            $output_path = base_path().'/app/'. NameResolver::solveName($model['name'], 'NameName'). '.php';
-            $stub_obj = new StubCompiler( $stub_txt, $model );
-            $output = $stub_obj->compile();
 
-            //overwrite check
-            if( !$this->setting->force ){   // no check if force option is selected
-                if( $this->files->exists($output_path) ){
-                    throw new \Exception("Model File is already exists![".$output_path."]");
+            // case using laravel auth
+            if( $this->setting->setting_array["use_laravel_auth"] === "true" && $model['name'] === "user" ){
+    
+                $output_path = base_path().'/app/User.php';
+                $original_src = $this->files->get( $output_path );
+                $output = $original_src;
+    
+                $stub_txt = $this->files->get( __DIR__. '/../Stubs/app/Auth/User01_use.stub');
+                $replace_pattern = '#(.*?)(\nclass User(.*?))#';
+                if( !strpos( $original_src, $stub_txt) ){
+                    $output = preg_replace ( $replace_pattern, '$1'.$stub_txt.'$2', $output );
                 }
+
+                $stub_txt = $this->files->get( __DIR__. '/../Stubs/app/Auth/User02_trait_and_method.stub');
+                $replace_pattern = '#(.*?)(use Notifiable;\n)(.*?)#';
+                if( !strpos( $original_src, $stub_txt) ){
+                    $output = preg_replace ( $replace_pattern, '$1$2'.$stub_txt.'$3', $output );
+                }
+
+                $stub_txt = $this->files->get( __DIR__. '/../Stubs/app/Auth/User03_mass_assignment.stub');
+                $replace_pattern = '#(\'name\', \'email\', \'password\',)#';
+                if( !strpos( $original_src, $stub_txt) ){
+                    $output = preg_replace ( $replace_pattern, '$1'.$stub_txt, $output );
+                }
+
+                $stub_obj = new StubCompiler( $output, $model );
+                $output = $stub_obj->compile();
+
+                $this->files->put($output_path, $output );
+
+            }else{
+
+                //create model file
+                $stub_txt = $this->files->get( __DIR__. '/../Stubs/app/[Model].stub');
+                $output_path = base_path().'/app/'. NameResolver::solveName($model['name'], 'NameName'). '.php';
+                $stub_obj = new StubCompiler( $stub_txt, $model );
+                $output = $stub_obj->compile();
+    
+                //overwrite check
+                if( !$this->setting->force ){   // no check if force option is selected
+                    if( $this->files->exists($output_path) ){
+                        throw new \Exception("Model File is already exists![".$output_path."]");
+                    }
+                }
+                $this->files->put($output_path, $output );
             }
-            $this->files->put($output_path, $output );
         }
     }
 
