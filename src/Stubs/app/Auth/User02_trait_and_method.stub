@@ -1,3 +1,4 @@
+
     use GetAllDataTrait,GetListFromAllRelationAppsTrait;
 {{{ if($use_soft_delete==true): }}}
     use SoftDeletes;

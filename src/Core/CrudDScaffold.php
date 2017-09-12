@@ -158,17 +158,17 @@ class CrudDscaffold
                 $output_path = base_path().'/app/User.php';
                 $original_src = $this->files->get( $output_path );
                 $output = $original_src;
-    
+
                 $stub_txt = $this->files->get( __DIR__. '/../Stubs/app/Auth/User01_use.stub');
-                $replace_pattern = '#(.*?)(\nclass User(.*?))#';
+                $replace_pattern = '#(class User)#';
                 if( !strpos( $original_src, $stub_txt) ){
-                    $output = preg_replace ( $replace_pattern, '$1'.$stub_txt.'$2', $output );
+                    $output = preg_replace ( $replace_pattern, $stub_txt.'$1', $output );
                 }
 
                 $stub_txt = $this->files->get( __DIR__. '/../Stubs/app/Auth/User02_trait_and_method.stub');
-                $replace_pattern = '#(.*?)(use Notifiable;\n)(.*?)#';
+                $replace_pattern = '#(use Notifiable;)#';
                 if( !strpos( $original_src, $stub_txt) ){
-                    $output = preg_replace ( $replace_pattern, '$1$2'.$stub_txt.'$3', $output );
+                    $output = preg_replace ( $replace_pattern, '$1'.$stub_txt, $output );
                 }
 
                 $stub_txt = $this->files->get( __DIR__. '/../Stubs/app/Auth/User03_mass_assignment.stub');
