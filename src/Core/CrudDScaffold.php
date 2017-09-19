@@ -207,6 +207,24 @@ class CrudDscaffold
 
         foreach( $this->setting->setting_array['models'] as $model ){
 
+            // case using laravel auth
+            if( $this->setting->setting_array["use_laravel_auth"] === "true" && $model['name'] === "user" ){
+
+                $output_path = base_path().'/app/Http/Controllers/Auth/RegisterController.php';
+                $output_path02 = base_path().'/app/Http/Controllers/Auth/_RegisterController.php';
+                $original_src = $this->files->get( $output_path );
+                $output = $original_src;
+
+                $stub_txt = $this->files->get( __DIR__. '/../Stubs/app/Http/Controllers/Auth/RegisterController_add.stub');
+                $replace_pattern = '#(}[^\}]*)$#';
+                $output = preg_replace ( $replace_pattern, $stub_txt.'$1', $output );
+
+                $stub_obj = new StubCompiler( $output, $model );
+                $output = $stub_obj->compile();
+
+                $this->files->put($output_path02, $output );
+            }
+
             //create model file
             $stub_txt = $this->files->get( __DIR__. '/../Stubs/app/Http/Controllers/[Model]Controller.stub');
             $output_path = base_path().'/app/Http/Controllers/'. NameResolver::solveName($model['name'], 'NameName'). 'Controller.php';
@@ -322,7 +340,23 @@ class CrudDscaffold
         $view_filename_array = ['_common.blade','_form.blade','create.blade','duplicate.blade','edit.blade','index.blade','show.blade'];
 
         foreach( $this->setting->setting_array['models'] as $model ){
-    
+
+            if( $model['name'] === 'user' && $model['use_laravel_auth'] === 'true' ){
+
+                $output_path = base_path().'/resources/views/auth/register.blade.php';
+                $original_src = $this->files->get( $output_path );
+                $output = $original_src;
+
+                $stub_txt = $this->files->get( __DIR__. '/../Stubs/resources/views/auth/register_add.stub');
+                $replace_pattern = '#(.*)(<div class="form-group">)(.*?)(Register)#s';
+                $output = preg_replace ( $replace_pattern, '$1'.$stub_txt.'$2$3$4', $output );
+
+                $stub_obj = new StubCompiler( $output, $model );
+                $output = $stub_obj->compile();
+
+                $this->files->put($output_path, $output );
+            }
+
             foreach($view_filename_array as $view_filename){
                 $stub_txt = $this->files->get( __DIR__. '/../Stubs/resources/views/[models]/'. $view_filename. '.stub');
                 $output_dir = base_path().'/resources/views/'.NameResolver::solveName($model['name'], 'nameNames').'/';

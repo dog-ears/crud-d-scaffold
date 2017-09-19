@@ -1,0 +1,5 @@
+    public function showRegistrationForm()
+    {
+        
+        return view('auth.register')->with( 'list', \App\User::getListFromAllRelationApps() );
+    }
