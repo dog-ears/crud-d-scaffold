@@ -215,8 +215,8 @@ class CrudDscaffold
                 $output = $original_src;
 
                 $stub_txt = $this->files->get( __DIR__. '/../Stubs/app/Http/Controllers/Auth/RegisterController_add02.stub');
-                $replace_pattern = '#(return User::create\(\[)(.*?)(\]\);)#';
-                $output = preg_replace ( $replace_pattern, '$1$2'.$stub_txt.'$3', $output );
+                $replace_pattern = '#(return User::create\(\[)(.*?)(\s*)(\]\);)#s';
+                $output = preg_replace ( $replace_pattern, '$1$2'.$stub_txt.'$4', $output );
 
                 $stub_txt = $this->files->get( __DIR__. '/../Stubs/app/Http/Controllers/Auth/RegisterController_add01.stub');
                 $replace_pattern = '#(}[^\}]*)$#';
@@ -227,6 +227,7 @@ class CrudDscaffold
 
                 $this->files->put($output_path, $output );
             }
+            dd('test');
 
             //create model file
             $stub_txt = $this->files->get( __DIR__. '/../Stubs/app/Http/Controllers/[Model]Controller.stub');
