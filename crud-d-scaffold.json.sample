@@ -1,5 +1,6 @@
 {
     "app_type": "web",                          /* [default:web]  */
+    "use_laravel_auth": "false",                  /* [default:false]  */
     "models": [
         {
             "name": "jointAuthor",              /* [required] format[nameName] */
