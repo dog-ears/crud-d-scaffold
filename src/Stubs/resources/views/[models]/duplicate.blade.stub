@@ -24,7 +24,7 @@
             <form method="POST" action="{{ route('{{{ $name|nameNames }}}.store') }}" accept-charset="UTF-8">
                 {{ csrf_field() }}
 
-@include('{{{ $name|nameNames }}}._form')
+@include('{{{ $name|nameNames }}}._form',['view_mode' => 'duplicate'])
 
                 <div class="well well-sm">
                     <button type="submit" class="btn btn-primary">Duplicate</button>

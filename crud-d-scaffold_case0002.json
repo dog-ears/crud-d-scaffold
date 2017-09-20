@@ -1,47 +1,14 @@
+/* for use laravel auth  */
+
 {
     "app_type": "web",                          /* [default:web]  */
-    "use_laravel_auth": "false",                  /* [default:false]  */
+    "use_laravel_auth": "true",                  /* [default:false]  */
     "models": [
         {
-            "name": "jointAuthor",              /* [required] format[nameName] */
-            "display_name": "JOINT AUTHOR",     /* [required] */
+            "name": "user",              /* [required] format[nameName] */
+            "display_name": "USER",     /* [required] */
             "use_soft_delete": "true",          /* [default:false] ex( true, false ) */
-            "schemas": [
-                {
-                    "name": "realName",         /* [required] */
-                    "type": "string",           /* [default:string] ex( integer, string ) */
-                    "input_type": "text",       /* [default:text] text, textarea */ /* relation_column forced to pulldown */
-                    "faker_type": "name()",     /* [default -> ''(nullable must be true) ] ex( randomDigit(), randomNumber(2), numberBetween(1,30), word(), sentence(), paragraph(), text(), name(), address(), date('Y-m-d','now'), safeEmail(), password() )  */
-                    "nullable": "false",        /* [default:false] ex( true, false ) */
-                    "display_name": "REAL NAME",/* [required] */
-                    "show_in_list": "true",     /* [default:true] ex( true, false ) */
-                    "show_in_detail": "true",   /* [default:true] ex( true, false ) */
-					"belongsto": "",            /* [default:""] */
-					"belongsto_column": ""      /* [default:""] */
-                },{
-                    "name": "actualAge",
-                    "type": "integer",
-                    "input_type": "text",
-                    "faker_type": "randomNumber(2)",
-                    "nullable": "false",
-                    "display_name": "ACTUAL AGE",
-                    "show_in_list": "false",
-                    "show_in_detail": "true",
-					"belongsto": "",
-					"belongsto_column": ""
-                },{
-                    "name": "secretHobby",
-                    "type": "string",
-                    "input_type": "textarea",
-                    "faker_type": "word()",
-                    "nullable": "true",
-                    "display_name": "SECRET HOBBY",
-                    "show_in_list": "false",
-                    "show_in_detail": "true",
-					"belongsto": "",
-					"belongsto_column": ""
-                }
-            ]
+            "schemas": []               /* Don't write property [ name', 'email', 'password ] In model laravel Auth "user"  */
         },{
             "name": "nicePost",
             "display_name": "NICE POST",
@@ -70,16 +37,16 @@
 					"belongsto": "",
 					"belongsto_column": ""
                 },{
-                    "name": "jointAuthorId",
+                    "name": "userId",
                     "type": "integer",          /* related column froce type to unsigned integer */
                     "input_type": "text",       /* related column froce input_type to pulldown */
                     "faker_type": "numberBetween(1,30)",
                     "nullable": "false",
-                    "display_name": "JOINT AUTHOR - REAL NAME",
+                    "display_name": "USER - NAME",
                     "show_in_list": "true",
                     "show_in_detail": "true",
-					"belongsto": "jointAuthor",
-					"belongsto_column": "realName"
+					"belongsto": "user",
+					"belongsto_column": "name"
                 }
             ]
         },{

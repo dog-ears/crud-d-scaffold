@@ -1,0 +1,29 @@
+{{{ foreach($schemas): }}}
+                        <div class="form-group{{ $errors->has('{{{ $this.name|name_name }}}') ? ' has-error' : '' }}">
+                            <label for="{{{ $this.name|name_name }}}" class="col-md-4 control-label">{{{ $this.display_name }}}</label>
+                            <div class="col-md-6">
+{{{ if($this.belongsto!=): }}}
+                        <select class="form-control" id="{{{ $this.name|name_name }}}-field" name="{{{ $this.name|name_name }}}">
+                        @foreach( $list["{{{ $this.belongsto|NameName }}}"] as $list_key => $list_item )
+                         <option value="{{ $list_key }}"
+                          @if( isset(${{{ $name|nameName }}}->{{{ $this.name|name_name }}}) && $list_key==${{{ $name|nameName }}}->{{{ $this.name|name_name }}} )
+                           selected='selected'
+                          @endif
+                         >{{ $list_item }}</option>
+                        @endforeach
+                        </select>
+{{{ else: }}}
+{{{ if($this.input_type==text): }}}
+                                <input id="{{{ $this.name|name_name }}}" class="form-control" name="{{{ $this.name|name_name }}}" value="{{ old('{{{ $this.name|name_name }}}') }}" {{{ if($this.nullable!=true): }}}required{{{ endif; }}}>
+{{{ elseif($this.input_type==textarea): }}}
+                                <textarea class="form-control" id="{{{ $this.name|name_name }}}-field" name="{{{ $this.name|name_name }}}" type="text">{{ old('{{{ $this.name|name_name }}}') }}</textarea>
+{{{ endif; }}}
+{{{ endif; }}}
+                                @if ($errors->has('{{{ $this.name|name_name }}}'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('{{{ $this.name|name_name }}}') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+{{{ endforeach; }}}

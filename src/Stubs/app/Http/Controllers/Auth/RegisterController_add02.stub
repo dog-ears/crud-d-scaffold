@@ -1,0 +1,4 @@
+{{{ foreach($schemas): }}}
+            '{{{ $this.name|name_name }}}' => $data['{{{ $this.name|name_name }}}'],
+{{{ endforeach; }}}
+        

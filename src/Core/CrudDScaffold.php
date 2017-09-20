@@ -78,12 +78,33 @@ class CrudDscaffold
             // second state is not-created migration.
             // this program ignore first state.
 
-                //create migration file
-                $stub_txt = $this->files->get( __DIR__. '/../Stubs/database/migrations/yyyy_mm_dd_hhmmss_create_[model]_table.stub');
-                $output_path = base_path().'/database/migrations/'. date('Y_m_d_His'). '_create_'. NameResolver::solveName($model['name'], 'name_names'). '_table.php';
-                $stub_obj = new StubCompiler( $stub_txt, $model );
-                $output = $stub_obj->compile();
-                $this->files->put($output_path, $output );
+                // case using laravel auth
+                if( $this->setting->setting_array["use_laravel_auth"] === "true" && $model['name'] === "user" ){
+                    
+                    $stub_txt = $this->files->get( __DIR__. '/../Stubs/database/migrations/Auth/create_users_table01_schema.stub');
+                    
+                    $output_path = $this->files->glob('./database/migrations/*create_users_table.php');
+                    $output_path = base_path().substr( $output_path[0], 1 );
+
+                    $stub_obj = new StubCompiler( $stub_txt, $model );
+                    $add_src = $stub_obj->compile();
+        
+                    $original_src = $this->files->get( $output_path );
+                    $replace_pattern = "#(Schema::create\('users')([^}]*)#";
+                    $output = preg_replace ( $replace_pattern, '$1$2'.$add_src, $original_src );
+                    if( !strpos( $original_src, $add_src) ){
+                        $this->files->put( $output_path, $output );
+                    }
+                    
+                }else{
+
+                    //create migration file
+                    $stub_txt = $this->files->get( __DIR__. '/../Stubs/database/migrations/yyyy_mm_dd_hhmmss_create_[model]_table.stub');
+                    $output_path = base_path().'/database/migrations/'. date('Y_m_d_His'). '_create_'. NameResolver::solveName($model['name'], 'name_names'). '_table.php';
+                    $stub_obj = new StubCompiler( $stub_txt, $model );
+                    $output = $stub_obj->compile();
+                    $this->files->put($output_path, $output );
+                }
             }
         }
     }
@@ -95,7 +116,6 @@ class CrudDscaffold
         foreach( $this->setting->setting_array['models'] as $model ){
 
             // (i) /database/seeds/DatabaseSeeder.php
-            
             $stub_txt = $this->files->get( __DIR__. '/../Stubs/database/seeds/DatabaseSeeder_add.stub');
             $output_path = base_path().'/database/seeds/DatabaseSeeder.php';
             $stub_obj = new StubCompiler( $stub_txt, $model );
@@ -121,7 +141,6 @@ class CrudDscaffold
                     throw new \Exception("Seed File is already exists![".$output_path."]");
                 }
             }
-
             $this->files->put($output_path, $output );
         }
     }
@@ -132,19 +151,53 @@ class CrudDscaffold
 
         foreach( $this->setting->setting_array['models'] as $model ){
 
-            //create model file
-            $stub_txt = $this->files->get( __DIR__. '/../Stubs/app/[Model].stub');
-            $output_path = base_path().'/app/'. NameResolver::solveName($model['name'], 'NameName'). '.php';
-            $stub_obj = new StubCompiler( $stub_txt, $model );
-            $output = $stub_obj->compile();
 
-            //overwrite check
-            if( !$this->setting->force ){   // no check if force option is selected
-                if( $this->files->exists($output_path) ){
-                    throw new \Exception("Model File is already exists![".$output_path."]");
+            // case using laravel auth
+            if( $this->setting->setting_array["use_laravel_auth"] === "true" && $model['name'] === "user" ){
+    
+                $output_path = base_path().'/app/User.php';
+                $original_src = $this->files->get( $output_path );
+                $output = $original_src;
+
+                $stub_txt = $this->files->get( __DIR__. '/../Stubs/app/Auth/User01_use.stub');
+                $replace_pattern = '#(class User)#';
+                if( !strpos( $original_src, $stub_txt) ){
+                    $output = preg_replace ( $replace_pattern, $stub_txt.'$1', $output );
                 }
+
+                $stub_txt = $this->files->get( __DIR__. '/../Stubs/app/Auth/User02_trait_and_method.stub');
+                $replace_pattern = '#(use Notifiable;)#';
+                if( !strpos( $original_src, $stub_txt) ){
+                    $output = preg_replace ( $replace_pattern, '$1'.$stub_txt, $output );
+                }
+
+                $stub_txt = $this->files->get( __DIR__. '/../Stubs/app/Auth/User03_mass_assignment.stub');
+                $replace_pattern = '#(\'name\', \'email\', \'password\',)#';
+                if( !strpos( $original_src, $stub_txt) ){
+                    $output = preg_replace ( $replace_pattern, '$1'.$stub_txt, $output );
+                }
+
+                $stub_obj = new StubCompiler( $output, $model );
+                $output = $stub_obj->compile();
+
+                $this->files->put($output_path, $output );
+
+            }else{
+
+                //create model file
+                $stub_txt = $this->files->get( __DIR__. '/../Stubs/app/[Model].stub');
+                $output_path = base_path().'/app/'. NameResolver::solveName($model['name'], 'NameName'). '.php';
+                $stub_obj = new StubCompiler( $stub_txt, $model );
+                $output = $stub_obj->compile();
+    
+                //overwrite check
+                if( !$this->setting->force ){   // no check if force option is selected
+                    if( $this->files->exists($output_path) ){
+                        throw new \Exception("Model File is already exists![".$output_path."]");
+                    }
+                }
+                $this->files->put($output_path, $output );
             }
-            $this->files->put($output_path, $output );
         }
     }
 
@@ -153,6 +206,27 @@ class CrudDscaffold
     private function setupController(){
 
         foreach( $this->setting->setting_array['models'] as $model ){
+
+            // case using laravel auth
+            if( $this->setting->setting_array["use_laravel_auth"] === "true" && $model['name'] === "user" ){
+
+                $output_path = base_path().'/app/Http/Controllers/Auth/RegisterController.php';
+                $original_src = $this->files->get( $output_path );
+                $output = $original_src;
+
+                $stub_txt = $this->files->get( __DIR__. '/../Stubs/app/Http/Controllers/Auth/RegisterController_add02.stub');
+                $replace_pattern = '#(return User::create\(\[)(.*?)(\s*)(\]\);)#s';
+                $output = preg_replace ( $replace_pattern, '$1$2'.$stub_txt.'$4', $output );
+
+                $stub_txt = $this->files->get( __DIR__. '/../Stubs/app/Http/Controllers/Auth/RegisterController_add01.stub');
+                $replace_pattern = '#(}[^\}]*)$#';
+                $output = preg_replace ( $replace_pattern, $stub_txt.'$1', $output );
+
+                $stub_obj = new StubCompiler( $output, $model );
+                $output = $stub_obj->compile();
+
+                $this->files->put($output_path, $output );
+            }
 
             //create model file
             $stub_txt = $this->files->get( __DIR__. '/../Stubs/app/Http/Controllers/[Model]Controller.stub');
@@ -269,7 +343,23 @@ class CrudDscaffold
         $view_filename_array = ['_common.blade','_form.blade','create.blade','duplicate.blade','edit.blade','index.blade','show.blade'];
 
         foreach( $this->setting->setting_array['models'] as $model ){
-    
+
+            if( $model['name'] === 'user' && $model['use_laravel_auth'] === 'true' ){
+
+                $output_path = base_path().'/resources/views/auth/register.blade.php';
+                $original_src = $this->files->get( $output_path );
+                $output = $original_src;
+
+                $stub_txt = $this->files->get( __DIR__. '/../Stubs/resources/views/auth/register_add.stub');
+                $replace_pattern = '#(.*)(<div class="form-group">)(.*?)(Register)#s';
+                $output = preg_replace ( $replace_pattern, '$1'.$stub_txt.'$2$3$4', $output );
+
+                $stub_obj = new StubCompiler( $output, $model );
+                $output = $stub_obj->compile();
+
+                $this->files->put($output_path, $output );
+            }
+
             foreach($view_filename_array as $view_filename){
                 $stub_txt = $this->files->get( __DIR__. '/../Stubs/resources/views/[models]/'. $view_filename. '.stub');
                 $output_dir = base_path().'/resources/views/'.NameResolver::solveName($model['name'], 'nameNames').'/';

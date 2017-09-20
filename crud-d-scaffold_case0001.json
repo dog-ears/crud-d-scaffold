@@ -11,7 +11,7 @@
                     "name": "realName",         /* [required] */
                     "type": "string",           /* [default:string] ex( integer, string ) */
                     "input_type": "text",       /* [default:text] text, textarea */ /* relation_column forced to pulldown */
-                    "faker_type": "name()",     /* [default -> ''(nullable must be true) ] ex( randomDigit(), randomNumber(2), numberBetween(1,30), word(), sentence(), paragraph(), text(), name(), address(), date('Y-m-d','now'), safeEmail(), password() )  */
+                    "faker_type": "name()",     /* [default -> ''] ex( randomDigit(), randomNumber(2), numberBetween(1,30), word(), sentence(), paragraph(), text(), name(), address(), date('Y-m-d','now'), safeEmail(), password() )  */
                     "nullable": "false",        /* [default:false] ex( true, false ) */
                     "display_name": "REAL NAME",/* [required] */
                     "show_in_list": "true",     /* [default:true] ex( true, false ) */

@@ -1,0 +1,1 @@
+{{{ foreach($schemas): }}}'{{{ $this.name|name_name }}}',{{{ endforeach; }}}
