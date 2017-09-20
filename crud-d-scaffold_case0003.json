@@ -27,8 +27,8 @@
                     "faker_type": "word()",
                     "nullable": "false",
                     "display_name": "HOBBY",
-                    "show_in_list": "true",
-                    "show_in_detail": "false",
+                    "show_in_list": "false",
+                    "show_in_detail": "true",
 					"belongsto": "",
 					"belongsto_column": ""
                 },{
