@@ -227,7 +227,6 @@ class CrudDscaffold
 
                 $this->files->put($output_path, $output );
             }
-            dd('test');
 
             //create model file
             $stub_txt = $this->files->get( __DIR__. '/../Stubs/app/Http/Controllers/[Model]Controller.stub');
