@@ -1,3 +1,41 @@
+{{{ if($use_laravel_auth==true): }}}
+
+                        <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
+                            <label for="name-field">Name</label>
+                                <input id="name-field" type="text" class="form-control" name="name" value="{{ $user->name or '' }}" required autofocus>
+                                @if ($errors->has('name'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('name') }}</strong>
+                                    </span>
+                                @endif
+                        </div>
+
+                        <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
+                            <label for="email-field">E-Mail Address</label>
+                            <input id="email-field" type="email" class="form-control" name="email" value="{{ $user->email or '' }}" required>
+                            @if ($errors->has('email'))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('email') }}</strong>
+                                </span>
+                            @endif
+                        </div>
+
+                        <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
+                            <label for="password-field">Password</label>
+                            <input id="password-field" type="password" class="form-control" name="password" @if($view_mode !== 'edit')required @endif>
+                            @if ($errors->has('password'))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('password') }}</strong>
+                                </span>
+                            @endif
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password-confirm-field">Confirm Password</label>
+                            <input id="password-confirm-field" type="password" class="form-control" name="password_confirmation" @if($view_mode !== 'edit')required @endif>
+                        </div>
+
+{{{ endif; }}}
 {{{ foreach($schemas): }}}
                     <div class="form-group @if($errors->has('{{{ $this.name|name_name }}}')) has-error @endif">
                        <label for="{{{ $this.name|name_name }}}-field">{{{ $this.display_name }}}</label>

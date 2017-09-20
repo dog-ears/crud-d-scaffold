@@ -1,0 +1,28 @@
+
+    use GetAllDataTrait,GetListFromAllRelationAppsTrait;
+{{{ if($use_soft_delete==true): }}}
+    use SoftDeletes;
+{{{ endif; }}}
+
+{{{ if($use_soft_delete==true): }}}
+    protected $dates = ['deleted_at'];
+{{{ endif; }}}
+
+	public static $related_app = [
+		"belongsto" =>	[ {{{ foreach($schemas): }}}{{{ if($this.belongsto!=): }}} "{{{ $this.belongsto|NameName }}}" => "{{{ $this.belongsto_column|name_name }}}", {{{ endif; }}}{{{ endforeach; }}} ],
+		"hasmany"	=>	[ {{{ foreach($has_many): }}}"{{{ $this|NameName }}}",{{{ endforeach; }}} ]
+	];
+
+{{{ foreach($schemas): }}}
+{{{ if($this.belongsto!=): }}}
+	public function {{{ $this.belongsto|nameName }}}() {
+		return $this->belongsTo('App\{{{ $this.belongsto|NameName }}}');
+	}
+{{{ endif; }}}
+{{{ endforeach; }}}
+
+{{{ foreach($has_many): }}}
+	public function {{{ $this|nameNames }}}() {
+		return $this->hasMany('App\{{{ $this|NameName }}}');
+	}
+{{{ endforeach; }}}
