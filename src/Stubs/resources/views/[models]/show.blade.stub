@@ -33,9 +33,21 @@
 
             <form action="#">
                 <div class="form-group">
-                    <label for="nome">ID</label>
+                    <label for="id">ID</label>
                     <p class="form-control-static">{{${{{ $name|nameName }}}->id}}</p>
                 </div>
+
+{{{ if($use_laravel_auth==true): }}}
+                <div class="form-group">
+                    <label for="nome">NAME</label>
+                    <p class="form-control-static">{{${{{ $name|nameName }}}->name}}</p>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <p class="form-control-static">{{${{{ $name|nameName }}}->email}}</p>
+                </div>
+{{{ endif; }}}
+
 {{{ foreach($schemas): }}}{{{ if($this.show_in_detail==true): }}}
 {{{ if($this.belongsto!=): }}}
                 <div class="form-group">

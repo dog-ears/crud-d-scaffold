@@ -42,8 +42,19 @@ class {{{ $name|NameName }}}Controller extends Controller
      */
     public function store(Request $request)
     {
+{{{ if($name==user): }}}
+        // only user model
+        $input = $request->all();
+        $input['password'] = bcrypt($input['password']);
+
+		//create data
+		{{{ $name|NameName }}}::create( $input );
+{{{ else: }}}
 		//create data
 		{{{ $name|NameName }}}::create( $request->all() );
+{{{ endif; }}}
+
+
 
 		return redirect()->route('{{{ $name|nameNames }}}.index')->with('message', 'Item created successfully.');
     }
@@ -92,8 +103,21 @@ class {{{ $name|NameName }}}Controller extends Controller
      */
     public function update({{{ $name|NameName }}} ${{{ $name|nameName }}}, Request $request)
     {
+{{{ if($name==user): }}}
+        // only user model
+        $input = $request->all();
+        if( $input['password'] === '' ){
+            $input['password'] = $user->password;
+        }else{
+            $input['password'] = bcrypt($input['password']);
+        }
+
+		//update data
+		${{{ $name|nameName }}}->update($input);
+{{{ else: }}}
 		//update data
 		${{{ $name|nameName }}}->update($request->all());
+{{{ endif; }}}
 
 		return redirect()->route('{{{ $name|nameNames }}}.index')->with('message', 'Item updated successfully.');
     }
