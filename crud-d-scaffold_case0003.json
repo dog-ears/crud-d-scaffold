@@ -1,4 +1,4 @@
-/* for use laravel auth  */
+/* for use laravel auth with some schemas  */
 
 {
     "app_type": "web",                          /* [default:web]  */

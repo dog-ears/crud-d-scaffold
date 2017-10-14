@@ -38,6 +38,7 @@ class StubCompiler
         $pattern_tag = '#(\{\{\{ [^}]* \}\}\})#';
         $this->stub_array = preg_split ( $pattern_tag , $this->stub_txt, null, PREG_SPLIT_NO_EMPTY|PREG_SPLIT_DELIM_CAPTURE );  // {{{ xxxxx }}}
 
+        //compile
         $result = $this->compile_loop( $this->stub_array, '' );
 
         return $result;
@@ -76,7 +77,6 @@ class StubCompiler
                         $new_local_stub_array[] = $local_stub_array[$i];
                     }
                 }else{
-                    
                     $var_path = $m[1];
                     $pipe = $m[2];
                     $result .= $this->compile_var( $var_path, $pipe, $this_path );
@@ -257,7 +257,6 @@ class StubCompiler
                         $var_path_foreach_array = array_merge( $this_path_array, array_slice($var_path_foreach_array,1) );
                     }
                     $var_path_foreach = implode('.', $var_path_foreach_array);
-
                     $loop_array = $this->array_get( $this->root_vars, $var_path_foreach );
 
                     for($j=0;$j<count($loop_array);$j++){
@@ -300,19 +299,29 @@ class StubCompiler
 
         $var_path_array = explode('.',$var_path);
         $this_path_array = explode('.',$this_path);
-        
+
         if( $var_path_array[0] == 'this' ){
             $var_path_array = array_merge($this_path_array, array_slice($var_path_array,1));
         }
+
         $var_path = implode('.',$var_path_array);
+
         $result = $this->array_get( $this->root_vars, $var_path );
 
-        return NameResolver::solveName($result, $pipe);
+        if($pipe !== ''){
+            return NameResolver::solveName($result, $pipe);
+        }
+        return $result;
     }
 
     private function check_if_condition( $var_path, $target_str, $this_path, $reverse=false ){
 
         $var01 = $this->compile_var( $var_path, '', $this_path );
+        
+        // case of null array check
+        if( $target_str === '[]' ){
+            $target_str = [];
+        }
 
         if($reverse){
             if( $var01 == $target_str ){
@@ -330,7 +339,7 @@ class StubCompiler
     }
 
     private function array_get(array $array, $keys ) {
- 
+
         $keys_array = explode( '.', $keys );
  
         $current = $array;
