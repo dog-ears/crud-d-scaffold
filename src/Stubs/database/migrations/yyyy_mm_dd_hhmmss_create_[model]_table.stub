@@ -4,7 +4,12 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
+{{{ if($parentModel!=): }}}
+class Create{{{ $name|NameName }}}Table extends Migration
+{{{ else: }}}
 class Create{{{ $name|NameNames }}}Table extends Migration
+{{{ endif; }}}
+
 {
     /**
      * Run the migrations.
@@ -13,8 +18,11 @@ class Create{{{ $name|NameNames }}}Table extends Migration
      */
     public function up()
     {
+{{{ if($parentModel!=): }}}
+        Schema::create('{{{ $name|name_name }}}', function (Blueprint $table) {
+{{{ else: }}}
         Schema::create('{{{ $name|name_names }}}', function (Blueprint $table) {
-
+{{{ endif; }}}
             $table->increments('id');
             $table->timestamps();
 
@@ -39,6 +47,10 @@ class Create{{{ $name|NameNames }}}Table extends Migration
      */
     public function down()
     {
+{{{ if($parentModel!=): }}}
+        Schema::drop('{{{ $name|name_name }}}');
+{{{ else: }}}
         Schema::drop('{{{ $name|name_names }}}');
+{{{ endif; }}}
     }
 }

@@ -2,7 +2,12 @@
 
 use Illuminate\Database\Seeder;
 
+{{{ if($parentModel!=): }}}
+class {{{ $name|NameName }}}TableSeeder extends Seeder
+{{{ else: }}}
 class {{{ $name|NameNames }}}TableSeeder extends Seeder
+{{{ endif; }}}
+
 {
     /**
      * Run the database seeds.
@@ -15,7 +20,13 @@ class {{{ $name|NameNames }}}TableSeeder extends Seeder
         $faker = Faker\Factory::create();
 
         for($i=0;$i<30;$i++){
+
+{{{ if($parentModel!=): }}}
+            DB::table('{{{ $name|name_name }}}')->insert([
+{{{ else: }}}
             DB::table('{{{ $name|name_names }}}')->insert([
+{{{ endif; }}}
+
 {{{ if($use_laravel_auth==true): }}}
                 'name' => $faker->userName(),
                 'email' => $faker->safeEmail(),

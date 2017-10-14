@@ -1,0 +1,125 @@
+/* for Many To Many Relationship without laravel Auth  */
+
+{
+    "app_type": "web",                          /* [default:web]  */
+    "use_laravel_auth": "false",                  /* [default:false]  */
+    "models": [
+        {
+            "name": "nicePost",
+            "display_name": "NICE POST",
+            "use_soft_delete": "true",
+            "schemas": [
+                {
+                    "name": "bigTitle",         /* [required] */
+                    "type": "string",           /* [default:string] ex( integer, string ) */
+                    "input_type": "text",       /* [default:text] text, textarea */ /* relation_column forced to pulldown */
+                    "faker_type": "name()",     /* [default -> ''(nullable must be true) ] ex( randomDigit(), randomNumber(2), numberBetween(1,30), word(), sentence(), paragraph(), text(), name(), address(), date('Y-m-d','now'), safeEmail(), password() )  */
+                    "nullable": "false",        /* [default:false] ex( true, false ) */
+                    "display_name": "BIG TITLE",/* [required] */
+                    "show_in_list": "true",     /* [default:true] ex( true, false ) */
+                    "show_in_detail": "true",   /* [default:true] ex( true, false ) */
+					"belongsto": "",            /* [default:""] */
+					"belongsto_column": ""      /* [default:""] */
+                },{
+                    "name": "shallowBody",
+                    "type": "string",
+                    "input_type": "text",
+                    "faker_type": "paragraph()",
+                    "nullable": "false",
+                    "display_name": "SHALLOW BODY",
+                    "show_in_list": "true",
+                    "show_in_detail": "false",
+					"belongsto": "",
+					"belongsto_column": ""
+                }
+            ]
+        },{
+            "name": "beautifulTag",
+            "display_name": "TAG",
+            "use_soft_delete": "true",
+            "schemas": [
+                {
+                    "name": "tagName",
+                    "type": "string",
+                    "input_type": "text",
+                    "faker_type": "name()",
+                    "nullable": "false",
+                    "display_name": "TAG NAME",
+                    "show_in_list": "true",
+                    "show_in_detail": "true",
+					"belongsto": "",
+					"belongsto_column": ""
+                }
+            ]
+        },{
+            "name": "brilliantCategory",
+            "display_name": "CATEGORY",
+            "use_soft_delete": "true",
+            "schemas": [
+                {
+                    "name": "categoryName",
+                    "type": "string",
+                    "input_type": "text",
+                    "faker_type": "name()",
+                    "nullable": "false",
+                    "display_name": "CATEGORY NAME",
+                    "show_in_list": "true",
+                    "show_in_detail": "true",
+					"belongsto": "",
+					"belongsto_column": ""
+                }
+            ]
+        },{
+            "name": "goodComment",
+            "display_name": "GOOD COMMENT",
+            "use_soft_delete": "true",
+            "schemas": [
+                {
+                    "name": "commenterName",
+                    "type": "string",
+                    "input_type": "text",
+                    "faker_type": "name()",
+                    "nullable": "false",
+                    "display_name": "COMMENTER NAME",
+                    "show_in_list": "true",
+                    "show_in_detail": "true",
+					"belongsto": "",
+					"belongsto_column": ""
+                }
+            ]
+        }
+    ],
+    "pivots":[
+        {
+            "parentModel":"nicePost",
+            "parentModel_column":"bigTitle",
+            "childModel":"beautifulTag",
+            "childModel_column":"tagName",
+            "use_soft_delete": "false",
+            "schemas": [
+                {
+                    "name":"size",
+                    "type":"integer",
+                    "input_type": "text",
+                    "faker_type": "numberBetween(1,10)",
+                    "nullable": "true",
+                    "display_name": "SIZE"
+                },{
+                    "name":"note",
+                    "type":"string",
+                    "input_type": "text",
+                    "faker_type": "name()",
+                    "nullable": "true",
+                    "display_name": "NOTE"
+                }
+            ]
+        },{
+            "parentModel":"nicePost",
+            "parentModel_column":"bigTitle",
+            "childModel":"brilliantCategory",
+            "childModel_column":"categoryName",
+            "use_soft_delete": "false",
+            "schemas": []
+        }
+    ]
+}

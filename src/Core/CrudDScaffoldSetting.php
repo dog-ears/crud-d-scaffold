@@ -90,6 +90,7 @@ class CrudDscaffoldSetting
             $this->command->error( 'json format error! models have no child  ('. $file_path. ')' );
             return false;
         }
+
         foreach( $this->setting_array['models'] as &$model ){
 
             // required property
@@ -104,7 +105,9 @@ class CrudDscaffoldSetting
             if( !array_key_exists('use_soft_delete', $model) ){
                 $model['use_soft_delete'] = 'false';
             }
-
+            if( !array_key_exists('belongsToMany', $model) ){
+                $model['belongsToMany'] = '';
+            }
 
             if( $this-> setting_array["use_laravel_auth"] === "true" && $model['name'] === "user" ){
 
@@ -199,6 +202,85 @@ class CrudDscaffoldSetting
 
             }unset($schema);
         }unset($model);
+
+
+
+        if( array_key_exists('pivots',$this->setting_array) ){
+
+            foreach( $this->setting_array['pivots'] as &$pivot ){
+
+                //add belongstomany to model
+                foreach( $this->setting_array['models'] as &$model ){
+
+                    $pivot_schemas = array();
+                    foreach( $pivot['schemas'] as $schema ){
+                        $pivot_schemas[] = NameResolver::solveName($schema['name'], 'name_name');
+                    }unset($schema);
+
+                    $schemas_implode = "'" . implode("','", $pivot_schemas) . "'";
+                    $schemas_implode = str_replace("''", "", $schemas_implode);
+
+                    if( $model['name'] === $pivot['parentModel'] ){
+
+                        $model['belongstomany'][] = [
+                            "name" => $pivot['childModel'],
+                            "column" => $pivot['childModel_column'],
+                            "schemas" => $pivot['schemas'],
+                            "schemas_implode" => $schemas_implode,
+                            "use_soft_delete" => $pivot['use_soft_delete']
+                        ];
+
+                    }elseif( $model['name'] === $pivot['childModel'] ){
+
+                        $model['belongstomany'][] = [
+                            "name" => $pivot['parentModel'],
+                            "column" => $pivot['parentModel_column'],
+                            "schemas" => $pivot['schemas'],
+                            "schemas_implode" => $schemas_implode,
+                            "use_soft_delete" => $pivot['use_soft_delete']
+                        ];
+                    }
+                }unset($model);
+
+                // add name property
+                $rerated_models = array();
+                $rerated_models[] = NameResolver::solveName($pivot['parentModel'], 'name_name');
+                $rerated_models[] = NameResolver::solveName($pivot['childModel'], 'name_name');
+                sort($rerated_models);
+                $pivot['name'] = implode( '_', $rerated_models );
+
+                // add basic schema
+                $pivot['schemas'][] = [
+                    "name" => NameResolver::solveName($pivot['parentModel'], 'name_name'). '_id',
+                    "type" => "integer",
+                    "input_type" => "null",
+                    "faker_type" => "numberBetween(1,30)",
+                    "nullable" => "true",
+                    "display_name" => "parent_id",
+                    "show_in_list" => "false",
+                    "show_in_detail" => "false"
+                ];
+                $pivot['schemas'][] = [
+                    "name" => NameResolver::solveName($pivot['childModel'], 'name_name'). '_id',
+                    "type" => "integer",
+                    "input_type" => "null",
+                    "faker_type" => "numberBetween(1,30)",
+                    "nullable" => "true",
+                    "display_name" => "parent_id",
+                    "show_in_list" => "false",
+                    "show_in_detail" => "false"
+                ];
+
+            }unset($pivot);
+        }
+        foreach( $this->setting_array['models'] as &$model ){
+
+            if( !array_key_exists('belongstomany', $model) ){
+                $model['belongstomany'] = 'false';
+            }
+
+        }unset($model);
+
         return true;
     }
 }

@@ -107,9 +107,18 @@ class CrudDscaffold
                 }
             }
         }
+
+        // pivot table for many to many relationship
+        foreach( $this->setting->setting_array['pivots'] as $pivot ){
+
+            //create migration file
+            $stub_txt = $this->files->get( __DIR__. '/../Stubs/database/migrations/yyyy_mm_dd_hhmmss_create_[model]_table.stub');
+            $output_path = base_path().'/database/migrations/'. date('Y_m_d_His'). '_create_'. NameResolver::solveName($pivot['name'], 'name_name'). '_table.php';
+            $stub_obj = new StubCompiler( $stub_txt, $pivot );
+            $output = $stub_obj->compile();
+            $this->files->put($output_path, $output );
+        }
     }
-
-
 
     private function setupSeeding(){
 
@@ -143,6 +152,50 @@ class CrudDscaffold
             }
             $this->files->put($output_path, $output );
         }
+
+        // pivot seeding for many to many relationship
+        foreach( $this->setting->setting_array['pivots'] as $pivot ){
+
+            // (i) /database/seeds/DatabaseSeeder.php
+            $stub_txt = $this->files->get( __DIR__. '/../Stubs/database/seeds/DatabaseSeeder_add.stub');
+            $output_path = base_path().'/database/seeds/DatabaseSeeder.php';
+            $stub_obj = new StubCompiler( $stub_txt, $pivot );
+            $add_src = $stub_obj->compile();
+
+            $original_src = $this->files->get( base_path().'/database/seeds/DatabaseSeeder.php' );
+            $replace_pattern = '#(public function run\(\)\s*\{)([^\}]*)(\})#';
+            $output = preg_replace ( $replace_pattern, '$1$2'.$add_src.'$3', $original_src );
+    
+            if( !strpos( $original_src, $add_src) ){
+                $this->files->put($output_path, $output );
+            }
+
+            // (ii) /database/seeds/[Models]TableSeeder.php
+            $stub_txt = $this->files->get( __DIR__. '/../Stubs/database/seeds/[Models]TableSeeder.stub');
+            $output_path = base_path().'/database/seeds/'. NameResolver::solveName($pivot['name'], 'NameName'). 'TableSeeder.php';
+            $stub_obj = new StubCompiler( $stub_txt, $pivot );
+            $output = $stub_obj->compile();
+
+            //overwrite check
+            if( !$this->setting->force ){   // no check if force option is selected
+                if( $this->files->exists($output_path) ){
+                    throw new \Exception("Seed File is already exists![".$output_path."]");
+                }
+            }
+            $this->files->put($output_path, $output );
+
+
+
+
+
+            //create migration file
+            $stub_txt = $this->files->get( __DIR__. '/../Stubs/database/migrations/yyyy_mm_dd_hhmmss_create_[model]_table.stub');
+            $output_path = base_path().'/database/migrations/'. date('Y_m_d_His'). '_create_'. NameResolver::solveName($pivot['name'], 'name_name'). '_table.php';
+            $stub_obj = new StubCompiler( $stub_txt, $pivot );
+            $output = $stub_obj->compile();
+            $this->files->put($output_path, $output );
+        }
+
     }
 
 
@@ -150,7 +203,6 @@ class CrudDscaffold
     private function setupModel(){
 
         foreach( $this->setting->setting_array['models'] as $model ){
-
 
             // case using laravel auth
             if( $this->setting->setting_array["use_laravel_auth"] === "true" && $model['name'] === "user" ){
@@ -228,7 +280,7 @@ class CrudDscaffold
                 $this->files->put($output_path, $output );
             }
 
-            //create model file
+            //create controller file
             $stub_txt = $this->files->get( __DIR__. '/../Stubs/app/Http/Controllers/[Model]Controller.stub');
             $output_path = base_path().'/app/Http/Controllers/'. NameResolver::solveName($model['name'], 'NameName'). 'Controller.php';
             $stub_obj = new StubCompiler( $stub_txt, $model );
@@ -242,7 +294,6 @@ class CrudDscaffold
             }
             $this->files->put($output_path, $output );
         }
-
     }
 
 
