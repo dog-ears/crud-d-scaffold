@@ -53,7 +53,7 @@ class {{{ $name|NameName }}}Controller extends Controller
         $input['password'] = bcrypt($input['password']);
 {{{ endif; }}}
 
-{{{ if($belongstomany!=false): }}}
+{{{ if($belongstomany!=[]): }}}
         //remove data for manytomany relation
         if( array_key_exists('pivots',$input) ){ unset($input['pivots']); }
         if( array_key_exists('pivots-option',$input) ){ unset($input['pivots-option']); }
@@ -62,7 +62,7 @@ class {{{ $name|NameName }}}Controller extends Controller
 		//create data
 		${{{ $name|name_name }}} = {{{ $name|NameName }}}::create( $input );
 
-{{{ if($belongstomany!=false): }}}
+{{{ if($belongstomany!=[]): }}}
         //sync(attach/detach)
         foreach( $request->input('pivots') as $pivot_child_model_name => $pivots ){
 
@@ -158,7 +158,7 @@ class {{{ $name|NameName }}}Controller extends Controller
 		//update data
 		${{{ $name|nameName }}}->update($input);
 
-{{{ if($belongstomany!=false): }}}
+{{{ if($belongstomany!=[]): }}}
         //sync(attach/detach)
         foreach( $request->input('pivots') as $pivot_child_model_name => $pivots ){
 

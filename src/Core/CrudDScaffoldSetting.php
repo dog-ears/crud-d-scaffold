@@ -272,11 +272,14 @@ class CrudDscaffoldSetting
                 ];
 
             }unset($pivot);
+        }else{
+            $this->setting_array['pivots'] = [];
         }
+
         foreach( $this->setting_array['models'] as &$model ){
 
             if( !array_key_exists('belongstomany', $model) ){
-                $model['belongstomany'] = 'false';
+                $model['belongstomany'] = [];
             }
 
         }unset($model);
