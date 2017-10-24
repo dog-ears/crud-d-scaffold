@@ -85,6 +85,17 @@
                     "show_in_detail": "true",
 					"belongsto": "",
 					"belongsto_column": ""
+                },{
+                    "name": "nicePostId",
+                    "type": "integer",
+                    "input_type": "text",
+                    "faker_type": "numberBetween(1,30)",
+                    "nullable": "false",
+                    "display_name": "NICE POST - BIG TITLE",
+                    "show_in_list": "true",
+                    "show_in_detail": "true",
+					"belongsto": "nicePost",
+					"belongsto_column": "bigTitle"
                 }
             ]
         }
