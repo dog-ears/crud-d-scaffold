@@ -21,22 +21,26 @@ trait GetListFromAllRelationAppsTrait {
     {
 		$result = [];
 
-		$belongsto_apps = self::$related_app["belongsto"];
-
-		foreach( $belongsto_apps as $belongsto_app_key => $belongsto_app_value ){
-
-			$class_name = '\\App\\'. $belongsto_app_key;
-			$result[$belongsto_app_key] = $class_name::pluck( $belongsto_app_value, 'id' );
+		if( array_key_exists('belongsto', self::$related_app) ){
+			$belongsto_apps = self::$related_app["belongsto"];
+			
+			foreach( $belongsto_apps as $belongsto_app_key => $belongsto_app_value ){
+	
+				$class_name = '\\App\\'. $belongsto_app_key;
+				$result[$belongsto_app_key] = $class_name::pluck( $belongsto_app_value, 'id' );
+			}
 		}
 
-		$belongstomany_apps = self::$related_app["belongstomany"];
+		if( array_key_exists('belongstomany', self::$related_app) ){
+			$belongstomany_apps = self::$related_app["belongstomany"];
 
-		foreach( $belongstomany_apps as $belongstomany_app_key => $belongstomany_app_value ){
+			foreach( $belongstomany_apps as $belongstomany_app_key => $belongstomany_app_value ){
 
-			$class_name = '\\App\\'. $belongstomany_app_key;
-			$result[$belongstomany_app_key] = $class_name::pluck( $belongstomany_app_value, 'id' );
+				$class_name = '\\App\\'. $belongstomany_app_key;
+				$result[$belongstomany_app_key] = $class_name::pluck( $belongstomany_app_value, 'id' );
+			}
 		}
 
-        return $result;
+		return $result;
     }
 }
