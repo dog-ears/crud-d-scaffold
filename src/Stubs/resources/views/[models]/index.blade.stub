@@ -148,7 +148,7 @@
 {{{ endif; }}}{{{ endforeach; }}}
 
 {{{ foreach($belongstomany): }}}
-                            <th>{{{ $this.name }}}</th>
+                            <th>{{{ $this.display_name }}}</th>
 {{{ endforeach; }}}
 
                             <th class="text-right">OPTIONS</th>
