@@ -204,43 +204,41 @@ class CrudDscaffoldSetting
         }unset($model);
 
 
-
+        //set belongstomany to each models
         if( array_key_exists('pivots',$this->setting_array) ){
 
             foreach( $this->setting_array['pivots'] as &$pivot ){
 
-                //add belongstomany to model
-                foreach( $this->setting_array['models'] as &$model ){
+                $pivot_schemas = array_column($pivot['schemas'], 'name');
+                foreach( $pivot_schemas as &$schema ){
+                    $schema = NameResolver::solveName($schema, 'name_name');
+                }unset($schema);
+                $schemas_implode = "'" . implode("','", $pivot_schemas) . "'";
+                $schemas_implode = str_replace("''", "", $schemas_implode);
 
-                    $pivot_schemas = array();
-                    foreach( $pivot['schemas'] as $schema ){
-                        $pivot_schemas[] = NameResolver::solveName($schema['name'], 'name_name');
-                    }unset($schema);
+                // get parent_model_key and child_model_key
+                $parent_model_key = array_search($pivot['parentModel'], array_column($this->setting_array['models'], 'name'));
+                $child_model_key = array_search($pivot['childModel'], array_column($this->setting_array['models'], 'name'));
 
-                    $schemas_implode = "'" . implode("','", $pivot_schemas) . "'";
-                    $schemas_implode = str_replace("''", "", $schemas_implode);
+                //add belongstomany to parent model
+                $this->setting_array['models'][$parent_model_key]['belongstomany'][] = [
+                    "name" => $pivot['childModel'],
+                    "display_name" => $this->setting_array['models'][$child_model_key]['display_name'],
+                    "use_soft_delete" => $pivot['use_soft_delete'],
+                    "column" => $pivot['childModel_column'],
+                    "schemas" => $pivot['schemas'],
+                    "schemas_implode" => $schemas_implode,
+                ];
 
-                    if( $model['name'] === $pivot['parentModel'] ){
-
-                        $model['belongstomany'][] = [
-                            "name" => $pivot['childModel'],
-                            "column" => $pivot['childModel_column'],
-                            "schemas" => $pivot['schemas'],
-                            "schemas_implode" => $schemas_implode,
-                            "use_soft_delete" => $pivot['use_soft_delete']
-                        ];
-
-                    }elseif( $model['name'] === $pivot['childModel'] ){
-
-                        $model['belongstomany'][] = [
-                            "name" => $pivot['parentModel'],
-                            "column" => $pivot['parentModel_column'],
-                            "schemas" => $pivot['schemas'],
-                            "schemas_implode" => $schemas_implode,
-                            "use_soft_delete" => $pivot['use_soft_delete']
-                        ];
-                    }
-                }unset($model);
+                //add belongstomany to child model
+                $this->setting_array['models'][$child_model_key]['belongstomany'][] = [
+                    "name" => $pivot['parentModel'],
+                    "display_name" => $this->setting_array['models'][$parent_model_key]['display_name'],
+                    "column" => $pivot['parentModel_column'],
+                    "schemas" => $pivot['schemas'],
+                    "schemas_implode" => $schemas_implode,
+                    "use_soft_delete" => $pivot['use_soft_delete']
+                ];
 
                 // add name property
                 $rerated_models = array();
