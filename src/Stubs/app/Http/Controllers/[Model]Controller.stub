@@ -64,22 +64,26 @@ class {{{ $name|NameName }}}Controller extends Controller
 
 {{{ if($belongstomany!=[]): }}}
         //sync(attach/detach)
-        foreach( $request->input('pivots') as $pivot_child_model_name => $pivots ){
+        if( $request->input('pivots') ){
 
-            // remove $pivots without 'id'
-            $filtered_pivots = array_filter($pivots,function($value){
-                return array_key_exists('id',$value);
-            });
+            foreach( $request->input('pivots') as $pivot_child_model_name => $pivots ){
 
-            // remove 'id'
-            foreach($filtered_pivots as &$value){
-                if( array_key_exists('id', $value) ){
-                    unset($value['id']);
-                }
-            }unset($value);
+                // remove $pivots without 'id'
+                $filtered_pivots = array_filter($pivots,function($value){
+                    return array_key_exists('id',$value);
+                });
 
-            $method = camel_case( str_plural($pivot_child_model_name) );
-            ${{{ $name|name_name }}}->$method()->sync($filtered_pivots);
+                // remove 'id'
+                foreach($filtered_pivots as &$value){
+                    if( array_key_exists('id', $value) ){
+                        unset($value['id']);
+                    }
+                }unset($value);
+
+                $method = camel_case( str_plural($pivot_child_model_name) );
+                ${{{ $name|name_name }}}->$method()->sync($filtered_pivots);
+            }
+
         }
 {{{ endif; }}}
 
