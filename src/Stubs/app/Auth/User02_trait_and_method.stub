@@ -10,7 +10,7 @@
 
 	public static $related_app = [
 		"belongsto" =>	[ {{{ foreach($schemas): }}}{{{ if($this.belongsto!=): }}} "{{{ $this.belongsto|NameName }}}" => "{{{ $this.belongsto_column|name_name }}}", {{{ endif; }}}{{{ endforeach; }}} ],
-		"hasmany"	=>	[ {{{ foreach($has_many): }}}"{{{ $this|NameName }}}",{{{ endforeach; }}} ]
+		"hasmany"	=>	[ {{{ foreach($has_many): }}}"{{{ $this|NameName }}}",{{{ endforeach; }}} ],
 		"belongstomany" =>	[ {{{ foreach($belongstomany): }}} "{{{ $this.name|NameName }}}" => "{{{ $this.column|name_name }}}", {{{ endforeach; }}} ],
 	];
 
