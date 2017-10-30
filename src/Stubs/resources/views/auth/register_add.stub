@@ -30,7 +30,7 @@
 
 {{{ foreach($belongstomany): }}}
                     <div class="form-group manytomany{{ $errors->has('pivots{{{ $this.name|NameName }}}') ? ' has-error' : '' }}">
-                        <label class="col-md-4 control-label" for="pivots{{{ $this.name|NameName }}}Checkbox">{{{ $this.name|NameName }}}</label><br>
+                        <label class="col-md-4 control-label" for="pivots{{{ $this.name|NameName }}}Checkbox">{{{ $this.name|NameName }}}</label>
                         <div class="col-md-6">
                             @foreach($list['{{{ $this.name|NameName }}}'] as $list_key => $list_item)
                                 <label class="checkbox-inline">
