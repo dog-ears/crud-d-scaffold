@@ -30,19 +30,19 @@
 
 {{{ foreach($belongstomany): }}}
                     <div class="form-group manytomany{{ $errors->has('pivots{{{ $this.name|NameName }}}') ? ' has-error' : '' }}">
-                        <label for="pivots{{{ $this.name|NameName }}}Checkbox">{{{ $this.name|NameName }}}</label><br>
-
-                        @foreach($list['{{{ $this.name|NameName }}}'] as $list_key => $list_item)
-                            <label class="checkbox-inline">
-                              <input name="pivots[{{{ $this.name|name_name }}}][{{ $list_key }}][id]" type="checkbox" id="pivots{{{ $this.name|NameName }}}Checkbox{{ $list_key }}" value="{{ $list_key }}"
-{{{ if($this.schemas!=[]): }}}
-class="manytomany-trigger"
-{{{ endif; }}}
-                              @if( isset(${{{ $name|nameName }}}) && ${{{ $name|nameName }}}->{{{ $this.name|nameNames }}}->where('id',$list_key)->count() ) checked @endif
-                              > {{ $list_item }}
-                            </label>
-                        @endforeach
-
+                        <label class="col-md-4 control-label" for="pivots{{{ $this.name|NameName }}}Checkbox">{{{ $this.name|NameName }}}</label><br>
+                        <div class="col-md-6">
+                            @foreach($list['{{{ $this.name|NameName }}}'] as $list_key => $list_item)
+                                <label class="checkbox-inline">
+                                <input name="pivots[{{{ $this.name|name_name }}}][{{ $list_key }}][id]" type="checkbox" id="pivots{{{ $this.name|NameName }}}Checkbox{{ $list_key }}" value="{{ $list_key }}"
+    {{{ if($this.schemas!=[]): }}}
+    class="manytomany-trigger"
+    {{{ endif; }}}
+                                @if( isset(${{{ $name|nameName }}}) && ${{{ $name|nameName }}}->{{{ $this.name|nameNames }}}->where('id',$list_key)->count() ) checked @endif
+                                > {{ $list_item }}
+                                </label>
+                            @endforeach
+                        </div>
                         @if ($errors->has('pivots{{{ $this.name|NameName }}}'))
                             <span class="help-block">
                                 <strong>{{ $errors->first('pivots{{{ $this.name|NameName }}}') }}</strong>
