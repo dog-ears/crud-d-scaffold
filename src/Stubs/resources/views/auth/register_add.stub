@@ -60,7 +60,7 @@
                               </div>
                               <div class="modal-body">
 {{{ foreach($this.schemas): }}}
-                                <div class="form-group">
+                                <div class="form-group mr0 ml0">
                                     <label for="{{{ $this.name|name_name }}}-field">{{{ $this.name|name_name }}}</label><br>
                                     <input id="{{{ $this.name|name_name }}}-field" type="text" class="form-control manytomany-pivot-input" name="pivots-option[{{{ $this.name|name_name }}}]">
                                 </div>
