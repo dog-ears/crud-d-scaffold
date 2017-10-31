@@ -1,3 +1,31 @@
+        $user = User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => bcrypt($data['password']),
 {{{ foreach($schemas): }}}
             '{{{ $this.name|name_name }}}' => $data['{{{ $this.name|name_name }}}'],
 {{{ endforeach; }}}
+        ]);
+
+        //sync(attach/detach)
+        if( isset($data['pivots']) && is_array($data['pivots']) ){
+            
+            foreach( $data['pivots'] as $pivot_child_model_name => $pivots ){
+
+                // remove $pivots without 'id'
+                $filtered_pivots = array_filter($pivots,function($value){
+                    return array_key_exists('id',$value);
+                });
+
+                // remove 'id'
+                foreach($filtered_pivots as &$value){
+                    if( array_key_exists('id', $value) ){
+                        unset($value['id']);
+                    }
+                }unset($value);
+
+                $method = camel_case( str_plural($pivot_child_model_name) );
+                $user->$method()->sync($filtered_pivots);
+            }
+        }
+        return $user;

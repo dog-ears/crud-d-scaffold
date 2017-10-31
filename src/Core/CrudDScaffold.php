@@ -263,13 +263,13 @@ class CrudDscaffold
             if( $this->setting->setting_array["use_laravel_auth"] === "true" && $model['name'] === "user" ){
 
                 $output_path = base_path().'/app/Http/Controllers/Auth/RegisterController.php';
+                $output_path2 = base_path().'/app/Http/Controllers/Auth/_RegisterController.php';
                 $original_src = $this->files->get( $output_path );
                 $output = $original_src;
 
                 $stub_txt = $this->files->get( __DIR__. '/../Stubs/app/Http/Controllers/Auth/RegisterController_add02.stub');
-                $replace_pattern = '#(return User::create\(\[)(.*?)(\s*)(\]\);)#s';
-                $output = preg_replace ( $replace_pattern, '$1$2'.$stub_txt.'$4', $output );
-
+                $replace_pattern = '#(protected function create\(array \$data\)\r\n\s*{\r\n)(.*?)(\s*)(})#s';
+                $output = preg_replace ( $replace_pattern, '$1'.$stub_txt.'$3$4', $output );
                 $stub_txt = $this->files->get( __DIR__. '/../Stubs/app/Http/Controllers/Auth/RegisterController_add01.stub');
                 $replace_pattern = '#(}[^\}]*)$#';
                 $output = preg_replace ( $replace_pattern, $stub_txt.'$1', $output );
@@ -277,7 +277,7 @@ class CrudDscaffold
                 $stub_obj = new StubCompiler( $output, $model );
                 $output = $stub_obj->compile();
 
-                $this->files->put($output_path, $output );
+                $this->files->put($output_path2, $output );
             }
 
             //create controller file
