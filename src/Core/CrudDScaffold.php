@@ -263,7 +263,6 @@ class CrudDscaffold
             if( $this->setting->setting_array["use_laravel_auth"] === "true" && $model['name'] === "user" ){
 
                 $output_path = base_path().'/app/Http/Controllers/Auth/RegisterController.php';
-                $output_path2 = base_path().'/app/Http/Controllers/Auth/_RegisterController.php';
                 $original_src = $this->files->get( $output_path );
                 $output = $original_src;
 
@@ -277,7 +276,7 @@ class CrudDscaffold
                 $stub_obj = new StubCompiler( $output, $model );
                 $output = $stub_obj->compile();
 
-                $this->files->put($output_path2, $output );
+                $this->files->put($output_path, $output );
             }
 
             //create controller file
