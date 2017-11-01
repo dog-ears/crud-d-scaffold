@@ -11,28 +11,28 @@
 * Adopted Bootstrap 3 for display
 * Describe application configuration in setting file -> Automatic generation completed by command execution.
 * At the time of execution from the second time, all newly overwritten by the -f option (excluding the migration file)
-* it is possible to create One-to-many relation creation between models
+* it is possible to create One-to-many and many-to-many relation creation between models
 * The main creation files are model, controller, migration, seeding, view
+* You can use this package with laravel auth.
 
 [ List Page ]
-* Refine search available (Text input items are partially matched, otherwise the range specification)
-* You can sort by each item.
+* Refine search available (Text input items are partially matched, otherwise the range specification)(Except for many-to-many relation column)
+* You can sort by each item.(Except for many-to-many relation column)
 * Pager function.
 * You can set columns Display or non-display in the initial setting file.
 * When deleting, there is confirmation.
 
 [ New registration / edit / duplication page ]
 * Input format can be selected from input or textarea
-* However, a column with belongsto relation displays a pulldown.
-
+* However, a column with belongsto relation displays a pulldown. And a column with many-to-many relation displays checkboxes.
 
 
 ## Latest Release note
 
-#### Ver 2.4.0
+#### Ver 2.5.0
 
-  It corresponds to laravel 5.5.
-  And, it became possible to coexist with the authentication incorporated in Laravel.
+  Many-to-many relationship is implemented.
+  Write pivot table setting in crud-d-scaffold.json.
 
 ## How to installation and execution
 
@@ -113,7 +113,28 @@ php artisan db:seed
 					"belongsto": "",            /* [default:""] */								<-  Target model to belongsto
 					"belongsto_column": ""      /* [default:""] */								<-  Column name of target model to be displayed in relation column
                 },{
-
+...
+        }
+    ],
+    "pivots":[
+        {
+            "parentModel":"user", /* Parent model name  */
+            "parentModel_column":"name",  /* This column value is displayed in child model index, create and edit page   */
+            "childModel":"specialLicense",  /* Child model name  */
+            "childModel_column":"licenseName",  /* This column value is displayed in parent model index, create and edit page   */
+            "use_soft_delete": "false",
+            "schemas": [  /* same with model schemas */
+                {
+                    "name":"proficiency",
+                    "type":"integer",
+                    "input_type": "text",
+                    "faker_type": "numberBetween(1,10)",
+                    "nullable": "true",
+                    "display_name": "PROFICIENCY"
+                }
+            ]
+        },
+...
 ```
 
 ## Options
@@ -125,11 +146,10 @@ php artisan db:seed
 ![image](https://github.com/dog-ears/crud-d-scaffold/wiki/img/cap01.jpg)
 ![image](https://github.com/dog-ears/crud-d-scaffold/wiki/img/cap02.jpg)
 ![image](https://github.com/dog-ears/crud-d-scaffold/wiki/img/cap03.jpg)
-
-
+![image](https://github.com/dog-ears/crud-d-scaffold/wiki/img/cap04.jpg)
+![image](https://github.com/dog-ears/crud-d-scaffold/wiki/img/cap05.jpg)
 
 ## Usage notes
-
 * You can use laravel auth. At first [ php artisan make:auth ] and run crud-d-scaffold.
 * You can not change / delete tables, change columns or delete columns. Create a new one from 0 and overwrite it.
 * Column names, model names, etc. are automatically converted according to the convention of laravel, so it is not possible to create singular and plural models at the same time.
@@ -154,7 +174,7 @@ and so on
 This package is tested by laravel dusk.
 see below repository.
 
-https://github.com/dog-ears/crud-d-scaffold-dusktest
+https://github.com/dog-ears/crud-d-scaffold-dusktest2
 
 
 

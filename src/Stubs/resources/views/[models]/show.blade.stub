@@ -61,6 +61,30 @@
                 </div>
 {{{ endif; }}}
 {{{ endif; }}}{{{ endforeach; }}}
+
+
+
+{{{ foreach($belongstomany): }}}
+                <div class="form-group">
+                     <label for="{{{ $this.name|name_name }}}">{{{ $this.name }}}</label>
+                     <p class="form-control-static">
+                        @foreach(${{{ $name|nameName }}}->{{{ $this.name|nameNames }}} as $my_child)
+                            @if (!$loop->first) , @endif
+                            {{ $my_child->{{{ $this.column|name_name }}} }}
+{{{ if($this.schemas!=[]): }}}
+(
+{{{ endif; }}}
+{{{ foreach($this.schemas): }}}
+                                {{{ $this.name|name_name }}}:{{ $my_child->pivot->{{{ $this.name|name_name }}} }}
+{{{ endforeach; }}}
+{{{ if($this.schemas!=[]): }}}
+)
+{{{ endif; }}}
+                        @endforeach                     
+                     </p>
+                </div>
+{{{ endforeach; }}}
+
             </form>
 
             <a class="btn btn-link" href="{{ route('{{{ $name|nameNames }}}.index') }}"><i class="glyphicon glyphicon-backward"></i>  Back</a>
