@@ -1,4 +1,4 @@
-/* for use laravel auth with some schemas  */
+/* for Many To Many Relationship with laravel Auth  */
 
 {
     "app_type": "web",                          /* [default:web]  */
@@ -21,17 +21,6 @@
 					"belongsto": "",
 					"belongsto_column": ""
                 },{
-                    "name": "hobby",
-                    "type": "string",
-                    "input_type": "text",
-                    "faker_type": "word()",
-                    "nullable": "false",
-                    "display_name": "HOBBY",
-                    "show_in_list": "false",
-                    "show_in_detail": "true",
-					"belongsto": "",
-					"belongsto_column": ""
-                },{
                     "name": "vitality",
                     "type": "integer",          /* related column froce type to unsigned integer */
                     "input_type": "text",       /* related column froce input_type to pulldown */
@@ -47,19 +36,19 @@
         },{
             "name": "nicePost",
             "display_name": "NICE POST",
-            "use_soft_delete": "false",
+            "use_soft_delete": "true",
             "schemas": [
                 {
-                    "name": "bigTitle",
-                    "type": "string",
-                    "input_type": "text",
-                    "faker_type": "sentence()",
-                    "nullable": "false",
-                    "display_name": "BIG TITLE",
-                    "show_in_list": "true",
-                    "show_in_detail": "true",
-					"belongsto": "",
-					"belongsto_column": ""
+                    "name": "bigTitle",         /* [required] */
+                    "type": "string",           /* [default:string] ex( integer, string ) */
+                    "input_type": "text",       /* [default:text] text, textarea */ /* relation_column forced to pulldown */
+                    "faker_type": "name()",     /* [default -> ''(nullable must be true) ] ex( randomDigit(), randomNumber(2), numberBetween(1,30), word(), sentence(), paragraph(), text(), name(), address(), date('Y-m-d','now'), safeEmail(), password() )  */
+                    "nullable": "false",        /* [default:false] ex( true, false ) */
+                    "display_name": "BIG TITLE",/* [required] */
+                    "show_in_list": "true",     /* [default:true] ex( true, false ) */
+                    "show_in_detail": "true",   /* [default:true] ex( true, false ) */
+					"belongsto": "",            /* [default:""] */
+					"belongsto_column": ""      /* [default:""] */
                 },{
                     "name": "shallowBody",
                     "type": "string",
@@ -85,6 +74,42 @@
                 }
             ]
         },{
+            "name": "specialLicense",
+            "display_name": "SPECIAL LICENSE",
+            "use_soft_delete": "true",
+            "schemas": [
+                {
+                    "name": "licenseName",
+                    "type": "string",
+                    "input_type": "text",
+                    "faker_type": "name()",
+                    "nullable": "false",
+                    "display_name": "LICENSE NAME",
+                    "show_in_list": "true",
+                    "show_in_detail": "true",
+					"belongsto": "",
+					"belongsto_column": ""
+                }
+            ]
+        },{
+            "name": "powerfulAbility",
+            "display_name": "POWERFUL ABILITY",
+            "use_soft_delete": "true",
+            "schemas": [
+                {
+                    "name": "abilityName",
+                    "type": "string",
+                    "input_type": "text",
+                    "faker_type": "name()",
+                    "nullable": "false",
+                    "display_name": "ABILITY NAME",
+                    "show_in_list": "true",
+                    "show_in_detail": "true",
+					"belongsto": "",
+					"belongsto_column": ""
+                }
+            ]
+        },{
             "name": "goodComment",
             "display_name": "GOOD COMMENT",
             "use_soft_delete": "true",
@@ -101,17 +126,6 @@
 					"belongsto": "",
 					"belongsto_column": ""
                 },{
-                    "name": "commentBody",
-                    "type": "string",
-                    "input_type": "textarea",
-                    "faker_type": "paragraph()",
-                    "nullable": "false",
-                    "display_name": "COMMENTER BODY",
-                    "show_in_list": "false",
-                    "show_in_detail": "true",
-					"belongsto": "",
-					"belongsto_column": ""
-                },{
                     "name": "nicePostId",
                     "type": "integer",
                     "input_type": "text",
@@ -124,6 +138,39 @@
 					"belongsto_column": "bigTitle"
                 }
             ]
+        }
+    ],
+    "pivots":[
+        {
+            "parentModel":"user",
+            "parentModel_column":"name",
+            "childModel":"specialLicense",
+            "childModel_column":"licenseName",
+            "use_soft_delete": "false",
+            "schemas": [
+                {
+                    "name":"proficiency",
+                    "type":"integer",
+                    "input_type": "text",
+                    "faker_type": "numberBetween(1,10)",
+                    "nullable": "true",
+                    "display_name": "PROFICIENCY"
+                },{
+                    "name":"rearity",
+                    "type":"string",
+                    "input_type": "text",
+                    "faker_type": "name()",
+                    "nullable": "true",
+                    "display_name": "REARITY"
+                }
+            ]
+        },{
+            "parentModel":"user",
+            "parentModel_column":"name",
+            "childModel":"powerfulAbility",
+            "childModel_column":"abilityName",
+            "use_soft_delete": "false",
+            "schemas": []
         }
     ]
 }

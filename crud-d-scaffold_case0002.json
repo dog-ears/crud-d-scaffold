@@ -1,4 +1,4 @@
-/* for use laravel auth  */
+/* for use laravel auth with noschemas */
 
 {
     "app_type": "web",                          /* [default:web]  */

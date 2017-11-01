@@ -18,7 +18,8 @@ class {{{ $name|NameName }}} extends Model
 
 	public static $related_app = [
 		"belongsto" =>	[ {{{ foreach($schemas): }}}{{{ if($this.belongsto!=): }}} "{{{ $this.belongsto|NameName }}}" => "{{{ $this.belongsto_column|name_name }}}", {{{ endif; }}}{{{ endforeach; }}} ],
-		"hasmany"	=>	[ {{{ foreach($has_many): }}}"{{{ $this|NameName }}}",{{{ endforeach; }}} ]
+		"hasmany"	=>	[ {{{ foreach($has_many): }}}"{{{ $this|NameName }}}",{{{ endforeach; }}} ],
+		"belongstomany" =>	[ {{{ foreach($belongstomany): }}} "{{{ $this.name|NameName }}}" => "{{{ $this.column|name_name }}}", {{{ endforeach; }}} ],
 	];
 
 
@@ -42,4 +43,16 @@ class {{{ $name|NameName }}} extends Model
 		return $this->hasMany('App\{{{ $this|NameName }}}');
 	}
 {{{ endforeach; }}}
+
+{{{ foreach($belongstomany): }}}
+	public function {{{ $this.name|nameNames }}}() {
+		return $this->belongsToMany('App\{{{ $this.name|NameName }}}')
+{{{ if($this.schemas_implode!=): }}}
+		->withPivot({{{ $this.schemas_implode }}})
+{{{ endif; }}}
+		->orderBy('id')
+		->withTimestamps();
+	}
+{{{ endforeach; }}}
+
 }

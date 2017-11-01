@@ -146,6 +146,11 @@
 @endif
 {{{ endif; }}}
 {{{ endif; }}}{{{ endforeach; }}}
+
+{{{ foreach($belongstomany): }}}
+                            <th>{{{ $this.display_name }}}</th>
+{{{ endforeach; }}}
+
                             <th class="text-right">OPTIONS</th>
                         </tr>
                     </thead>
@@ -166,6 +171,25 @@
                                 <td>{{${{{ $name|nameName }}}->{{{ $this.name|name_name }}}}}</td>
 {{{ endif; }}}
 {{{ endif; }}}{{{ endforeach; }}}
+
+{{{ foreach($belongstomany): }}}
+                                <td>
+                                    @foreach(${{{ $name|nameName }}}->{{{ $this.name|nameNames }}} as $my_child)
+                                        @if (!$loop->first) , @endif
+                                        {{ $my_child->{{{ $this.column|name_name }}} }}
+{{{ if($this.schemas!=[]): }}}
+(
+{{{ endif; }}}
+{{{ foreach($this.schemas): }}}
+                                            {{{ $this.name|name_name }}}:{{ $my_child->pivot->{{{ $this.name|name_name }}} }}
+{{{ endforeach; }}}
+{{{ if($this.schemas!=[]): }}}
+)
+{{{ endif; }}}
+                                    @endforeach
+                                </td>
+{{{ endforeach; }}}
+
                                 <td class="text-right">
                                     <a class="btn btn-xs btn-primary" href="{{ route('{{{ $name|nameNames }}}.duplicate', ${{{ $name|nameName }}}->id) }}"><i class="glyphicon glyphicon-duplicate"></i> Duplicate</a>
                                     <a class="btn btn-xs btn-warning" href="{{ route('{{{ $name|nameNames }}}.edit', ${{{ $name|nameName }}}->id) }}"><i class="glyphicon glyphicon-edit"></i> Edit</a>

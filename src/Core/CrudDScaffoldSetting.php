@@ -90,6 +90,7 @@ class CrudDscaffoldSetting
             $this->command->error( 'json format error! models have no child  ('. $file_path. ')' );
             return false;
         }
+
         foreach( $this->setting_array['models'] as &$model ){
 
             // required property
@@ -104,7 +105,9 @@ class CrudDscaffoldSetting
             if( !array_key_exists('use_soft_delete', $model) ){
                 $model['use_soft_delete'] = 'false';
             }
-
+            if( !array_key_exists('belongsToMany', $model) ){
+                $model['belongsToMany'] = '';
+            }
 
             if( $this-> setting_array["use_laravel_auth"] === "true" && $model['name'] === "user" ){
 
@@ -199,6 +202,86 @@ class CrudDscaffoldSetting
 
             }unset($schema);
         }unset($model);
+
+
+        //set belongstomany to each models
+        if( array_key_exists('pivots',$this->setting_array) ){
+
+            foreach( $this->setting_array['pivots'] as &$pivot ){
+
+                $pivot_schemas = array_column($pivot['schemas'], 'name');
+                foreach( $pivot_schemas as &$schema ){
+                    $schema = NameResolver::solveName($schema, 'name_name');
+                }unset($schema);
+                $schemas_implode = "'" . implode("','", $pivot_schemas) . "'";
+                $schemas_implode = str_replace("''", "", $schemas_implode);
+
+                // get parent_model_key and child_model_key
+                $parent_model_key = array_search($pivot['parentModel'], array_column($this->setting_array['models'], 'name'));
+                $child_model_key = array_search($pivot['childModel'], array_column($this->setting_array['models'], 'name'));
+
+                //add belongstomany to parent model
+                $this->setting_array['models'][$parent_model_key]['belongstomany'][] = [
+                    "name" => $pivot['childModel'],
+                    "display_name" => $this->setting_array['models'][$child_model_key]['display_name'],
+                    "use_soft_delete" => $pivot['use_soft_delete'],
+                    "column" => $pivot['childModel_column'],
+                    "schemas" => $pivot['schemas'],
+                    "schemas_implode" => $schemas_implode,
+                ];
+
+                //add belongstomany to child model
+                $this->setting_array['models'][$child_model_key]['belongstomany'][] = [
+                    "name" => $pivot['parentModel'],
+                    "display_name" => $this->setting_array['models'][$parent_model_key]['display_name'],
+                    "column" => $pivot['parentModel_column'],
+                    "schemas" => $pivot['schemas'],
+                    "schemas_implode" => $schemas_implode,
+                    "use_soft_delete" => $pivot['use_soft_delete']
+                ];
+
+                // add name property
+                $rerated_models = array();
+                $rerated_models[] = NameResolver::solveName($pivot['parentModel'], 'name_name');
+                $rerated_models[] = NameResolver::solveName($pivot['childModel'], 'name_name');
+                sort($rerated_models);
+                $pivot['name'] = implode( '_', $rerated_models );
+
+                // add basic schema
+                $pivot['schemas'][] = [
+                    "name" => NameResolver::solveName($pivot['parentModel'], 'name_name'). '_id',
+                    "type" => "integer",
+                    "input_type" => "null",
+                    "faker_type" => "numberBetween(1,30)",
+                    "nullable" => "true",
+                    "display_name" => "parent_id",
+                    "show_in_list" => "false",
+                    "show_in_detail" => "false"
+                ];
+                $pivot['schemas'][] = [
+                    "name" => NameResolver::solveName($pivot['childModel'], 'name_name'). '_id',
+                    "type" => "integer",
+                    "input_type" => "null",
+                    "faker_type" => "numberBetween(1,30)",
+                    "nullable" => "true",
+                    "display_name" => "parent_id",
+                    "show_in_list" => "false",
+                    "show_in_detail" => "false"
+                ];
+
+            }unset($pivot);
+        }else{
+            $this->setting_array['pivots'] = [];
+        }
+
+        foreach( $this->setting_array['models'] as &$model ){
+
+            if( !array_key_exists('belongstomany', $model) ){
+                $model['belongstomany'] = [];
+            }
+
+        }unset($model);
+
         return true;
     }
 }
