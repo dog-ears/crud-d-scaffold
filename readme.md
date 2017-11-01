@@ -146,8 +146,8 @@ php artisan db:seed
 ![image](https://github.com/dog-ears/crud-d-scaffold/wiki/img/cap01.jpg)
 ![image](https://github.com/dog-ears/crud-d-scaffold/wiki/img/cap02.jpg)
 ![image](https://github.com/dog-ears/crud-d-scaffold/wiki/img/cap03.jpg)
-
-
+![image](https://github.com/dog-ears/crud-d-scaffold/wiki/img/cap04.jpg)
+![image](https://github.com/dog-ears/crud-d-scaffold/wiki/img/cap05.jpg)
 
 ## Usage notes
 * You can use laravel auth. At first [ php artisan make:auth ] and run crud-d-scaffold.
