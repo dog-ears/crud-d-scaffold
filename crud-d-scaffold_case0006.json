@@ -1,0 +1,52 @@
+/* The most simple Setting  */
+
+{
+    "models": [
+        {
+            "name": "jointAuthor",              /* [required] format[nameName] */
+            "display_name": "JOINT AUTHOR",     /* [required] */
+            "schemas": [
+                {
+                    "name": "realName",         /* [required] */
+                    "display_name": "REAL NAME"/* [required] */
+                },{
+                    "name": "actualAge",
+                    "display_name": "ACTUAL AGE"
+                },{
+                    "name": "secretHobby",
+                    "display_name": "SECRET HOBBY"
+                }
+            ]
+        },{
+            "name": "nicePost",
+            "display_name": "NICE POST",
+            "schemas": [
+                {
+                    "name": "bigTitle",
+                    "display_name": "BIG TITLE"
+                },{
+                    "name": "shallowBody",
+                    "display_name": "SHALLOW BODY"
+                },{
+                    "name": "jointAuthorId",
+                    "display_name": "JOINT AUTHOR - REAL NAME"
+                }
+            ]
+        },{
+            "name": "goodComment",
+            "display_name": "GOOD COMMENT",
+            "schemas": [
+                {
+                    "name": "commenterName",
+                    "display_name": "COMMENTER NAME"
+                },{
+                    "name": "commentBody",
+                    "display_name": "COMMENTER BODY"
+                },{
+                    "name": "nicePostId",
+                    "display_name": "NICE POST - BIG TITLE"
+                }
+            ]
+        }
+    ]
+}
