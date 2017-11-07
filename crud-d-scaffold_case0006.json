@@ -29,7 +29,9 @@
                     "display_name": "SHALLOW BODY"
                 },{
                     "name": "jointAuthorId",
-                    "display_name": "JOINT AUTHOR - REAL NAME"
+                    "display_name": "JOINT AUTHOR - REAL NAME",
+					"belongsto": "jointAuthor",
+					"belongsto_column": "realName"
                 }
             ]
         },{
@@ -44,7 +46,9 @@
                     "display_name": "COMMENTER BODY"
                 },{
                     "name": "nicePostId",
-                    "display_name": "NICE POST - BIG TITLE"
+                    "display_name": "NICE POST - BIG TITLE",
+					"belongsto": "nicePost",
+					"belongsto_column": "bigTitle"
                 }
             ]
         }
