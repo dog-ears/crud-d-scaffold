@@ -195,7 +195,6 @@ class CrudDscaffold
             $output = $stub_obj->compile();
             $this->files->put($output_path, $output );
         }
-
     }
 
 
