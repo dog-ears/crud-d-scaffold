@@ -29,7 +29,12 @@
 
 ## Latest Release note
 
-#### Ver 2.5.0
+#### Ver 2.5.2
+
+  Add sample of crud-d-scaffold.json named as crud-d-scaffold_case0006.json.
+  This is the most simple setting.
+
+#### Ver 2.5.1
 
   Many-to-many relationship is implemented.
   Write pivot table setting in crud-d-scaffold.json.
