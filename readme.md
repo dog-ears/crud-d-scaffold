@@ -29,6 +29,10 @@
 
 ## Latest Release note
 
+#### Ver 2.5.3
+
+  bugfix
+
 #### Ver 2.5.2
 
   Add sample of crud-d-scaffold.json named as crud-d-scaffold_case0006.json.
