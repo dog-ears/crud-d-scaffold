@@ -10,10 +10,10 @@ http://dog-ears.net/
 namespace dogears\CrudDscaffold\Core;
 
 use Illuminate\Filesystem\Filesystem;
-
 use dogears\CrudDscaffold\Commands\CrudDscaffoldSetupCommand;
+use dogears\CrudDscaffold\Core\NameResolver;
 
-class CrudDscaffoldSetting 
+class CrudDscaffoldSetting
 {
     private $files;     /* Filesystem */
     private $command;   /* CrudDscaffoldSetupCommand */
@@ -63,6 +63,10 @@ class CrudDscaffoldSetting
                             'type' => 'text',
                             'default' => 'text',
                             'allowed' => ['text','textarea'],
+                        ],
+                        'varidate' => [
+                            'type' => 'text',
+                            'default' => '',
                         ],
                         'faker_type' => [
                             'type' => 'text',
@@ -140,6 +144,10 @@ class CrudDscaffoldSetting
                             'type' => 'text',
                             'default' => 'text',
                             'allowed' => ['text','textarea'],
+                        ],
+                        'varidate' => [
+                            'type' => 'text',
+                            'default' => '',
                         ],
                         'faker_type' => [
                             'type' => 'text',
@@ -225,7 +233,6 @@ class CrudDscaffoldSetting
         if( !$this->checkFormatOfSettingJson( $file_path ) ){
             exit();
         }
-
         $this->command->info( 'reading setting file done.' );
     }
 
@@ -258,28 +265,51 @@ class CrudDscaffoldSetting
                     }
                 }
 
-                // (3) belongsto
+                // (3) varidate
+                $varidate_array = explode('|', $schema["varidate"]);
+
+                // (3-1) add required if nullable is false
+                if( $schema["nullable"] == 'false' ){
+                    if( !in_array('required',$varidate_array) ){
+                        $varidate_array[] = 'required';
+                    }
+                }
+                // (3-2) unique
+                $unique_flag = false;
+                for($i=0;$i<count($varidate_array);$i++){
+                    if(strpos($varidate_array[$i],'unique') !== false){
+                        unset($varidate_array[$i]);
+                        $varidate_array[] = 'unique'.":".NameResolver::solveName($model['name'], 'name_names').",".NameResolver::solveName($schema['name'], 'name_name').",'.($".NameResolver::solveName($model['name'], 'name_name')."?$".NameResolver::solveName($model['name'], 'name_name')."->id:'')";
+                        $unique_flag = true;
+                    }
+                }
+                $schema["varidate"] = "'". implode('|',$varidate_array);
+                if(!$unique_flag){
+                    $schema["varidate"] .= "'";
+                }
+
+                // (4) belongsto
                 if( array_key_exists('belongsto', $schema) && $schema['belongsto'] !== "" ){
 
-                    // (3-1) belongsto_column exist check.
+                    // (4-1) belongsto_column exist check.
                     if( !array_key_exists('belongsto_column',$schema) || $schema['belongsto_column'] == '' ){
                         $this->command->error( 'schema with belongsto needs belongsto_column property ('. $file_path. ')' );
                         return false;
                     }
 
-                    // (3-2) $belongsto_target_model exist check
+                    // (4-2) $belongsto_target_model exist check
                     $error = true;
                     foreach( $this-> setting_array["models"] as &$target_model ){
                         if( $target_model["name"] === $schema['belongsto'] ){
                             $error = false;
 
-                            // (3-3) belongsto_column exist check in $belongsto_target_model
+                            // (4-3) belongsto_column exist check in $belongsto_target_model
                             $result_array = array_filter ( $target_model["schemas"], function($s) use($schema){
                                 return $schema['belongsto_column'] === $s['name'];
                             });
                             if( !count($result_array) ){
                         
-                                // (3-3-1) In case of using laravel auth and belongsto_column is 'name', It's OK
+                                // (4-3-1) In case of using laravel auth and belongsto_column is 'name', It's OK
                                 if( $this-> setting_array["use_laravel_auth"] !== "true" || $schema['belongsto_column'] !== "name" ){
                                 
                                     $this->command->error( 'target_model('. $target_model["name"]. ') need column ('. $schema['belongsto_column']. ') ('. $file_path. ')' );
@@ -287,7 +317,7 @@ class CrudDscaffoldSetting
                                 }
                             }
 
-                            // (3-4) add has_many data
+                            // (4-4) add has_many data
                             $target_model["has_many"][] = $model["name"];
                         }
                     }unset($target_model);
@@ -299,10 +329,10 @@ class CrudDscaffoldSetting
             }unset($schema);
         }unset($model);
 
-        // (4) set belongstomany to each models
+        // (5) set belongstomany to each models
         foreach( $this->setting_array['pivots'] as &$pivot ){
 
-            // get $schemas_implode
+            // (5-1) get $schemas_implode
             $pivot_schemas = array_column($pivot['schemas'], 'name');
             foreach( $pivot_schemas as &$schema ){
                 $schema = NameResolver::solveName($schema, 'name_name');
@@ -310,11 +340,37 @@ class CrudDscaffoldSetting
             $schemas_implode = "'" . implode("','", $pivot_schemas) . "'";
             $schemas_implode = str_replace("''", "", $schemas_implode);
 
-            // get parent_model_key and child_model_key
+            foreach( $pivot['schemas'] as &$schema ){
+
+                // (5-2) varidate
+                $varidate_array = explode('|', $schema["varidate"]);
+                
+                // (5-2-1) add required if nullable is false
+                if( $schema["nullable"] == 'false' ){
+                    if( !in_array('required',$varidate_array) ){
+                        $varidate_array[] = 'required';
+                    }
+                }
+                // (5-2-2) unique
+                $unique_flag = false;
+                for($i=0;$i<count($varidate_array);$i++){
+                    if(strpos($varidate_array[$i],'unique') !== false){
+                        unset($varidate_array[$i]);
+                        $varidate_array[] = 'unique'.":".NameResolver::solveName($model['name'], 'name_names').",".NameResolver::solveName($schema['name'], 'name_name').",'.($".NameResolver::solveName($model['name'], 'name_name')."?$".NameResolver::solveName($model['name'], 'name_name')."->id:'')";
+                        $unique_flag = true;
+                    }
+                }
+                $schema["varidate"] = "'". implode('|',$varidate_array);
+                if(!$unique_flag){
+                    $schema["varidate"] .= "'";
+                }
+            }
+
+            // (5-3) get parent_model_key and child_model_key
             $parent_model_key = array_search($pivot['parentModel'], array_column($this->setting_array['models'], 'name'));
             $child_model_key = array_search($pivot['childModel'], array_column($this->setting_array['models'], 'name'));
 
-            //add belongstomany to parent model
+            // (5-4) add belongstomany to parent model
             $this->setting_array['models'][$parent_model_key]['belongstomany'][] = [
                 "name" => $pivot['childModel'],
                 "display_name" => $this->setting_array['models'][$child_model_key]['display_name'],
@@ -324,7 +380,7 @@ class CrudDscaffoldSetting
                 "schemas_implode" => $schemas_implode,
             ];
 
-            //add belongstomany to child model
+            // (5-5) add belongstomany to child model
             $this->setting_array['models'][$child_model_key]['belongstomany'][] = [
                 "name" => $pivot['parentModel'],
                 "display_name" => $this->setting_array['models'][$parent_model_key]['display_name'],
@@ -334,14 +390,14 @@ class CrudDscaffoldSetting
                 "use_soft_delete" => $pivot['use_soft_delete']
             ];
 
-            // add name property for table name
+            // (5-6) add name property for table name
             $rerated_models = array();
             $rerated_models[] = NameResolver::solveName($pivot['parentModel'], 'name_name');
             $rerated_models[] = NameResolver::solveName($pivot['childModel'], 'name_name');
             sort($rerated_models);
             $pivot['name'] = implode( '_', $rerated_models );
 
-            // add basic schema
+            // (5-7)add basic schema
             $pivot['schemas'][] = [
                 "name" => NameResolver::solveName($pivot['parentModel'], 'name_name'). '_id',
                 "type" => "integer",
@@ -374,6 +430,9 @@ class CrudDscaffoldSetting
 
         return true;
     }
+
+
+
     private function checkAllowedAndSetDefaultWrapper( $setting_array = null, $format = null ){
 
         if($setting_array === null){
@@ -396,6 +455,8 @@ class CrudDscaffoldSetting
         }
         return $setting_array;
     }
+
+
 
     private function checkAllowedAndSetDefault( $value, $format, $format_key ){
 

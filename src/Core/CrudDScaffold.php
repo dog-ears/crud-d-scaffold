@@ -50,7 +50,8 @@ class CrudDscaffold
     public function generate(){
 
         $this->command->info('Now Generating...');
-
+//dd($this->setting->setting_array['models']);
+        $this->setupProviders();
         $this->setupMigration();
         $this->setupSeeding();
         $this->setupModel();
@@ -58,6 +59,28 @@ class CrudDscaffold
         $this->setupViewLayout();
         $this->setupView();
         $this->setupRoute();
+    }
+
+
+    private function setupProviders(){
+
+        // app/Providers/AppServiceProvider.php
+        $output_path = base_path().'/app/Providers/AppServiceProvider.php';
+        $original_src = $this->files->get( $output_path );
+
+        $output = $original_src;
+
+        $add_src = $this->files->get( __DIR__. '/../Stubs/app/Providers/AppServiceProvider_header.stub');
+        $replace_pattern = '#(use Illuminate\\\Support\\\ServiceProvider;)#';
+        $output = preg_replace ( $replace_pattern, '$1'.$add_src, $output );
+
+        $add_src = $this->files->get( __DIR__. '/../Stubs/app/Providers/AppServiceProvider_oror.stub');
+        $replace_pattern = '#(public function boot\(\))(\n|\r|\r\n)(\s*\{)(\n|\r|\r\n)([^\}]*\})#';
+        $output = preg_replace ( $replace_pattern, '$1$2$3$4'.$add_src.'$5', $output );
+
+        if( !strpos( $original_src, $add_src) ){
+            $this->files->put($output_path, $output );
+        }
     }
 
 
