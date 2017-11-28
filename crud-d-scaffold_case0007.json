@@ -27,7 +27,7 @@
                     "name": "securityLevel",	/* [required] */
                     "type": "integer",          /* [default:string] ex( integer, string ) */
                     "input_type": "text",       /* [default:text] text, textarea */ /* relation_column forced to pulldown */
-                    "varidate": "max:10",		/* [default:""] */
+                    "varidate": "numeric|max:10",		/* [default:""] */
                     "faker_type": "numberBetween(1,30)",     /* [default -> ''(nullable must be true) ] ex( randomDigit(), randomNumber(2), numberBetween(1,30), word(), sentence(), paragraph(), text(), name(), address(), date('Y-m-d','now'), safeEmail(), password() )  */
                     "nullable": "false",        /* [default:false] ex( true, false ) */
                     "display_name": "SECURITY LEVEL",/* [required] */
@@ -119,7 +119,7 @@
                     "name":"size",
                     "type":"integer",
                     "input_type": "text",
-                    "varidate": "max:10",		/* [default:""] */
+                    "varidate": "numeric|max:10",		/* [default:""] note: unique is not allowed in pivots*/
                     "faker_type": "numberBetween(1,10)",
                     "nullable": "true",
                     "display_name": "SIZE"
@@ -128,7 +128,7 @@
                     "name":"note",
                     "type":"string",
                     "input_type": "text",
-                    "varidate": "max:10|unique",/* [default:""] */
+                    "varidate": "max:10",/* [default:""] */
                     "faker_type": "name()",
                     "nullable": "true",
                     "display_name": "NOTE"
