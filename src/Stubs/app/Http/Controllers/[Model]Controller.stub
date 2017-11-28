@@ -86,14 +86,14 @@ class {{{ $name|NameName }}}Controller extends Controller
         foreach( $request->input('pivots') as $pivot_child_model_name => $pivots ){
 
             // remove 'id'
-            foreach($filtered_pivots as &$value){
+            foreach($pivots as &$value){
                 if( array_key_exists('id', $value) ){
                     unset($value['id']);
                 }
             }unset($value);
 
             $method = camel_case( str_plural($pivot_child_model_name) );
-            ${{{ $name|name_name }}}->$method()->sync($filtered_pivots);
+            ${{{ $name|name_name }}}->$method()->sync($pivots);
         }
 {{{ endif; }}}
 
@@ -178,14 +178,14 @@ class {{{ $name|NameName }}}Controller extends Controller
         foreach( $request->input('pivots') as $pivot_child_model_name => $pivots ){
 
             // remove 'id'
-            foreach($filtered_pivots as &$value){
+            foreach($pivots as &$value){
                 if( array_key_exists('id', $value) ){
                     unset($value['id']);
                 }
             }unset($value);
 
             $method = camel_case( str_plural($pivot_child_model_name) );
-            ${{{ $name|nameName }}}->$method()->sync($filtered_pivots);
+            ${{{ $name|nameName }}}->$method()->sync($pivots);
         }
 {{{ endif; }}}
 

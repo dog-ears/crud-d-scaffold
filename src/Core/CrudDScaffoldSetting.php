@@ -340,24 +340,32 @@ class CrudDscaffoldSetting
             $schemas_implode = "'" . implode("','", $pivot_schemas) . "'";
             $schemas_implode = str_replace("''", "", $schemas_implode);
 
+            // (5-2) get parent_model_key and child_model_key
+            $parent_model_key = array_search($pivot['parentModel'], array_column($this->setting_array['models'], 'name'));
+            $child_model_key = array_search($pivot['childModel'], array_column($this->setting_array['models'], 'name'));
+
+            // (5-3) add name property for table name
+            $rerated_models = array();
+            $rerated_models[] = NameResolver::solveName($pivot['parentModel'], 'name_name');
+            $rerated_models[] = NameResolver::solveName($pivot['childModel'], 'name_name');
+            sort($rerated_models);
+            $pivot['name'] = implode( '_', $rerated_models );
+
+            // (5-4) varidate
             foreach( $pivot['schemas'] as &$schema ){
 
-                // (5-2) varidate
                 $varidate_array = explode('|', $schema["varidate"]);
                 
-                // (5-2-1) add required if nullable is false
+                // (5-4-1) add required if nullable is false
                 if( $schema["nullable"] == 'false' ){
                     if( !in_array('required',$varidate_array) ){
                         $varidate_array[] = 'required';
                     }
                 }
-                // (5-2-2) unique
-                $unique_flag = false;
+                // (5-4-2) remove unique
                 for($i=0;$i<count($varidate_array);$i++){
                     if(strpos($varidate_array[$i],'unique') !== false){
                         unset($varidate_array[$i]);
-                        $varidate_array[] = 'unique'.":".NameResolver::solveName($model['name'], 'name_names').",".NameResolver::solveName($schema['name'], 'name_name').",'.($".NameResolver::solveName($model['name'], 'name_name')."?$".NameResolver::solveName($model['name'], 'name_name')."->id:'')";
-                        $unique_flag = true;
                     }
                 }
                 $schema["varidate"] = "'". implode('|',$varidate_array);
@@ -366,11 +374,7 @@ class CrudDscaffoldSetting
                 }
             }
 
-            // (5-3) get parent_model_key and child_model_key
-            $parent_model_key = array_search($pivot['parentModel'], array_column($this->setting_array['models'], 'name'));
-            $child_model_key = array_search($pivot['childModel'], array_column($this->setting_array['models'], 'name'));
-
-            // (5-4) add belongstomany to parent model
+            // (5-5) add belongstomany to parent model
             $this->setting_array['models'][$parent_model_key]['belongstomany'][] = [
                 "name" => $pivot['childModel'],
                 "display_name" => $this->setting_array['models'][$child_model_key]['display_name'],
@@ -380,7 +384,7 @@ class CrudDscaffoldSetting
                 "schemas_implode" => $schemas_implode,
             ];
 
-            // (5-5) add belongstomany to child model
+            // (5-6) add belongstomany to child model
             $this->setting_array['models'][$child_model_key]['belongstomany'][] = [
                 "name" => $pivot['parentModel'],
                 "display_name" => $this->setting_array['models'][$parent_model_key]['display_name'],
@@ -390,18 +394,12 @@ class CrudDscaffoldSetting
                 "use_soft_delete" => $pivot['use_soft_delete']
             ];
 
-            // (5-6) add name property for table name
-            $rerated_models = array();
-            $rerated_models[] = NameResolver::solveName($pivot['parentModel'], 'name_name');
-            $rerated_models[] = NameResolver::solveName($pivot['childModel'], 'name_name');
-            sort($rerated_models);
-            $pivot['name'] = implode( '_', $rerated_models );
-
             // (5-7)add basic schema
             $pivot['schemas'][] = [
                 "name" => NameResolver::solveName($pivot['parentModel'], 'name_name'). '_id',
                 "type" => "integer",
                 "input_type" => "null",
+                "varidate" => "",
                 "faker_type" => "numberBetween(1,30)",
                 "nullable" => "true",
                 "display_name" => "parent_id",
@@ -412,6 +410,7 @@ class CrudDscaffoldSetting
                 "name" => NameResolver::solveName($pivot['childModel'], 'name_name'). '_id',
                 "type" => "integer",
                 "input_type" => "null",
+                "varidate" => "",
                 "faker_type" => "numberBetween(1,30)",
                 "nullable" => "true",
                 "display_name" => "parent_id",
