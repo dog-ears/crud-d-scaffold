@@ -50,7 +50,7 @@ class CrudDscaffold
     public function generate(){
 
         $this->command->info('Now Generating...');
-//dd($this->setting->setting_array['models']);
+//dd($this->setting->setting_array);
         $this->setupProviders();
         $this->setupMigration();
         $this->setupSeeding();
