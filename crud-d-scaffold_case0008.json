@@ -13,7 +13,7 @@
                     "name": "age",
                     "type": "integer",
                     "input_type": "text",
-                    "varidate": "numeric|max:10",
+                    "varidate": "numeric|max:100|unique",
                     "faker_type": "randomNumber(2)",
                     "nullable": "false",
                     "display_name": "AGE",
@@ -22,6 +22,7 @@
 					"belongsto": "",
 					"belongsto_column": ""
                 }
+			]
         },{
             "name": "nicePost",
             "display_name": "NICE POST",
@@ -93,7 +94,7 @@
                     "name":"note",
                     "type":"string",
                     "input_type": "text",
-                    "varidate": "max:10",/* [default:""] */
+                    "varidate": "max:10",	/* [default:""] */
                     "faker_type": "name()",
                     "nullable": "true",
                     "display_name": "NOTE"

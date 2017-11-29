@@ -34,7 +34,7 @@
                         <div class="col-md-6">
                             <div class="form-inline">
                                 @foreach($list['{{{ $this.name|NameName }}}'] as $list_key => $list_item)
-                                <div class="form-group @if($errors->has('pivots.{{{ $this.name|name_name }}}.'.$list_key.'.*')) has-error @endif">
+                                <div class="form-group mr0 ml0 @if($errors->has('pivots.{{{ $this.name|name_name }}}.'.$list_key.'.*')) has-error @endif">
                                     <label class="checkbox-inline">
                                     <input name="pivots[{{{ $this.name|name_name }}}][{{ $list_key }}][id]" type="checkbox" id="pivots{{{ $this.name|NameName }}}Checkbox{{ $list_key }}" value="{{ $list_key }}"
         {{{ if($this.schemas!=[]): }}}
@@ -48,7 +48,7 @@
                             </div>
                         </div>
                         @if($errors->has('pivots.{{{ $this.name|name_name }}}.*.*'))
-                        <div class="has-error"><span class="help-block">There were some problems with your pivot input.</span></div>
+                        <div class="col-md-6 col-md-offset-4 has-error"><span class="help-block">There were some problems with your pivot input.</span></div>
                         @endif
 
 {{{ if($this.schemas!=[]): }}}
@@ -64,7 +64,8 @@
 {{{ foreach($this.schemas): }}}
                                 <div class="form-group mr0 ml0">
                                     <label for="{{{ $this.name|name_name }}}-field">{{{ $this.name|name_name }}}</label><br>
-                                    <input id="{{{ $this.name|name_name }}}-field" type="text" class="form-control manytomany-pivot-input" name="pivots-option[{{{ $this.name|name_name }}}]" pivot_model_id_column="pivots.{{{ $parent.name|name_name }}}}.1.{{{ $this.name|name_name }}}">
+                                    <input id="{{{ $this.name|name_name }}}-field" type="text" class="form-control manytomany-pivot-input" name="pivots-option[{{{ $this.name|name_name }}}]">
+                                    <span class="help-block"></span>
                                 </div>
 {{{ endforeach; }}}
                               </div>
