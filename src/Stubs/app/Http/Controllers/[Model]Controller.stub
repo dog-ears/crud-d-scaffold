@@ -152,7 +152,7 @@ class {{{ $name|NameName }}}Controller extends Controller
      */
     public function update({{{ $name|NameName }}} ${{{ $name|nameName }}}, Request $request)
     {
-        $this->varidate($request, $nicePost);
+        $this->varidate($request, ${{{ $name|nameName }}});
 
         $input = $request->all();
 
