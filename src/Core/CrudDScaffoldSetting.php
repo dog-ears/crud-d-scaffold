@@ -274,16 +274,24 @@ class CrudDscaffoldSetting
                         $varidate_array[] = 'required';
                     }
                 }
+                $varidate_array_for_register = $varidate_array;
                 // (3-2) unique
                 $unique_flag = false;
                 for($i=0;$i<count($varidate_array);$i++){
                     if(strpos($varidate_array[$i],'unique') !== false){
                         unset($varidate_array[$i]);
+                        unset($varidate_array_for_register[$i]);
                         $varidate_array[] = 'unique'.":".NameResolver::solveName($model['name'], 'name_names').",".NameResolver::solveName($schema['name'], 'name_name').",'.($".NameResolver::solveName($model['name'], 'name_name')."?$".NameResolver::solveName($model['name'], 'name_name')."->id:'')";
+                        $varidate_array_for_register[] = 'unique'.":".NameResolver::solveName($model['name'], 'name_names').",". NameResolver::solveName($schema['name'], 'name_name');
                         $unique_flag = true;
                     }
                 }
                 $schema["varidate"] = "'". implode('|',$varidate_array);
+
+                if( array_key_exists('use_laravel_auth',$model) ){
+                    $schema["varidate_for_register"] = "'". implode('|',$varidate_array_for_register). "'";
+                }
+
                 if(!$unique_flag){
                     $schema["varidate"] .= "'";
                 }
