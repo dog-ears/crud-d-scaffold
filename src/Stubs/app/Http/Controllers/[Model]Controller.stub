@@ -83,17 +83,19 @@ class {{{ $name|NameName }}}Controller extends Controller
 
 {{{ if($belongstomany!=[]): }}}
         //sync(attach/detach)
-        foreach( $request->input('pivots') as $pivot_child_model_name => $pivots ){
+        if($request->input('pivots')){
+            foreach( $request->input('pivots') as $pivot_child_model_name => $pivots ){
 
-            // remove 'id'
-            foreach($pivots as &$value){
-                if( array_key_exists('id', $value) ){
-                    unset($value['id']);
-                }
-            }unset($value);
+                // remove 'id'
+                foreach($pivots as &$value){
+                    if( array_key_exists('id', $value) ){
+                        unset($value['id']);
+                    }
+                }unset($value);
 
-            $method = camel_case( str_plural($pivot_child_model_name) );
-            ${{{ $name|name_name }}}->$method()->sync($pivots);
+                $method = camel_case( str_plural($pivot_child_model_name) );
+                ${{{ $name|name_name }}}->$method()->sync($pivots);
+            }
         }
 {{{ endif; }}}
 
@@ -175,17 +177,19 @@ class {{{ $name|NameName }}}Controller extends Controller
 
 {{{ if($belongstomany!=[]): }}}
         //sync(attach/detach)
-        foreach( $request->input('pivots') as $pivot_child_model_name => $pivots ){
+        if($request->input('pivots')){
+            foreach( $request->input('pivots') as $pivot_child_model_name => $pivots ){
 
-            // remove 'id'
-            foreach($pivots as &$value){
-                if( array_key_exists('id', $value) ){
-                    unset($value['id']);
-                }
-            }unset($value);
+                // remove 'id'
+                foreach($pivots as &$value){
+                    if( array_key_exists('id', $value) ){
+                        unset($value['id']);
+                    }
+                }unset($value);
 
-            $method = camel_case( str_plural($pivot_child_model_name) );
-            ${{{ $name|nameName }}}->$method()->sync($pivots);
+                $method = camel_case( str_plural($pivot_child_model_name) );
+                ${{{ $name|nameName }}}->$method()->sync($pivots);
+            }
         }
 {{{ endif; }}}
 
