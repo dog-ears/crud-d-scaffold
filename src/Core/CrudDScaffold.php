@@ -291,9 +291,14 @@ class CrudDscaffold
                 $stub_txt = $this->files->get( __DIR__. '/../Stubs/app/Http/Controllers/Auth/RegisterController_add02.stub');
                 $replace_pattern = '#(protected function create\(array \$data\))(\n|\r|\r\n)(\s*\{)(\n|\r|\r\n)(.*?)(\s*\})#s';
                 $output = preg_replace ( $replace_pattern, '$1$2$3$4'.$stub_txt.'$6', $output );
+
                 $stub_txt = $this->files->get( __DIR__. '/../Stubs/app/Http/Controllers/Auth/RegisterController_add01.stub');
                 $replace_pattern = '#(}[^\}]*)$#';
                 $output = preg_replace ( $replace_pattern, $stub_txt.'$1', $output );
+
+                $stub_txt = $this->files->get( __DIR__. '/../Stubs/app/Http/Controllers/Auth/RegisterController_add03.stub');
+                $replace_pattern = '#(return Validator::make\(\$data, \[)([^\]]*)(\n|\r|\r\n)(\s*\]\))#';
+                $output = preg_replace ( $replace_pattern, '$1$2'. $stub_txt.'$3$4', $output );
 
                 $stub_obj = new StubCompiler( $output, $model );
                 $output = $stub_obj->compile();

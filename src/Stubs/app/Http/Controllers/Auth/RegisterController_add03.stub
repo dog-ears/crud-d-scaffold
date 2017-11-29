@@ -1,0 +1,6 @@
+{{{ foreach($schemas): }}}{{{ if($this.varidate_for_register!=''): }}}
+            '{{{ $this.name|name_name }}}' => {{{ $this.varidate_for_register }}},
+{{{ endif; }}}{{{ endforeach; }}}
+{{{ foreach($belongstomany): }}}{{{ foreach($this.schemas): }}}
+            'pivots.{{{ $parent.name|name_name }}}.*.{{{ $this.name|name_name }}}' => {{{ $this.varidate }}},
+{{{ endforeach; }}}{{{ endforeach; }}}
