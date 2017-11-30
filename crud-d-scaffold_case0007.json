@@ -23,11 +23,11 @@
 					"belongsto": "",            /* [default:""] */
 					"belongsto_column": ""      /* [default:""] */
                 },{
-					/* integerTextMax10 */
+					/* integerTextMax100 */
                     "name": "securityLevel",	/* [required] */
                     "type": "integer",          /* [default:string] ex( integer, string ) */
                     "input_type": "text",       /* [default:text] text, textarea */ /* relation_column forced to pulldown */
-                    "varidate": "numeric|max:10",		/* [default:""] */
+                    "varidate": "numeric|max:100",		/* [default:""] */
                     "faker_type": "numberBetween(1,30)",     /* [default -> ''(nullable must be true) ] ex( randomDigit(), randomNumber(2), numberBetween(1,30), word(), sentence(), paragraph(), text(), name(), address(), date('Y-m-d','now'), safeEmail(), password() )  */
                     "nullable": "false",        /* [default:false] ex( true, false ) */
                     "display_name": "SECURITY LEVEL",/* [required] */
@@ -115,11 +115,11 @@
             "use_soft_delete": "false",
             "schemas": [
                 {
-					/* integerTextMax10 */
+					/* integerTextMax100 */
                     "name":"size",
                     "type":"integer",
                     "input_type": "text",
-                    "varidate": "numeric|max:10",		/* [default:""] note: unique is not allowed in pivots*/
+                    "varidate": "numeric|max:100",		/* [default:""] note: unique is not allowed in pivots*/
                     "faker_type": "numberBetween(1,10)",
                     "nullable": "true",
                     "display_name": "SIZE"
