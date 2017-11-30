@@ -86,7 +86,7 @@
                     "name":"proficiency",
                     "type":"integer",
                     "input_type": "text",
-                    "varidate": "numeric|max:10",		/* [default:""] note: unique is not allowed in pivots*/
+                    "varidate": "numeric|max:100",		/* [default:""] note: unique is not allowed in pivots*/
                     "faker_type": "numberBetween(1,10)",
                     "nullable": "true",
                     "display_name": "PROFICIENCY"
