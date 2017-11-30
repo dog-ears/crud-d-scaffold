@@ -43,17 +43,17 @@
                         <select class="form-control" id="{{{ $this.name|name_name }}}-field" name="{{{ $this.name|name_name }}}">
                         @foreach( $list["{{{ $this.belongsto|NameName }}}"] as $list_key => $list_item )
                          <option value="{{ $list_key }}"
-                          @if( isset(${{{ $name|nameName }}}->{{{ $this.name|name_name }}}) && $list_key==${{{ $name|nameName }}}->{{{ $this.name|name_name }}} )
-                           selected='selected'
-                          @endif
+                         @if( ( $errors->count() && old('{{{ $this.name|name_name }}}') == $list_key ) || ( !$errors->count() && isset(${{{ $name|nameName }}}) && ${{{ $name|nameName }}}->{{{ $this.name|name_name }}}==$list_key ) )
+                         selected='selected'
+                         @endif
                          >{{ $list_item }}</option>
                         @endforeach
                         </select>
 {{{ else: }}}
 {{{ if($this.input_type==text): }}}
-                       <input class="form-control" id="{{{ $this.name|name_name }}}-field" name="{{{ $this.name|name_name }}}" type="text" value="@oror(old('{{{ $this.name|name_name }}}') or ${{{ $name|nameName }}}->{{{ $this.name|name_name }}} or '')">
+                       <input class="form-control" id="{{{ $this.name|name_name }}}-field" name="{{{ $this.name|name_name }}}" type="text" value="@if($errors->count()){{ old('{{{ $this.name|name_name }}}') }}@else{{ ${{{ $name|nameName }}}->{{{ $this.name|name_name }}} or '' }}@endif">
 {{{ elseif($this.input_type==textarea): }}}
-                       <textarea class="form-control" id="{{{ $this.name|name_name }}}-field" name="{{{ $this.name|name_name }}}" type="text">@oror(old('{{{ $this.name|name_name }}}') or ${{{ $name|nameName }}}->{{{ $this.name|name_name }}} or '')</textarea>
+                       <textarea class="form-control" id="{{{ $this.name|name_name }}}-field" name="{{{ $this.name|name_name }}}" type="text">@if($errors->count()){{ old('{{{ $this.name|name_name }}}') }}@else{{ ${{{ $name|nameName }}}->{{{ $this.name|name_name }}} or '' }}@endif</textarea>
 {{{ endif; }}}
 {{{ endif; }}}
                        @if($errors->has("{{{ $this.name|name_name }}}"))
@@ -71,10 +71,12 @@
                                 <div class="form-group @if($errors->has('pivots.{{{ $this.name|name_name }}}.'.$list_key.'.*')) has-error @endif">
                                     <label class="checkbox-inline">
                                     <input name="pivots[{{{ $this.name|name_name }}}][{{ $list_key }}][id]" type="checkbox" id="pivots{{{ $this.name|NameName }}}Checkbox{{ $list_key }}" value="{{ $list_key }}"
-        {{{ if($this.schemas!=[]): }}}
-        class="manytomany-trigger"
-        {{{ endif; }}}
-                                    @if( old('pivots.{{{ $this.name|name_name }}}.'.$list_key.'.id') || (isset(${{{ $name|nameName }}}) && ${{{ $name|nameName }}}->{{{ $this.name|nameNames }}}->find($list_key)) ) checked @endif
+{{{ if($this.schemas!=[]): }}}
+ class="manytomany-trigger"
+{{{ endif; }}}
+                                        @if( $errors->count() && old('pivots.{{{ $this.name|name_name }}}.'.$list_key.'.id')) checked
+                                        @elseif( !$errors->count() && isset(${{{ $name|nameName }}}) && ${{{ $name|nameName }}}->{{{ $this.name|nameNames }}}->find($list_key) ) checked
+                                        @endif
                                     > {{ $list_item }}
                                     </label>
                                 </div>
