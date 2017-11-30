@@ -84,6 +84,7 @@
                     "name": "commenterName",
                     "type": "string",
                     "input_type": "text",
+                    "varidate": "max:10",
                     "faker_type": "name()",
                     "nullable": "false",
                     "display_name": "COMMENTER NAME",
