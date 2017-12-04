@@ -21,6 +21,18 @@
                     "show_in_detail": "true",
 					"belongsto": "",
 					"belongsto_column": ""
+                },{
+                    "name": "companyId",
+                    "type": "integer",
+                    "input_type": "text",
+                    "varidate": "numeric",
+                    "faker_type": "numberBetween(1,30)",
+                    "nullable": "false",
+                    "display_name": "COMPANY",
+                    "show_in_list": "true",
+                    "show_in_detail": "true",
+					"belongsto": "company",
+					"belongsto_column": "companyName"
                 }
 			]
         },{
@@ -65,7 +77,26 @@
                     "varidate": "",
                     "faker_type": "name()",
                     "nullable": "false",
-                    "display_name": "TAG NAME",
+                    "display_name": "HOBBY NAME",
+                    "show_in_list": "true",
+                    "show_in_detail": "true",
+					"belongsto": "",
+					"belongsto_column": ""
+                }
+            ]
+        },{
+            "name": "company",
+            "display_name": "COMPANY",
+            "use_soft_delete": "true",
+            "schemas": [
+                {
+                    "name": "companyName",
+                    "type": "string",
+                    "input_type": "text",
+                    "varidate": "",
+                    "faker_type": "company()",
+                    "nullable": "false",
+                    "display_name": "COMPANY NAME",
                     "show_in_list": "true",
                     "show_in_detail": "true",
 					"belongsto": "",
