@@ -6,8 +6,8 @@
                         <select class="form-control" id="{{{ $this.name|name_name }}}-field" name="{{{ $this.name|name_name }}}">
                         @foreach( $list["{{{ $this.belongsto|NameName }}}"] as $list_key => $list_item )
                          <option value="{{ $list_key }}"
-                          @if( isset(${{{ $name|nameName }}}->{{{ $this.name|name_name }}}) && $list_key==${{{ $name|nameName }}}->{{{ $this.name|name_name }}} )
-                           selected='selected'
+                          @if( ( $errors->count() && old('{{{ $this.name|name_name }}}') == $list_key ) || ( !$errors->count() && isset(${{{ $name|nameName }}}) && ${{{ $name|nameName }}}->{{{ $this.name|name_name }}}==$list_key ) )
+                          selected='selected'
                           @endif
                          >{{ $list_item }}</option>
                         @endforeach
