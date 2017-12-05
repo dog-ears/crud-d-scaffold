@@ -1,0 +1,136 @@
+/* Varidation test with laravel auth  */
+
+{
+    "app_type": "web",                          /* [default:web]  */
+    "use_laravel_auth": "true",                  /* [default:false]  */
+    "models": [
+        {
+            "name": "user",              /* [required] format[nameName] */
+            "display_name": "USER",     /* [required] */
+            "use_soft_delete": "true",          /* [default:false] ex( true, false ) */
+            "schemas": [
+                {
+                    "name": "age",
+                    "type": "integer",
+                    "input_type": "text",
+                    "varidate": "numeric|max:100|unique",
+                    "faker_type": "randomNumber(2)",
+                    "nullable": "false",
+                    "display_name": "AGE",
+                    "show_in_list": "true",
+                    "show_in_detail": "true",
+					"belongsto": "",
+					"belongsto_column": ""
+                },{
+                    "name": "companyId",
+                    "type": "integer",
+                    "input_type": "text",
+                    "varidate": "numeric",
+                    "faker_type": "numberBetween(1,30)",
+                    "nullable": "false",
+                    "display_name": "COMPANY",
+                    "show_in_list": "true",
+                    "show_in_detail": "true",
+					"belongsto": "company",
+					"belongsto_column": "companyName"
+                }
+			]
+        },{
+            "name": "nicePost",
+            "display_name": "NICE POST",
+            "use_soft_delete": "true",
+            "schemas": [
+                {
+                    "name": "bigTitle",         /* [required] */
+                    "type": "string",           /* [default:string] ex( integer, string ) */
+                    "input_type": "textarea",   /* [default:text] text, textarea */ /* relation_column forced to pulldown */
+                    "varidate": "max:10|unique",/* [default:""] */
+                    "faker_type": "name()",     /* [default -> ''(nullable must be true) ] ex( randomDigit(), randomNumber(2), numberBetween(1,30), word(), sentence(), paragraph(), text(), name(), address(), date('Y-m-d','now'), safeEmail(), password() )  */
+                    "nullable": "false",        /* [default:false] ex( true, false ) */
+                    "display_name": "BIG TITLE",/* [required] */
+                    "show_in_list": "true",     /* [default:true] ex( true, false ) */
+                    "show_in_detail": "true",   /* [default:true] ex( true, false ) */
+					"belongsto": "",            /* [default:""] */
+					"belongsto_column": ""      /* [default:""] */
+                },{
+                    "name": "userId",
+                    "type": "integer",
+                    "input_type": "text",
+                    "faker_type": "numberBetween(1,30)",
+                    "nullable": "false",
+                    "display_name": "USER - NAME",
+                    "show_in_list": "true",
+                    "show_in_detail": "true",
+					"belongsto": "user",
+					"belongsto_column": "name"
+                }
+            ]
+        },{
+            "name": "hobby",
+            "display_name": "HOBBY",
+            "use_soft_delete": "true",
+            "schemas": [
+                {
+                    "name": "hobbyName",
+                    "type": "string",
+                    "input_type": "text",
+                    "varidate": "",
+                    "faker_type": "name()",
+                    "nullable": "false",
+                    "display_name": "HOBBY NAME",
+                    "show_in_list": "true",
+                    "show_in_detail": "true",
+					"belongsto": "",
+					"belongsto_column": ""
+                }
+            ]
+        },{
+            "name": "company",
+            "display_name": "COMPANY",
+            "use_soft_delete": "true",
+            "schemas": [
+                {
+                    "name": "companyName",
+                    "type": "string",
+                    "input_type": "text",
+                    "varidate": "",
+                    "faker_type": "company()",
+                    "nullable": "false",
+                    "display_name": "COMPANY NAME",
+                    "show_in_list": "true",
+                    "show_in_detail": "true",
+					"belongsto": "",
+					"belongsto_column": ""
+                }
+            ]
+        }
+    ],
+    "pivots":[
+        {
+            "parentModel":"user",
+            "parentModel_column":"name",
+            "childModel":"hobby",
+            "childModel_column":"hobbyName",
+            "use_soft_delete": "true",
+            "schemas": [
+                {
+                    "name":"proficiency",
+                    "type":"integer",
+                    "input_type": "text",
+                    "varidate": "numeric|max:100",		/* [default:""] note: unique is not allowed in pivots*/
+                    "faker_type": "numberBetween(1,10)",
+                    "nullable": "true",
+                    "display_name": "PROFICIENCY"
+                },{
+                    "name":"note",
+                    "type":"string",
+                    "input_type": "text",
+                    "varidate": "max:10",	/* [default:""] */
+                    "faker_type": "name()",
+                    "nullable": "true",
+                    "display_name": "NOTE"
+                }
+            ]
+        }
+    ]
+}

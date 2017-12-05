@@ -32,7 +32,8 @@ class StubCompiler
         $result = '';
 
         //delete return before tag
-        $this->stub_txt = str_replace ( "\n{{{" , "{{{", $this->stub_txt );
+        $this->stub_txt = str_replace ( array("}}}\r\n{{{", "}}}\r{{{", "}}}\n{{{") , "}}}{{{", $this->stub_txt );
+        $this->stub_txt = str_replace ( array("}}}\r\n", "}}}\r", "}}}\n") , "}}}", $this->stub_txt );
 
         /* prepare - parse */
         $pattern_tag = '#(\{\{\{ [^}]* \}\}\})#';
@@ -302,6 +303,8 @@ class StubCompiler
 
         if( $var_path_array[0] == 'this' ){
             $var_path_array = array_merge($this_path_array, array_slice($var_path_array,1));
+        }elseif( $var_path_array[0] == 'parent' ){
+            $var_path_array = array_merge(array_slice($this_path_array,0,-2), array_slice($var_path_array,1));
         }
 
         $var_path = implode('.',$var_path_array);
@@ -313,6 +316,8 @@ class StubCompiler
         }
         return $result;
     }
+
+
 
     private function check_if_condition( $var_path, $target_str, $this_path, $reverse=false ){
 
@@ -337,6 +342,8 @@ class StubCompiler
             }
         }
     }
+
+
 
     private function array_get(array $array, $keys ) {
 

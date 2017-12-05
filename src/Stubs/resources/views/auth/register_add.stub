@@ -6,8 +6,8 @@
                         <select class="form-control" id="{{{ $this.name|name_name }}}-field" name="{{{ $this.name|name_name }}}">
                         @foreach( $list["{{{ $this.belongsto|NameName }}}"] as $list_key => $list_item )
                          <option value="{{ $list_key }}"
-                          @if( isset(${{{ $name|nameName }}}->{{{ $this.name|name_name }}}) && $list_key==${{{ $name|nameName }}}->{{{ $this.name|name_name }}} )
-                           selected='selected'
+                          @if( ( $errors->count() && old('{{{ $this.name|name_name }}}') == $list_key ) || ( !$errors->count() && isset(${{{ $name|nameName }}}) && ${{{ $name|nameName }}}->{{{ $this.name|name_name }}}==$list_key ) )
+                          selected='selected'
                           @endif
                          >{{ $list_item }}</option>
                         @endforeach
@@ -29,24 +29,26 @@
 {{{ endforeach; }}}
 
 {{{ foreach($belongstomany): }}}
-                    <div class="form-group manytomany{{ $errors->has('pivots{{{ $this.name|NameName }}}') ? ' has-error' : '' }}">
+                    <div class="form-group manytomany">
                         <label class="col-md-4 control-label" for="pivots{{{ $this.name|NameName }}}Checkbox">{{{ $this.name|NameName }}}</label>
                         <div class="col-md-6">
-                            @foreach($list['{{{ $this.name|NameName }}}'] as $list_key => $list_item)
-                                <label class="checkbox-inline">
-                                <input name="pivots[{{{ $this.name|name_name }}}][{{ $list_key }}][id]" type="checkbox" id="pivots{{{ $this.name|NameName }}}Checkbox{{ $list_key }}" value="{{ $list_key }}"
-    {{{ if($this.schemas!=[]): }}}
-    class="manytomany-trigger"
-    {{{ endif; }}}
-                                @if( isset(${{{ $name|nameName }}}) && ${{{ $name|nameName }}}->{{{ $this.name|nameNames }}}->where('id',$list_key)->count() ) checked @endif
-                                > {{ $list_item }}
-                                </label>
-                            @endforeach
+                            <div class="form-inline">
+                                @foreach($list['{{{ $this.name|NameName }}}'] as $list_key => $list_item)
+                                <div class="form-group mr0 ml0 @if($errors->has('pivots.{{{ $this.name|name_name }}}.'.$list_key.'.*')) has-error @endif">
+                                    <label class="checkbox-inline">
+                                    <input name="pivots[{{{ $this.name|name_name }}}][{{ $list_key }}][id]" type="checkbox" id="pivots{{{ $this.name|NameName }}}Checkbox{{ $list_key }}" value="{{ $list_key }}"
+        {{{ if($this.schemas!=[]): }}}
+        class="manytomany-trigger"
+        {{{ endif; }}}
+                                    @if( old('pivots.{{{ $this.name|name_name }}}.'.$list_key.'.id') ) checked @endif
+                                    > {{ $list_item }}
+                                    </label>
+                                </div>
+                                @endforeach
+                            </div>
                         </div>
-                        @if ($errors->has('pivots{{{ $this.name|NameName }}}'))
-                            <span class="help-block">
-                                <strong>{{ $errors->first('pivots{{{ $this.name|NameName }}}') }}</strong>
-                            </span>
+                        @if($errors->has('pivots.{{{ $this.name|name_name }}}.*.*'))
+                        <div class="col-md-6 col-md-offset-4 has-error"><span class="help-block">There were some problems with your pivot input.</span></div>
                         @endif
 
 {{{ if($this.schemas!=[]): }}}
@@ -63,6 +65,7 @@
                                 <div class="form-group mr0 ml0">
                                     <label for="{{{ $this.name|name_name }}}-field">{{{ $this.name|name_name }}}</label><br>
                                     <input id="{{{ $this.name|name_name }}}-field" type="text" class="form-control manytomany-pivot-input" name="pivots-option[{{{ $this.name|name_name }}}]">
+                                    <span class="help-block"></span>
                                 </div>
 {{{ endforeach; }}}
                               </div>
@@ -74,13 +77,18 @@
                           </div>
                         </div>
 
-                        @if( isset(${{{ $name|nameName }}}) )
-                            @foreach( ${{{ $name|nameName }}}->{{{ $this.name|nameNames }}} as ${{{ $this.name|name_name }}} )
-                                @foreach( ${{{ $this.name|name_name }}}->pivot->toArray() as $pivot_key => $pivot_value )
-                                    @if( $loop->index > 1 && $pivot_key !== 'created_at' && $pivot_key !== 'updated_at')
-                                        <input type="hidden" name="pivots[{{{ $this.name|name_name }}}][{{ ${{{ $this.name|name_name }}}->id }}][{{$pivot_key}}]" value="{{$pivot_value}}">
+                        @if( old('pivots.{{{ $this.name|name_name }}}') )
+                            @foreach( old('pivots.{{{ $this.name|name_name }}}') as ${{{ $this.name|name_name }}}_id => ${{{ $this.name|name_name }}} )
+                                @foreach( ${{{ $this.name|name_name }}} as $pivot_key => $pivot_value )
+                                    @if( $loop->index > 0 )
+                                        <input type="hidden" name="pivots[{{{ $this.name|name_name }}}][{{ ${{{ $this.name|name_name }}}_id }}][{{$pivot_key}}]" value="{{$pivot_value}}" parent_name="pivots[{{{ $this.name|name_name }}}][{{ ${{{ $this.name|name_name }}}_id }}]">
                                     @endif
                                 @endforeach
+                            @endforeach
+                        @endif
+                        @if($errors->has('pivots.{{{ $this.name|name_name }}}.*.*'))
+                            @foreach($errors->get('pivots.{{{ $this.name|name_name }}}.*') as $error_key => $error_value)
+                                        <input type="hidden" name="errors.{{$error_key}}" value="{{$error_value[0]}}" disabled="disabled">
                             @endforeach
                         @endif
 {{{ endif; }}}
