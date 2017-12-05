@@ -1,0 +1,42 @@
+        Blade::directive('oror', function ($expression) {
+            $array = explode( ' or ', trim($expression) );
+
+            $start_exp = "<?php ";
+            $end_exp = " ?>";
+
+            $result = $start_exp;
+            
+            for($i=0;$i<count($array);$i++){
+
+                if( $i !== count($array)-1 ){   // not last
+
+                    if(substr($array[$i],0,1) === '$'){ // variable
+
+                        if( strpos($array[$i],'->') !== false ){  // with arrow(->)
+
+                            $base_var = explode('->',$array[$i])[0];
+                            $result .= "if( isset($base_var) && isset($array[$i]) ){ echo e($array[$i]); }else{";
+                            $end_exp = "}".$end_exp;
+
+                        }else{  //without arrow(->)
+
+                            $result .= "if( isset($array[$i]) ){ echo e($array[$i]); }else{";
+                            $end_exp = "}".$end_exp;                            
+
+                        }
+                    }else{  // not variable
+
+                        $result .= "if( $array[$i] ){ echo e($array[$i]); }else{";
+                        $end_exp = "}".$end_exp;
+
+                    }
+
+                }else{  // last
+
+                    $result .= "echo e($array[$i]);";
+                    
+                }
+            }
+            $result .= $end_exp;
+            return $result;
+        });

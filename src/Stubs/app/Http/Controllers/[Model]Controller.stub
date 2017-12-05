@@ -8,9 +8,27 @@ use App\Http\Controllers\Controller;
 use App\{{{ $name|NameName }}};
 use Illuminate\Http\Request;
 
-
 class {{{ $name|NameName }}}Controller extends Controller
 {
+    /**
+     * Varidate input data.
+     *
+     * @return array
+     */
+    public function varidate(Request $request, {{{ $name|NameName }}} ${{{ $name|name_name }}} = null)
+    {
+        $request->validate([
+{{{ foreach($schemas): }}}{{{ if($this.varidate!=''): }}}
+            '{{{ $this.name|name_name }}}' => {{{ $this.varidate }}},
+{{{ endif; }}}{{{ endforeach; }}}
+{{{ foreach($belongstomany): }}}{{{ foreach($this.schemas): }}}
+            'pivots.{{{ $parent.name|name_name }}}.*.{{{ $this.name|name_name }}}' => {{{ $this.varidate }}},
+{{{ endforeach; }}}{{{ endforeach; }}}
+        ]);
+    }
+
+
+
     /**
      * Display a listing of the resource.
      *
@@ -46,6 +64,8 @@ class {{{ $name|NameName }}}Controller extends Controller
      */
     public function store(Request $request)
     {
+        $this->varidate($request);
+
         $input = $request->all();
 
 {{{ if($name==user): }}}
@@ -56,7 +76,6 @@ class {{{ $name|NameName }}}Controller extends Controller
 {{{ if($belongstomany!=[]): }}}
         //remove data for manytomany relation
         if( array_key_exists('pivots',$input) ){ unset($input['pivots']); }
-        if( array_key_exists('pivots-option',$input) ){ unset($input['pivots-option']); }
 {{{ endif; }}}
 
 		//create data
@@ -64,26 +83,19 @@ class {{{ $name|NameName }}}Controller extends Controller
 
 {{{ if($belongstomany!=[]): }}}
         //sync(attach/detach)
-        if( $request->input('pivots') ){
-
+        if($request->input('pivots')){
             foreach( $request->input('pivots') as $pivot_child_model_name => $pivots ){
 
-                // remove $pivots without 'id'
-                $filtered_pivots = array_filter($pivots,function($value){
-                    return array_key_exists('id',$value);
-                });
-
                 // remove 'id'
-                foreach($filtered_pivots as &$value){
+                foreach($pivots as &$value){
                     if( array_key_exists('id', $value) ){
                         unset($value['id']);
                     }
                 }unset($value);
 
                 $method = camel_case( str_plural($pivot_child_model_name) );
-                ${{{ $name|name_name }}}->$method()->sync($filtered_pivots);
+                ${{{ $name|name_name }}}->$method()->sync($pivots);
             }
-
         }
 {{{ endif; }}}
 
@@ -142,6 +154,8 @@ class {{{ $name|NameName }}}Controller extends Controller
      */
     public function update({{{ $name|NameName }}} ${{{ $name|nameName }}}, Request $request)
     {
+        $this->varidate($request, ${{{ $name|nameName }}});
+
         $input = $request->all();
 
 {{{ if($name==user): }}}
@@ -156,7 +170,6 @@ class {{{ $name|NameName }}}Controller extends Controller
 {{{ if($belongstomany!=false): }}}
         //remove data for manytomany relation
         if( array_key_exists('pivots',$input) ){ unset($input['pivots']); }
-        if( array_key_exists('pivots-option',$input) ){ unset($input['pivots-option']); }
 {{{ endif; }}}
 
 		//update data
@@ -164,22 +177,19 @@ class {{{ $name|NameName }}}Controller extends Controller
 
 {{{ if($belongstomany!=[]): }}}
         //sync(attach/detach)
-        foreach( $request->input('pivots') as $pivot_child_model_name => $pivots ){
+        if($request->input('pivots')){
+            foreach( $request->input('pivots') as $pivot_child_model_name => $pivots ){
 
-            // remove $pivots without 'id'
-            $filtered_pivots = array_filter($pivots,function($value){
-                return array_key_exists('id',$value);
-            });
+                // remove 'id'
+                foreach($pivots as &$value){
+                    if( array_key_exists('id', $value) ){
+                        unset($value['id']);
+                    }
+                }unset($value);
 
-            // remove 'id'
-            foreach($filtered_pivots as &$value){
-                if( array_key_exists('id', $value) ){
-                    unset($value['id']);
-                }
-            }unset($value);
-
-            $method = camel_case( str_plural($pivot_child_model_name) );
-            ${{{ $name|nameName }}}->$method()->sync($filtered_pivots);
+                $method = camel_case( str_plural($pivot_child_model_name) );
+                ${{{ $name|nameName }}}->$method()->sync($pivots);
+            }
         }
 {{{ endif; }}}
 
