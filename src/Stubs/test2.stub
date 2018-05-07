@@ -1,0 +1,25 @@
+
+[c-data01]
+
+{{{ $models.1.schemas.0.name|name_names }}}
+
+{{{ if($use_laravel_auth==true): }}}
+[01]
+{{{ elseif($use_laravel_auth==false): }}}
+[02]
+{{{ else: }}}
+[03]
+{{{ endif; }}}
+
+[c-data04]
+
+{{{ foreach($models): }}}
+    ModelName:{{{ $this.name }}}
+    {{{ foreach($this.schemas): }}}
+        [c-data06]
+        SchemaName:{{{ $this.name }}}
+        ParentModelName:{{{ $parent.name }}}
+        [c-data07]
+    {{{ endforeach; }}}
+    [c-data08]
+{{{ endforeach; }}}

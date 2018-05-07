@@ -1,140 +1,145 @@
-{{{ if($use_laravel_auth==true): }}}
-
-                        <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
-                            <label for="name-field">Name</label>
-                                <input id="name-field" type="text" class="form-control" name="name" value="{{ $user->name or '' }}" required autofocus>
-                                @if ($errors->has('name'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('name') }}</strong>
-                                    </span>
-                                @endif
-                        </div>
-
-                        <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                            <label for="email-field">E-Mail Address</label>
-                            <input id="email-field" type="email" class="form-control" name="email" value="{{ $user->email or '' }}" required>
-                            @if ($errors->has('email'))
-                                <span class="help-block">
-                                    <strong>{{ $errors->first('email') }}</strong>
-                                </span>
-                            @endif
-                        </div>
-
-                        <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                            <label for="password-field">Password</label>
-                            <input id="password-field" type="password" class="form-control" name="password" @if($view_mode !== 'edit')required @endif>
-                            @if ($errors->has('password'))
-                                <span class="help-block">
-                                    <strong>{{ $errors->first('password') }}</strong>
-                                </span>
-                            @endif
-                        </div>
-
-                        <div class="form-group">
-                            <label for="password-confirm-field">Confirm Password</label>
-                            <input id="password-confirm-field" type="password" class="form-control" name="password_confirmation" @if($view_mode !== 'edit')required @endif>
-                        </div>
-{{{ endif; }}}
 
 {{{ foreach($schemas): }}}
-                    <div class="form-group @if($errors->has('{{{ $this.name|name_name }}}')) has-error @endif">
-                       <label for="{{{ $this.name|name_name }}}-field">{{{ $this.display_name }}}</label>
-{{{ if($this.belongsto!=): }}}
-                        <select class="form-control" id="{{{ $this.name|name_name }}}-field" name="{{{ $this.name|name_name }}}">
-                        @foreach( $list["{{{ $this.belongsto|NameName }}}"] as $list_key => $list_item )
-                         <option value="{{ $list_key }}"
-                         @if( ( $errors->count() && old('{{{ $this.name|name_name }}}') == $list_key ) || ( !$errors->count() && isset(${{{ $name|nameName }}}) && ${{{ $name|nameName }}}->{{{ $this.name|name_name }}}==$list_key ) )
-                         selected='selected'
-                         @endif
-                         >{{ $list_item }}</option>
-                        @endforeach
-                        </select>
-{{{ else: }}}
-{{{ if($this.input_type==text): }}}
-                       <input class="form-control" id="{{{ $this.name|name_name }}}-field" name="{{{ $this.name|name_name }}}" type="text" value="@if($errors->count()){{ old('{{{ $this.name|name_name }}}') }}@else{{ ${{{ $name|nameName }}}->{{{ $this.name|name_name }}} or '' }}@endif">
-{{{ elseif($this.input_type==textarea): }}}
-                       <textarea class="form-control" id="{{{ $this.name|name_name }}}-field" name="{{{ $this.name|name_name }}}" type="text">@if($errors->count()){{ old('{{{ $this.name|name_name }}}') }}@else{{ ${{{ $name|nameName }}}->{{{ $this.name|name_name }}} or '' }}@endif</textarea>
+{{{ if($this.belongsto==''): }}}
+<div class="form-group">
+  <label for="{{{ $this.name|name_name }}}-field">{{{ $this.display_name }}}</label>
+
+{{{ if($this.input_type=='text'): }}}
+  <input type="text" class="form-control
+  @if($errors->any()) @if($errors->has("model.{{{ $this.name|name_name }}}")) is-invalid @else is-valid @endif @endif;
+  " id="{{{ $this.name|name_name }}}-field" name="model[{{{ $this.name|name_name }}}]" value="@if($errors->any()){{ old('model.{{{ $this.name|name_name }}}') }}@else{{ ${{{ $name|nameName }}}->{{{ $this.name|name_name }}} or '' }}@endif" {{{ if($this.nullable==false): }}}required{{{ endif; }}}>
+{{{ elseif($this.input_type=='textarea'): }}}
+  <textarea class="form-control
+  @if($errors->any()) @if($errors->has("model.{{{ $this.name|name_name }}}")) is-invalid @else is-valid @endif @endif;
+  " id="{{{ $this.name|name_name }}}-field" name="model[{{{ $this.name|name_name }}}]" rows="3" {{{ if($this.nullable==false): }}}required{{{ endif; }}}>@if($errors->any()){{ old('model.{{{ $this.name|name_name }}}') }}@else{{ ${{{ $name|nameName }}}->{{{ $this.name|name_name }}} or '' }}@endif</textarea>
+{{{ elseif($this.input_type=='password'): }}}
+  <input type="password" class="form-control
+  @if($errors->any()) @if($errors->has("model.{{{ $this.name|name_name }}}")) is-invalid @else is-valid @endif @endif;
+  " id="{{{ $this.name|name_name }}}-field" name="model[{{{ $this.name|name_name }}}]" value="@if($errors->any()){{ old('model.{{{ $this.name|name_name }}}') }}@endif" {{{ if($this.nullable==false): }}} @if($mode!=='edit') required @endif {{{ endif; }}}>
 {{{ endif; }}}
+
+  @if($errors->has("model.{{{ $this.name|name_name }}}"))
+    <div class="invalid-feedback">{{ $errors->first("model.{{{ $this.name|name_name }}}") }}</div>
+  @else
+    <div class="invalid-feedback">Invalid!</div>
+  @endif
+</div>
+
+{{{ if($this.input_type=='password'): }}}
+<div class="form-group">
+  <label for="{{{ $this.name|name_name }}}-confirm">Confirm Password</label>
+  <input id="{{{ $this.name|name_name }}}-confirm" type="password" class="form-control" name="model[{{{ $this.name|name_name }}}_confirmation]" {{{ if($this.nullable==false): }}} @if($mode!=='edit') required @endif {{{ endif; }}}>
+</div>
 {{{ endif; }}}
-                       @if($errors->has("{{{ $this.name|name_name }}}"))
-                        <span class="help-block">{{ $errors->first("{{{ $this.name|name_name }}}") }}</span>
-                       @endif
-                    </div>
+
+{{{ endif; }}}
 {{{ endforeach; }}}
 
 
-{{{ foreach($belongstomany): }}}
-                    <div class="form-group manytomany">
-                        <label for="pivots{{{ $this.name|NameName }}}Checkbox">{{{ $this.name|NameName }}}</label>
-                        <div class="form-inline">
-                            @foreach($list['{{{ $this.name|NameName }}}'] as $list_key => $list_item)
-                                <div class="form-group @if($errors->has('pivots.{{{ $this.name|name_name }}}.'.$list_key.'.*')) has-error @endif">
-                                    <label class="checkbox-inline">
-                                    <input name="pivots[{{{ $this.name|name_name }}}][{{ $list_key }}][id]" type="checkbox" id="pivots{{{ $this.name|NameName }}}Checkbox{{ $list_key }}" value="{{ $list_key }}"
-{{{ if($this.schemas!=[]): }}}
- class="manytomany-trigger"
-{{{ endif; }}}
-                                        @if( $errors->count() && old('pivots.{{{ $this.name|name_name }}}.'.$list_key.'.id')) checked
-                                        @elseif( !$errors->count() && isset(${{{ $name|nameName }}}) && ${{{ $name|nameName }}}->{{{ $this.name|nameNames }}}->find($list_key) ) checked
-                                        @endif
-                                    > {{ $list_item }}
-                                    </label>
-                                </div>
-                            @endforeach
-                        </div>
-                        @if ($errors->has('pivots.{{{ $this.name|name_name }}}.*.*'))
-                        <div class="has-error"><span class="help-block">There were some problems with your pivot input.</span></div>
-                        @endif
 
-{{{ if($this.schemas!=[]): }}}
-                        <!-- manytomany Modal -->
-                        <div class="modal manytomany-modal fade" id="{{{ $this.name|nameName }}}Modal" tabindex="-1" role="dialog" aria-labelledby="{{{ $this.name|nameName }}}ModalLabel">
-                          <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                              <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title" id="myModalLabel">{{{ $this.name|NameName }}} Option</h4>
-                              </div>
-                              <div class="modal-body">
-{{{ foreach($this.schemas): }}}
-                                <div class="form-group">
-                                    <label for="{{{ $this.name|name_name }}}-field">{{{ $this.name|name_name }}}</label><br>
-                                    <input id="{{{ $this.name|name_name }}}-field" type="text" class="form-control manytomany-pivot-input" name="pivots-option[{{{ $this.name|name_name }}}]">
-                                    <span class="help-block"></span>
-                                </div>
+{{{ foreach($relations): }}}
+{{{ if($this.type=='belongsTo'): }}}
+
+<div class="form-group">
+  <label for="{{{ $this.targetModel.name|name_name }}}_id-field">{{{ $this.targetModel.display_name }}}</label>
+
+  <select class="form-control
+  @if($errors->any()) @if($errors->has("model.{{{ $this.targetModel.name|name_name }}}_id")) is-invalid @else is-valid @endif @endif
+  " id="{{{ $this.targetModel.name|name_name }}}_id-field" name="model[{{{ $this.targetModel.name|name_name }}}_id]">
+    <option value=""></option>
+  @foreach( $lists["{{{ $this.targetModel.name|NameName }}}"] as $list_key => $list_item )
+    <option value="{{ $list_key }}"
+      @if($errors->any())
+        @if( old('{{{ $this.targetModel.name|name_name }}}_id') == $list_key ) selected='selected' @endif
+      @else
+        @if( isset(${{{ $name|nameName }}}) && ${{{ $name|nameName }}}->{{{ $this.targetModel.name|name_name }}}_id==$list_key )  selected='selected' @endif
+      @endif
+   >{{ $list_item }}</option>
+  @endforeach
+  </select>
+  @if($errors->has("model.{{{ $this.targetModel.name|name_name }}}_id"))
+    <div class="invalid-feedback">{{ $errors->first("model.{{{ $this.targetModel.name|name_name }}}_id") }}</div>
+  @else
+    <div class="invalid-feedback">Invalid!</div>
+  @endif
+</div>
+
+{{{ endif; }}}
 {{{ endforeach; }}}
-                              </div>
-                              <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary save">Save changes</button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
 
-                        @if( old('pivots.{{{ $this.name|name_name }}}') )
-                            @foreach( old('pivots.{{{ $this.name|name_name }}}') as ${{{ $this.name|name_name }}}_id => ${{{ $this.name|name_name }}} )
-                                @foreach( ${{{ $this.name|name_name }}} as $pivot_key => $pivot_value )
-                                    @if( $loop->index > 0 )
-                                        <input type="hidden" name="pivots[{{{ $this.name|name_name }}}][{{ ${{{ $this.name|name_name }}}_id }}][{{$pivot_key}}]" value="{{$pivot_value}}" parent_name="pivots[{{{ $this.name|name_name }}}][{{ ${{{ $this.name|name_name }}}_id }}]">
-                                    @endif
-                                @endforeach
-                            @endforeach
-                        @elseif( isset(${{{ $name|nameName }}}) )
-                            @foreach( ${{{ $name|nameName }}}->{{{ $this.name|nameNames }}} as ${{{ $this.name|name_name }}} )
-                                @foreach( ${{{ $this.name|name_name }}}->pivot->toArray() as $pivot_key => $pivot_value )
-                                    @if( $loop->index > 1 && $pivot_key !== 'created_at' && $pivot_key !== 'updated_at')
-                                        <input type="hidden" name="pivots[{{{ $this.name|name_name }}}][{{ ${{{ $this.name|name_name }}}->id }}][{{$pivot_key}}]" value="{{$pivot_value}}" parent_name="pivots[{{{ $this.name|name_name }}}][{{ ${{{ $this.name|name_name }}}->id }}]">
-                                    @endif
-                                @endforeach
-                            @endforeach
-                        @endif
-                        @if($errors->has('pivots.{{{ $this.name|name_name }}}.*.*'))
-                            @foreach($errors->get('pivots.{{{ $this.name|name_name }}}.*') as $error_key => $error_value)
-                                        <input type="hidden" name="errors.{{$error_key}}" value="{{$error_value[0]}}" disabled="disabled">
-                            @endforeach
-                        @endif
+
+
+{{{ foreach($relations): }}}
+{{{ if($this.type=='belongsToMany'): }}}
+
+<div class="form-group manytomany">
+    <label for="pivots{{{ $name|nameName }}}Checkbox">{{{ $this.targetModel.display_name }}}</label>
+    <div class="form-check form-check-inline flex-wrap">
+        @foreach($lists['{{{ $this.targetModel.name|NameName }}}'] as $list_key => $list_item)
+        <div class="form-group mb-1">
+          <input name="pivots[{{{ $this.targetModel.name|name_name }}}][{{ $list_key }}][id]" type="checkbox" id="pivots{{{ $this.targetModel.name|NameName }}}Checkbox{{ $list_key }}" value="{{ $list_key }}" class="form-check-input manytomany-trigger
+              @if($errors->has('pivots.{{{ $this.targetModel.name|name_name }}}.'.$list_key.'.*')) is-invalid @endif
+              "
+              @if( $errors->any() && old('pivots.{{{ $this.targetModel.name|name_name }}}.'.$list_key.'.id')) checked
+              @elseif( !$errors->any() && isset(${{{ $name|nameName }}}) && ${{{ $name|nameName }}}->{{{ $this.targetModel.name|nameNames }}}->find($list_key) ) checked
+              @endif
+          ><label class="form-check-label mr-2" for="pivots{{{ $this.targetModel.name|NameName }}}Checkbox{{ $list_key }}">{{ $list_item }}</label>
+        </div>
+        @endforeach
+    </div>
+    @if ($errors->has('pivots.{{{ $name|name_name }}}.*.*'))
+    <div><span class="text-danger">There were some problems with your pivot input.</span></div>
+    @endif
+
+    <!-- manytomany Modal -->
+    <div class="modal fade manytomany-modal needs-validation-with-save" id="{{{ $this.targetModel.name|nameName }}}Modal" tabindex="-1" role="dialog" aria-labelledby="{{{ $this.targetModel.name|nameName }}}ModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel">{{{ $this.targetModel.name|NameName }}} Option</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          </div>
+          <div class="modal-body">
+{{{ foreach($this.pivotModelSchemas): }}}
+            <div class="form-group">
+                <label for="{{{ $this.name|name_name }}}-field">{{{ $this.display_name }}}</label>
+                <input id="{{{ $this.name|name_name }}}-field" type="text" class="form-control manytomany-pivot-input" name="pivots-option[{{{ $this.name|name_name }}}]">
+                <span class="invalid-feedback"></span>
+            </div>
+{{{ endforeach; }}}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary save">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    @if( old('pivots.{{{ $this.targetModel.name|name_name }}}') )
+        @foreach( old('pivots.{{{ $this.targetModel.name|name_name }}}') as ${{{ $this.targetModel.name|name_name }}}_id => ${{{ $this.targetModel.name|name_name }}} )
+            @foreach( ${{{ $this.targetModel.name|name_name }}} as $pivot_key => $pivot_value )
+                @if( $loop->index > 0 )
+                    <input type="hidden" name="pivots[{{{ $this.targetModel.name|name_name }}}][{{ ${{{ $this.targetModel.name|name_name }}}_id }}][{{$pivot_key}}]" value="{{$pivot_value}}" parent_name="pivots[{{{ $this.targetModel.name|name_name }}}][{{ ${{{ $this.targetModel.name|name_name }}}_id }}]">
+                @endif
+            @endforeach
+        @endforeach
+    @elseif( isset(${{{ $name|nameName }}}) )
+        @foreach( ${{{ $name|nameName }}}->{{{ $this.targetModel.name|nameNames }}} as ${{{ $this.targetModel.name|name_name }}} )
+            @foreach( ${{{ $this.targetModel.name|name_name }}}->pivot->toArray() as $pivot_key => $pivot_value )
+                @if( $loop->index > 1 && $pivot_key !== 'created_at' && $pivot_key !== 'updated_at')
+                    <input type="hidden" name="pivots[{{{ $this.targetModel.name|name_name }}}][{{ ${{{ $this.targetModel.name|name_name }}}->id }}][{{$pivot_key}}]" value="{{$pivot_value}}" parent_name="pivots[{{{ $this.targetModel.name|name_name }}}][{{ ${{{ $this.targetModel.name|name_name }}}->id }}]">
+                @endif
+            @endforeach
+        @endforeach
+    @endif
+    @if($errors->has('pivots.{{{ $this.targetModel.name|name_name }}}.*.*'))
+        @foreach($errors->get('pivots.{{{ $this.targetModel.name|name_name }}}.*') as $error_key => $error_value)
+                    <input type="hidden" name="errors.{{$error_key}}" value="{{$error_value[0]}}" disabled="disabled">
+        @endforeach
+    @endif
+
+</div>
 
 {{{ endif; }}}
-                    </div>
 {{{ endforeach; }}}

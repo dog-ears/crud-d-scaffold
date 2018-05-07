@@ -1,1 +1,3 @@
-{{{ foreach($schemas): }}}'{{{ $this.name|name_name }}}',{{{ endforeach; }}}
+{{{ foreach($schemas): }}}
+{{{ if($this.name!='name'): }}}{{{ if($this.name!='email'): }}}{{{ if($this.name!='password'): }}}'{{{ $this.name|name_name }}}',{{{ endif; }}}{{{ endif; }}}{{{ endif; }}}
+{{{ endforeach; }}}

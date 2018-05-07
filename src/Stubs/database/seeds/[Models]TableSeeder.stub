@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-{{{ if($parentModel!=): }}}
+{{{ if($is_pivot==true): }}}
 class {{{ $name|NameName }}}TableSeeder extends Seeder
 {{{ else: }}}
 class {{{ $name|NameNames }}}TableSeeder extends Seeder
@@ -16,24 +16,18 @@ class {{{ $name|NameNames }}}TableSeeder extends Seeder
      */
     public function run()
     {
-
         $faker = Faker\Factory::create();
 
         for($i=0;$i<30;$i++){
 
-{{{ if($parentModel!=): }}}
+{{{ if($is_pivot==true): }}}
             DB::table('{{{ $name|name_name }}}')->insert([
 {{{ else: }}}
             DB::table('{{{ $name|name_names }}}')->insert([
 {{{ endif; }}}
 
-{{{ if($use_laravel_auth==true): }}}
-                'name' => $faker->userName(),
-                'email' => $faker->safeEmail(),
-                'password' => $faker->password(),
-{{{ endif; }}}
 {{{ foreach($schemas): }}}
-{{{ if($this.faker_type!=): }}}
+{{{ if($this.faker_type!=''): }}}
                 '{{{ $this.name|name_name }}}' => $faker->{{{ $this.faker_type }}},
 {{{ else: }}}
                 '{{{ $this.name|name_name }}}' => '',
@@ -41,6 +35,5 @@ class {{{ $name|NameNames }}}TableSeeder extends Seeder
 {{{ endforeach; }}}
             ]);
         }
-
     }
 }

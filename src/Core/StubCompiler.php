@@ -49,7 +49,8 @@ class StubCompiler
 
     private function compile_loop( $local_stub_array, $this_path ){
 
-        if($this->debug_flag){ echo('[func]compile_loop'."\n"); }
+        //if($this->debug_flag){ echo("\n".'[func]compile_loop'."\n"); }
+        if($this->debug_flag){ echo("\n"."-----".'[func]compile_loop start -----'."\n"); }
         $result = '';
 
         $before_tag = '';   //if, elseif, endif, foreach, endforeach // use for parse check
@@ -60,38 +61,36 @@ class StubCompiler
         $var_foreach = '';
 
         $pattern_var='#\{\{\{ \$([^\|\}]*)\|?([^\}]*) \}\}\}#';
-        $pattern_if='#\{\{\{ if\(\$([^=]*)==([^\)]*)\): \}\}\}#';
-        $pattern_ifnot='#\{\{\{ if\(\$([^=]*)!=([^\)]*)\): \}\}\}#';
-        $pattern_elseif='#\{\{\{ elseif\(\$([^=]*)==([^\)]*)\): \}\}\}#';
-        $pattern_elseifnot='#\{\{\{ elseif\(\$([^=]*)!=([^\)]*)\): \}\}\}#';
-        $pattern_foreach='#\{\{\{ foreach\(\$([^\)]*)\): \}\}\}#';
+        $pattern_if='#\{\{\{ if\(\$([^=]*)==(.*?)\): \}\}\}#';
+        $pattern_ifnot='#\{\{\{ if\(\$([^=]*)!=(.*?)\): \}\}\}#';
+        $pattern_elseif='#\{\{\{ elseif\(\$([^=]*)==(.*?)\): \}\}\}#';
+        $pattern_elseifnot='#\{\{\{ elseif\(\$([^=]*)!=(.*?)\): \}\}\}#';
+        $pattern_foreach='#\{\{\{ foreach\(\$(.*?)\): \}\}\}#';
 
         for( $i=0;$i<count($local_stub_array);$i++ ){
 
             //var
             if( preg_match ( $pattern_var , $local_stub_array[$i], $m ) ){
 
-                if($this->debug_flag){ echo ('['.$depth.']var : ['.implode(',',$m)."]"."\n"); }
+                //if($this->debug_flag){ echo ('[depth:'.$depth.']var : ['.implode(',',$m)."]"."\n"); }
 
-                if( $depth > 0 ){
-                    if($if_condition != 0 && $if_condition != 2){
-                        $new_local_stub_array[] = $local_stub_array[$i];
-                    }
+                if( $depth > 0  ){
+                    $new_local_stub_array[] = $local_stub_array[$i];
                 }else{
                     $var_path = $m[1];
                     $pipe = $m[2];
                     $result .= $this->compile_var( $var_path, $pipe, $this_path );
+
+                    if($this->debug_flag){ echo ($local_stub_array[$i]. ' ---> '.$this->compile_var( $var_path, $pipe, $this_path ) ."\n"); }
                 }
 
             //if
             }elseif( preg_match ( $pattern_if , $local_stub_array[$i], $m ) || preg_match ( $pattern_ifnot , $local_stub_array[$i], $m ) ){
 
-                if($this->debug_flag){ echo ('['.$depth.']if : ['.implode(',',$m)."]"."\n"); }
+                //if($this->debug_flag){ echo ('[depth:'.$depth.']if : ['.implode(',',$m)."]"."\n"); }
 
-                if( $depth > 0 ){
-                    if($if_condition != 0 && $if_condition != 2){
-                        $new_local_stub_array[] = $local_stub_array[$i];
-                    }
+                if( $depth > 0  ){
+                    $new_local_stub_array[] = $local_stub_array[$i];
                 }else{
                     $var_path = $m[1];
                     $target_str = $m[2];
@@ -100,39 +99,36 @@ class StubCompiler
                     }else{
                         $if_condition = $this->check_if_condition( $var_path, $target_str, $this_path, $reverse=false );
                     }
+                    $before_tag = 'if';
                     $new_local_stub_array = [];
-                }
 
-                $parent_tag = 'if';
-                $before_tag = 'if';
+                    if($if_condition == 1){
+                        if($this->debug_flag){ echo ($local_stub_array[$i].' ---> OK!'."\n"); }
+                    }else{
+                        if($this->debug_flag){ echo ($local_stub_array[$i].' ---> NG!'."\n"); }
+                    }
+                }
                 $depth += 1;
 
             //elseif
             }elseif( preg_match ( $pattern_elseif , $local_stub_array[$i], $m ) || preg_match ( $pattern_elseifnot , $local_stub_array[$i], $m ) ){
 
-                //parse check
-                if( $before_tag == 'foreach' || $before_tag == ''){
-                    throw new \Exception("Stub parse error!");
-                }
+                //if($this->debug_flag){ echo ('[depth:'.$depth.']elseif : ['.implode(',',$m)."]"."\n"); }
 
-                $depth -= 1;
-
-                if( $depth > 0 ){
-                    if($if_condition != 0 && $if_condition != 2){
-                        $new_local_stub_array[] = $local_stub_array[$i];
-                    }
+                if( $depth > 1  ){
+                    $new_local_stub_array[] = $local_stub_array[$i];
                 }else{
 
-                    if( $if_condition == 1 ){
+                    //parse check
+                    if( $before_tag == 'foreach' || $before_tag == ''){
+                        throw new \Exception("Stub parse error!");
+                    }
 
+                    if( $if_condition == 1 ){
                         //evaluate $new_local_stub_array
                         $result .= $this->compile_loop( $new_local_stub_array, $this_path );
-
                         $if_condition = 2; // change to skip mode
                     }
-                    $new_local_stub_array = [];
-
-                    if($this->debug_flag){ echo ('['.$depth.']elseif : ['.implode(',',$m)."]"."\n"); }
 
                     if( $if_condition != 2 ){
 
@@ -144,142 +140,131 @@ class StubCompiler
                         }else{
                             $if_condition = $this->check_if_condition( $var_path, $target_str, $this_path, $reverse=false );
                         }
-                    }
-                }
 
-                $before_tag = 'elseif';
-                $depth += 1;
+                        if($if_condition == 1){
+                            if($this->debug_flag){ echo ($local_stub_array[$i].' ---> OK!'."\n"); }
+                        }else{
+                            if($this->debug_flag){ echo ($local_stub_array[$i].' ---> NG!'."\n"); }
+                        }
+                    }else{
+                        if($this->debug_flag){ echo ($local_stub_array[$i].' ---> SKIP!'."\n"); }
+                    }
+                    $before_tag = 'elseif';
+                    $new_local_stub_array = [];
+                }
 
             //else
             }elseif( $local_stub_array[$i] == '{{{ else: }}}' ){
 
-                //parse check
-                if( $before_tag == 'foreach'){
-                    throw new \Exception("Stub parse error!");
-                }
+                //if($this->debug_flag){ echo ('[depth:'.$depth.']else : ['.implode(',',$m)."]"."\n"); }
 
-                $depth -= 1;
-
-                if( $depth > 0 ){
-                    if($if_condition != 0 && $if_condition != 2){
-                        $new_local_stub_array[] = $local_stub_array[$i];
-                    }
+                if( $depth > 1  ){
+                    $new_local_stub_array[] = $local_stub_array[$i];
                 }else{
 
-                    if( $if_condition == 1 ){
+                    //parse check
+                    if( $before_tag == 'foreach'){
+                        throw new \Exception("Stub parse error!");
+                    }
 
+                    if( $if_condition == 1 ){
                         //evaluate $new_local_stub_array
                         $result .= $this->compile_loop( $new_local_stub_array, $this_path );
-
                         $if_condition = 2; // change to skip mode
                     }
-                    $new_local_stub_array = [];
-    
-                    if($this->debug_flag){ echo ('['.$depth.']else : ['.implode(',',$m)."]"."\n"); }
-
-                    if( $if_condition != 2 ){
-
+                    
+                    if( $if_condition !== 2 ){
                         $if_condition = 1;
+
+                        if($this->debug_flag){ echo ($local_stub_array[$i].' ---> OK!'."\n"); }
+                    }else{
+                        if($this->debug_flag){ echo ($local_stub_array[$i].' ---> SKIP!'."\n"); }
                     }
+                    $before_tag = 'else';
+                    $new_local_stub_array = [];
                 }
-                $before_tag = 'else';
-                $depth += 1;
 
             //endif
             }elseif( $local_stub_array[$i] == '{{{ endif; }}}' ){
 
-                //parse check
-                if( $before_tag == 'foreach'){
-                    throw new \Exception("Stub parse error!");
-                }
+                //if($this->debug_flag){ echo ('[depth:'.$depth.']endif'."\n"); }
 
-                $depth -= 1;
-
-                if( $depth > 0 ){
-                    if($if_condition != 0 && $if_condition != 2){
-                        $new_local_stub_array[] = $local_stub_array[$i];
-                    }
+                if( $depth > 1  ){
+                    $new_local_stub_array[] = $local_stub_array[$i];
                 }else{
+
+                    //parse check
+                    if( $before_tag == 'foreach'){
+                        throw new \Exception("Stub parse error!");
+                    }
 
                     if( $if_condition == 1 ){
 
                         //evaluate $new_local_stub_array
                         $result .= $this->compile_loop( $new_local_stub_array, $this_path );
                     }
+
                     $if_condition = -1; // change to default
+                    $parent_tag = '';
+                    $before_tag = 'endif';
                     $new_local_stub_array = [];
+
+                    if($this->debug_flag){ echo ($local_stub_array[$i]."\n"); }
                 }
-                $parent_tag = '';
-
-                if($this->debug_flag){ echo ('['.$depth.']endif'."\n"); }
-
-                $before_tag = 'endif';
+                $depth -= 1;
 
             //foreach
             }elseif( preg_match ( $pattern_foreach , $local_stub_array[$i], $m ) ){
 
-                if($this->debug_flag){ echo ('['.$depth.']foreach : ['.implode(',',$m)."]"."\n"); }
+                if($this->debug_flag){ echo ('[depth:'.$depth.']foreach : ['.implode(',',$m)."]"."\n"); }
 
-                if( $depth > 0 ){
-                    if($if_condition != 0 && $if_condition != 2){
-                        $new_local_stub_array[] = $local_stub_array[$i];
-                    }
+                if( $depth > 0  ){
+                    $new_local_stub_array[] = $local_stub_array[$i];
                 }else{
+                    $parent_tag = 'foreach';
+                    $before_tag = 'foreach';
                     $var_path_foreach = $m[1];
+                    $new_local_stub_array = [];
                 }
-                $parent_tag = 'foreach';
-                $before_tag = 'foreach';
                 $depth += 1;
 
             //endforeach
             }elseif( $local_stub_array[$i] == '{{{ endforeach; }}}' ){
 
-                $depth -= 1;
-
-                //parse check
-                if( $before_tag == 'if' || $before_tag == 'elseif' ){
-                    throw new \Exception("Stub parse error!");
-                }
-
                 if($this->debug_flag){ echo ('['.$depth.']endforeach'."\n"); }
 
-                if( $depth > 0 ){
-
-                    if($if_condition != 0 && $if_condition != 2){
-                        $new_local_stub_array[] = $local_stub_array[$i];
-                    }
-
+                if( $depth > 1  ){
+                    $new_local_stub_array[] = $local_stub_array[$i];
                 }else{
 
-                    //convert this -> this_path
-                    $var_path_foreach_array = explode('.', $var_path_foreach);
-                    $this_path_array = explode('.', $this_path);
-                    if($var_path_foreach_array[0] == 'this'){
-                        $var_path_foreach_array = array_merge( $this_path_array, array_slice($var_path_foreach_array,1) );
+                    //parse check
+                    if( $before_tag == 'if' || $before_tag == 'elseif' ){
+                        throw new \Exception("Stub parse error!");
                     }
-                    $var_path_foreach = implode('.', $var_path_foreach_array);
-                    $loop_array = $this->array_get( $this->root_vars, $var_path_foreach );
 
+                    $var_path_foreach = $this->merge_path( $var_path_foreach, $this_path );
+                    $loop_array = data_get($this->root_vars, $var_path_foreach );
+                    //array check
+                    if( !is_array($loop_array) ){
+                        throw new \Exception("var for foreach is not array!");
+                    }
                     for($j=0;$j<count($loop_array);$j++){
-
                         $result .= $this->compile_loop( $new_local_stub_array, $var_path_foreach.'.'.$j );
                     }
+                    $parent_tag = '';
+                    $before_tag = 'endforeach';
                     $new_local_stub_array = [];
-
                 }
-                $parent_tag = '';
-                $before_tag = 'endforeach';
+                $depth -= 1;
 
             //code
             }else{
-
-                if($this->debug_flag){ echo ('['.$depth.']code'."\n"); }
+                //if($this->debug_flag){ echo ('['.$depth.']code:'.$local_stub_array[$i]."\n"); }
 
                 if( $depth > 0 ){
-                    if($if_condition != 0 && $if_condition != 2){
-                        $new_local_stub_array[] = $local_stub_array[$i];
-                    }
+                    $new_local_stub_array[] = $local_stub_array[$i];
                 }else{
+                    if($this->debug_flag){ echo ($local_stub_array[$i]); }
                     $result .= $local_stub_array[$i];
                 }
             }
@@ -289,6 +274,9 @@ class StubCompiler
         if( $before_tag == 'foreach' || $before_tag == 'if' || $before_tag == 'elseif'){
             throw new \Exception("Stub parse error!");
         }
+
+        if($this->debug_flag){ echo("-----".'[func]compile_loop end -----'."\n\n"); }
+
         return $result;
     }
 
@@ -296,8 +284,17 @@ class StubCompiler
 
     // return string
     private function compile_var( $var_path, $pipe, $this_path ){
-        if($this->debug_flag){ echo('[func]compile_var'. "\n" ); }
 
+        $var_path = $this->merge_path( $var_path, $this_path );
+        $result = $this->data_get( $this->root_vars, $var_path );
+
+        if($pipe !== ''){
+            return NameResolver::solveName($result, $pipe);
+        }
+        return $result;
+    }
+
+    private function merge_path( $var_path, $this_path ){
         $var_path_array = explode('.',$var_path);
         $this_path_array = explode('.',$this_path);
 
@@ -306,36 +303,35 @@ class StubCompiler
         }elseif( $var_path_array[0] == 'parent' ){
             $var_path_array = array_merge(array_slice($this_path_array,0,-2), array_slice($var_path_array,1));
         }
-
         $var_path = implode('.',$var_path_array);
-
-        $result = $this->array_get( $this->root_vars, $var_path );
-
-        if($pipe !== ''){
-            return NameResolver::solveName($result, $pipe);
-        }
-        return $result;
+        return $var_path;
     }
-
-
 
     private function check_if_condition( $var_path, $target_str, $this_path, $reverse=false ){
 
         $var01 = $this->compile_var( $var_path, '', $this_path );
-        
+
         // case of null array check
         if( $target_str === '[]' ){
             $target_str = [];
+        }elseif( $target_str === 'true' ){
+            $target_str = true;
+        }elseif( $target_str === 'false' ){
+            $target_str = false;
+        }elseif( !preg_match("#^'(.*)'$#", $target_str) ){
+            throw new \Exception('if target var must be [] or true or false or string');
+        }elseif( preg_match("#^'(.*)'$#", $target_str,$m) ){
+            $target_str = $m[1];
         }
 
         if($reverse){
-            if( $var01 == $target_str ){
+            if( $var01 === $target_str ){
                 return 0;
             }else{
                 return 1;
             }
         }else{
-            if( $var01 == $target_str ){
+            if( $var01 === $target_str ){
                 return 1;
             }else{
                 return 0;
@@ -343,16 +339,37 @@ class StubCompiler
         }
     }
 
-
-
-    private function array_get(array $array, $keys ) {
+    private function data_get($data, $keys ) {
 
         $keys_array = explode( '.', $keys );
- 
-        $current = $array;
+    
+        $current = $data;
         foreach ($keys_array as $key) {
-            if (!isset($current[$key])) return;
-            $current = $current[$key];
+            if( is_array($current) ){
+                if( !array_key_exists($key,$current) ){
+                    throw new \Exception('$current doesn\'t has key:'.$key);
+                }
+                $current = $current[$key];
+            }elseif( is_object($current) ){
+
+                if( mb_substr($key,-2) === '()'){   // case - $key is method
+
+                    $key2 = rtrim($key,'()');
+                    if( !method_exists( $current,$key2 ) ){
+                        throw new \Exception( get_class($current). ' doesn\'t has method:'.$key);
+                    }
+                    $current = $current->$key2();
+
+                }else{  // case - $key is property
+                    
+                    if( !property_exists($current,$key) ){
+                        throw new \Exception(get_class($current). ' doesn\'t has property:'.$key);
+                    }
+                    $current = $current->$key;
+                }
+            }else{
+                throw new \Exception('$current('.$current.') is not array or object');
+            }
         }
         return $current;
     }

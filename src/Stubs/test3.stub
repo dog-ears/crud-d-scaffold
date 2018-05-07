@@ -1,0 +1,4 @@
+{{{ if($implodePivotColumns()!=''): }}}
+aaa
+{{{ endif; }}}
+
