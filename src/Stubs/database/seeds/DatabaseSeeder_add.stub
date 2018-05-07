@@ -1,5 +1,5 @@
-{{{ if($parentModel!=): }}}
-    $this->call({{{ $name|NameName }}}TableSeeder::class);
+{{{ if($is_pivot==true): }}}
+        $this->call({{{ $name|NameName }}}TableSeeder::class);
 {{{ else: }}}
-    $this->call({{{ $name|NameNames }}}TableSeeder::class);
+        $this->call({{{ $name|NameNames }}}TableSeeder::class);
 {{{ endif; }}}

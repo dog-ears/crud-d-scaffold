@@ -1,0 +1,253 @@
+{
+  "app_type": "web",
+  "use_laravel_auth": false,
+  "models": [
+    {
+      "id": 1,
+      "name": "nicePost",
+      "display_name": "NICE POST",
+      "use_soft_delete": true,
+      "schemas": [
+        {
+          "id": 1,
+          "name": "bigTitle",
+          "display_name": "BIG TITLE",
+          "type": "string",
+          "input_type": "text",
+          "varidate": "",
+          "faker_type": "name()",
+          "nullable": false,
+          "unique": false,
+          "show_in_list": true,
+          "show_in_detail": true,
+          "belongsto": "",
+          "parent_id": 1
+        },
+        {
+          "id": 2,
+          "name": "shallowBody",
+          "display_name": "SHALLOW BODY",
+          "type": "string",
+          "input_type": "textarea",
+          "varidate": "",
+          "faker_type": "paragraph()",
+          "nullable": false,
+          "unique": false,
+          "show_in_list": false,
+          "show_in_detail": true,
+          "belongsto": "",
+          "parent_id": 1
+        },
+        {
+          "id": 3,
+          "name": "brilliantCategory_id",
+          "display_name": "brilliantCategory - NAME",
+          "type": "integer",
+          "input_type": "select",
+          "varidate": "",
+          "faker_type": "numberBetween(1,30)",
+          "nullable": true,
+          "unique": false,
+          "show_in_list": true,
+          "show_in_detail": true,
+          "belongsto": "brilliantCategory",
+          "parent_id": 1
+        }
+      ],
+      "is_pivot": false,
+      "schema_id_for_relation": 1,
+      "pos_x": 707,
+      "pos_y": 347,
+      "_next_schema_id": 4
+    },
+    {
+      "id": 2,
+      "name": "beautifulTag",
+      "display_name": "TAG",
+      "use_soft_delete": true,
+      "schemas": [
+        {
+          "id": 1,
+          "name": "tagName",
+          "display_name": "TAG NAME",
+          "type": "string",
+          "input_type": "text",
+          "varidate": "",
+          "faker_type": "name()",
+          "nullable": false,
+          "unique": false,
+          "show_in_list": true,
+          "show_in_detail": true,
+          "belongsto": "",
+          "parent_id": 2
+        }
+      ],
+      "is_pivot": false,
+      "schema_id_for_relation": 1,
+      "pos_x": 1357,
+      "pos_y": 158,
+      "_next_schema_id": 2
+    },
+    {
+      "id": 3,
+      "name": "brilliantCategory",
+      "display_name": "CATEGORY",
+      "use_soft_delete": true,
+      "schemas": [
+        {
+          "id": 1,
+          "name": "categoryName",
+          "display_name": "CATEGORY NAME",
+          "type": "string",
+          "input_type": "text",
+          "varidate": "",
+          "faker_type": "name()",
+          "nullable": false,
+          "unique": false,
+          "show_in_list": true,
+          "show_in_detail": true,
+          "belongsto": "",
+          "parent_id": 3
+        }
+      ],
+      "is_pivot": false,
+      "schema_id_for_relation": 1,
+      "pos_x": 486,
+      "pos_y": 76,
+      "_next_schema_id": 2
+    },
+    {
+      "id": 4,
+      "name": "goodComment",
+      "display_name": "GOOD COMMENT",
+      "use_soft_delete": true,
+      "schemas": [
+        {
+          "id": 1,
+          "name": "superTitle",
+          "display_name": "SUPER TITLE",
+          "type": "string",
+          "input_type": "text",
+          "varidate": "",
+          "faker_type": "name()",
+          "nullable": false,
+          "unique": false,
+          "show_in_list": true,
+          "show_in_detail": true,
+          "belongsto": "",
+          "parent_id": 4
+        },
+        {
+          "id": 2,
+          "name": "eligibleBody",
+          "display_name": "ELIGIBLE BODY",
+          "type": "string",
+          "input_type": "textarea",
+          "varidate": "",
+          "faker_type": "paragraph()",
+          "nullable": false,
+          "unique": false,
+          "show_in_list": false,
+          "show_in_detail": true,
+          "belongsto": "",
+          "parent_id": 4
+        },
+        {
+          "id": 3,
+          "name": "nicePost_id",
+          "display_name": "nicePost - NAME",
+          "type": "integer",
+          "input_type": "select",
+          "varidate": "",
+          "faker_type": "numberBetween(1,30)",
+          "nullable": true,
+          "unique": false,
+          "show_in_list": true,
+          "show_in_detail": true,
+          "belongsto": "nicePost",
+          "parent_id": 4
+        }
+      ],
+      "is_pivot": false,
+      "schema_id_for_relation": 1,
+      "pos_x": 1014,
+      "pos_y": 633,
+      "_next_schema_id": 4
+    },
+    {
+      "id": 5,
+      "name": "beautifulTag_nicePost",
+      "display_name": "PIVOT",
+      "use_soft_delete": true,
+      "schemas": [
+        {
+          "id": 1,
+          "name": "beautifulTag_id",
+          "display_name": "beautifulTag - NAME",
+          "type": "integer",
+          "input_type": "select",
+          "varidate": "",
+          "faker_type": "numberBetween(1,30)",
+          "nullable": true,
+          "unique": false,
+          "show_in_list": true,
+          "show_in_detail": true,
+          "belongsto": "beautifulTag",
+          "parent_id": 5
+        },
+        {
+          "id": 2,
+          "name": "nicePost_id",
+          "display_name": "nicePost - NAME",
+          "type": "integer",
+          "input_type": "select",
+          "varidate": "",
+          "faker_type": "numberBetween(1,30)",
+          "nullable": true,
+          "unique": false,
+          "show_in_list": true,
+          "show_in_detail": true,
+          "belongsto": "nicePost",
+          "parent_id": 5
+        },
+        {
+          "id": 3,
+          "name": "priority",
+          "display_name": "PRIORITY",
+          "type": "integer",
+          "input_type": "text",
+          "varidate": "",
+          "faker_type": "numberBetween(1,10)",
+          "nullable": true,
+          "unique": false,
+          "show_in_list": true,
+          "show_in_detail": true,
+          "belongsto": "",
+          "parent_id": 5
+        },
+        {
+          "id": 4,
+          "name": "note",
+          "display_name": "NOTE",
+          "type": "string",
+          "input_type": "text",
+          "varidate": "",
+          "faker_type": "name()",
+          "nullable": true,
+          "unique": false,
+          "show_in_list": true,
+          "show_in_detail": true,
+          "belongsto": "",
+          "parent_id": 5
+        }
+      ],
+      "is_pivot": true,
+      "schema_id_for_relation": 0,
+      "pos_x": 1030,
+      "pos_y": 147,
+      "_next_schema_id": 5
+    }
+  ],
+  "tool": "ER-DIAGRAM-TOOL",
+  "_next_model_id": 6
+}

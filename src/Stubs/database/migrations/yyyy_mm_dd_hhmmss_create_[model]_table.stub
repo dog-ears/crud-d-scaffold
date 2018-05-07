@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-{{{ if($parentModel!=): }}}
+{{{ if($is_pivot==true): }}}
 class Create{{{ $name|NameName }}}Table extends Migration
 {{{ else: }}}
 class Create{{{ $name|NameNames }}}Table extends Migration
@@ -18,7 +18,7 @@ class Create{{{ $name|NameNames }}}Table extends Migration
      */
     public function up()
     {
-{{{ if($parentModel!=): }}}
+{{{ if($is_pivot==true): }}}
         Schema::create('{{{ $name|name_name }}}', function (Blueprint $table) {
 {{{ else: }}}
         Schema::create('{{{ $name|name_names }}}', function (Blueprint $table) {
@@ -27,8 +27,8 @@ class Create{{{ $name|NameNames }}}Table extends Migration
             $table->timestamps();
 
 {{{ foreach($schemas): }}}
-{{{ if($this.belongsto!=): }}}
-            $table->integer('{{{ $this.name|name_name }}}')->unsigned();
+{{{ if($this.belongsto!=''): }}}
+            $table->unsignedInteger('{{{ $this.name|name_name }}}'){{{ if($this.nullable==true): }}}->nullable(){{{ endif; }}};
             $table->foreign('{{{ $this.name|name_name }}}')->references('id')->on('{{{ $this.belongsto|name_names }}}');
 {{{ else: }}}
             $table->{{{ $this.type }}}('{{{ $this.name|name_name }}}'){{{ if($this.nullable==true): }}}->nullable(){{{ endif; }}};
@@ -47,10 +47,10 @@ class Create{{{ $name|NameNames }}}Table extends Migration
      */
     public function down()
     {
-{{{ if($parentModel!=): }}}
-        Schema::drop('{{{ $name|name_name }}}');
+{{{ if($is_pivot==true): }}}
+        Schema::dropIfExists('{{{ $name|name_name }}}');
 {{{ else: }}}
-        Schema::drop('{{{ $name|name_names }}}');
+        Schema::dropIfExists('{{{ $name|name_names }}}');
 {{{ endif; }}}
     }
 }

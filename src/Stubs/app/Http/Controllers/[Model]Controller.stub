@@ -2,33 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
-
 use App\{{{ $name|NameName }}};
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class {{{ $name|NameName }}}Controller extends Controller
 {
-    /**
-     * Varidate input data.
-     *
-     * @return array
-     */
-    public function varidate(Request $request, {{{ $name|NameName }}} ${{{ $name|name_name }}} = null)
-    {
-        $request->validate([
-{{{ foreach($schemas): }}}{{{ if($this.varidate!=''): }}}
-            '{{{ $this.name|name_name }}}' => {{{ $this.varidate }}},
-{{{ endif; }}}{{{ endforeach; }}}
-{{{ foreach($belongstomany): }}}{{{ foreach($this.schemas): }}}
-            'pivots.{{{ $parent.name|name_name }}}.*.{{{ $this.name|name_name }}}' => {{{ $this.varidate }}},
-{{{ endforeach; }}}{{{ endforeach; }}}
-        ]);
-    }
-
-
-
     /**
      * Display a listing of the resource.
      *
@@ -36,7 +15,69 @@ class {{{ $name|NameName }}}Controller extends Controller
      */
     public function index(Request $request)
     {
-		${{{ $name|nameNames }}} = {{{ $name|NameName }}}::getAllData($request)->paginate(10);
+		${{{ $name|nameNames }}} = new {{{ $name|NameName }}};
+
+        // (1)filltering
+        if( is_array($request->input('q')) ){
+            
+            foreach( $request->input('q') as $key => $value ){
+
+                if($key !== 's'){
+
+                    $pettern = '#([^\.]*)\.?([^\.]*)_([^\._]*)#u';
+                    preg_match($pettern,$key,$m);
+
+                    $collumn_name = $m[1];
+                    $related_column_name = $m[2];
+
+                    if($m[3] == 'eq'){
+                        $operator = '=';
+                    }elseif($m[3] == 'cont'){
+                        $operator = 'like';
+                        $value = '%'.$value.'%';
+                    }elseif($m[3] == 'gt'){
+                        $operator = '>=';
+                    }elseif($m[3] == 'lt'){
+                        $operator = '<=';
+                    }
+
+                    if( $related_column_name !== '' ){  // search at related table column
+
+                        ${{{ $name|nameNames }}} = ${{{ $name|nameNames }}}->whereHas($collumn_name, function($q) use($related_column_name, $operator, $value){
+    						$q->where( $related_column_name, $operator, $value );
+                        });
+                        
+                    }else{
+                        ${{{ $name|nameNames }}} = ${{{ $name|nameNames }}}->where( $collumn_name, $operator, $value );
+                    }
+                }
+            }
+        }
+        ${{{ $name|nameNames }}} = ${{{ $name|nameNames }}}->get();
+
+
+
+        // (2)sort
+        $q_s = $request->input('q.s');
+        if($q_s){
+
+            // sort dir and sort column
+            if( substr( $q_s,-5,5 ) === '_desc' ){
+                $sort_column = substr( $q_s, 0, strlen($q_s)-5 );
+                ${{{ $name|nameNames }}} = ${{{ $name|nameNames }}}->sortByDesc($sort_column);
+            }elseif( substr( $q_s,-4,4 ) === '_asc' ){
+                $sort_column = substr( $q_s, 0, strlen($q_s)-4 );
+                ${{{ $name|nameNames }}} = ${{{ $name|nameNames }}}->sortBy($sort_column);
+            }
+            
+        }else{
+            ${{{ $name|nameNames }}} = ${{{ $name|nameNames }}}->sortByDesc('id');
+        }
+
+
+
+        // (3)paginate
+        ${{{ $name|nameNames }}} = ${{{ $name|nameNames }}}->paginate(10);
 
 		return view('{{{ $name|nameNames }}}.index', compact('{{{ $name|nameNames }}}'));
     }
@@ -50,8 +91,7 @@ class {{{ $name|NameName }}}Controller extends Controller
      */
     public function create()
     {
-		return view('{{{ $name|nameNames }}}.create')
-			->with( 'list', {{{ $name|NameName }}}::getListFromAllRelationApps() );
+        return view('{{{ $name|nameNames }}}.create')->with( 'lists', {{{ $name|NameName }}}::getLists() );
     }
 
 
@@ -66,38 +106,25 @@ class {{{ $name|NameName }}}Controller extends Controller
     {
         $this->varidate($request);
 
-        $input = $request->all();
+        $input = $request->input('model');
 
-{{{ if($name==user): }}}
-        // only user model
-        $input['password'] = bcrypt($input['password']);
-{{{ endif; }}}
+        DB::beginTransaction();
 
-{{{ if($belongstomany!=[]): }}}
-        //remove data for manytomany relation
-        if( array_key_exists('pivots',$input) ){ unset($input['pivots']); }
+{{{ foreach($schemas): }}}
+{{{ if($this.input_type=='password'): }}}
+        $input['{{{ $this.name|name_name }}}'] = bcrypt($input['{{{ $this.name|name_name }}}']);
 {{{ endif; }}}
+{{{ endforeach; }}}
 
 		//create data
-		${{{ $name|name_name }}} = {{{ $name|NameName }}}::create( $input );
+		${{{ $name|nameName }}} = {{{ $name|NameName }}}::create( $input );
 
-{{{ if($belongstomany!=[]): }}}
         //sync(attach/detach)
         if($request->input('pivots')){
-            foreach( $request->input('pivots') as $pivot_child_model_name => $pivots ){
-
-                // remove 'id'
-                foreach($pivots as &$value){
-                    if( array_key_exists('id', $value) ){
-                        unset($value['id']);
-                    }
-                }unset($value);
-
-                $method = camel_case( str_plural($pivot_child_model_name) );
-                ${{{ $name|name_name }}}->$method()->sync($pivots);
-            }
+            $this->sync($request->input('pivots'), ${{{ $name|nameName }}});
         }
-{{{ endif; }}}
+        
+        DB::commit();
 
 		return redirect()->route('{{{ $name|nameNames }}}.index')->with('message', 'Item created successfully.');
     }
@@ -107,7 +134,7 @@ class {{{ $name|NameName }}}Controller extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\{{{ $name|NameName }}}  ${{{ $name|nameName }}}
      * @return \Illuminate\Http\Response
      */
     public function show({{{ $name|NameName }}} ${{{ $name|nameName }}})
@@ -120,13 +147,12 @@ class {{{ $name|NameName }}}Controller extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\{{{ $name|NameName }}}  ${{{ $name|nameName }}}
      * @return \Illuminate\Http\Response
      */
     public function edit({{{ $name|NameName }}} ${{{ $name|nameName }}})
     {
-		return view('{{{ $name|nameNames }}}.edit', compact('{{{ $name|nameName }}}'))
-			->with( 'list', {{{ $name|NameName }}}::getListFromAllRelationApps() );
+		return view('{{{ $name|nameNames }}}.edit', compact('{{{ $name|nameName }}}'))->with( 'lists', {{{ $name|NameName }}}::getLists() );
     }
 
 
@@ -134,13 +160,12 @@ class {{{ $name|NameName }}}Controller extends Controller
 	/**
 	 * Show the form for duplicatting the specified resource.
 	 *
-	 * @param  int  $id
-	 * @return Response
+	 * @param \App\{{{ $name|NameName }}}  ${{{ $name|nameName }}}
+	 * @return \Illuminate\Http\Response
 	 */
 	public function duplicate({{{ $name|NameName }}} ${{{ $name|nameName }}})
 	{
-		return view('{{{ $name|nameNames }}}.duplicate', compact('{{{ $name|nameName }}}'))
-			->with( 'list', {{{ $name|NameName }}}::getListFromAllRelationApps() );
+		return view('{{{ $name|nameNames }}}.duplicate', compact('{{{ $name|nameName }}}'))->with( 'lists', {{{ $name|NameName }}}::getLists() );
 	}
 
 
@@ -149,50 +174,37 @@ class {{{ $name|NameName }}}Controller extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\{{{ $name|NameName }}}  ${{{ $name|nameName }}}
      * @return \Illuminate\Http\Response
      */
     public function update({{{ $name|NameName }}} ${{{ $name|nameName }}}, Request $request)
     {
         $this->varidate($request, ${{{ $name|nameName }}});
 
-        $input = $request->all();
+        $input = $request->input('model');
 
-{{{ if($name==user): }}}
-        // only user model
-        if( $input['password'] === '' ){
-            $input['password'] = $user->password;
+        DB::beginTransaction();
+
+{{{ foreach($schemas): }}}
+{{{ if($this.input_type=='password'): }}}
+        if( $input['{{{ $this.name|name_name }}}'] === '' ){
+            $input['{{{ $this.name|name_name }}}'] = ${{{ $name|nameName }}}->{{{ $this.name|name_name }}};
         }else{
-            $input['password'] = bcrypt($input['password']);
+            $input['{{{ $this.name|name_name }}}'] = bcrypt($input['{{{ $this.name|name_name }}}']);
         }
 {{{ endif; }}}
-
-{{{ if($belongstomany!=false): }}}
-        //remove data for manytomany relation
-        if( array_key_exists('pivots',$input) ){ unset($input['pivots']); }
-{{{ endif; }}}
+{{{ endforeach; }}}
 
 		//update data
-		${{{ $name|nameName }}}->update($input);
+		${{{ $name|nameName }}}->update( $input );
 
-{{{ if($belongstomany!=[]): }}}
         //sync(attach/detach)
         if($request->input('pivots')){
-            foreach( $request->input('pivots') as $pivot_child_model_name => $pivots ){
-
-                // remove 'id'
-                foreach($pivots as &$value){
-                    if( array_key_exists('id', $value) ){
-                        unset($value['id']);
-                    }
-                }unset($value);
-
-                $method = camel_case( str_plural($pivot_child_model_name) );
-                ${{{ $name|nameName }}}->$method()->sync($pivots);
-            }
+            $this->sync($request->input('pivots'), ${{{ $name|nameName }}});
         }
-{{{ endif; }}}
-
+        
+        DB::commit();
+        
 		return redirect()->route('{{{ $name|nameNames }}}.index')->with('message', 'Item updated successfully.');
     }
 
@@ -201,13 +213,43 @@ class {{{ $name|NameName }}}Controller extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\{{{ $name|NameName }}}  ${{{ $name|nameName }}}
      * @return \Illuminate\Http\Response
      */
     public function destroy({{{ $name|NameName }}} ${{{ $name|nameName }}})
     {
 		${{{ $name|nameName }}}->delete();
-
 		return redirect()->route('{{{ $name|nameNames }}}.index')->with('message', 'Item deleted successfully.');
+    }
+
+    /**
+     * Varidate input data.
+     *
+     * @return array
+     */
+    public function varidate(Request $request, {{{ $name|NameName }}} ${{{ $name|nameName }}} = null)
+    {
+        $request->validate({{{ $name|NameName }}}::getValidateRule(${{{ $name|nameName }}}));
+    }
+
+    /**
+     * sync pivot data
+     *
+     * @return void
+     */
+    public function sync($pivots_data, {{{ $name|NameName }}} ${{{ $name|nameName }}})
+    {
+        foreach( $pivots_data as $pivot_child_model_name => $pivots ){
+
+            // remove 'id'
+            foreach($pivots as &$value){
+                if( array_key_exists('id', $value) ){
+                    unset($value['id']);
+                }
+            }unset($value);
+
+            $method = camel_case( str_plural($pivot_child_model_name) );
+            ${{{ $name|nameName }}}->$method()->sync($pivots);
+        }
     }
 }

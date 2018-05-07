@@ -1,0 +1,8 @@
+
+{{{ if($use_soft_delete==true): }}}
+    use SoftDeletes;
+{{{ endif; }}}
+
+{{{ if($use_soft_delete==true): }}}
+    protected $dates = ['deleted_at'];
+{{{ endif; }}}

@@ -1,0 +1,123 @@
+<div class="row">
+    <div class="col-md-12">
+
+        @if(${{{ $name|nameNames }}}->count())
+
+            <table class="table table-sm table-striped sp-omit">
+              <thead>
+                <tr>
+                  <th scope="col"><div class="d-flex">
+                    @if( method_exists(${{{ $name|nameNames }}}, 'appends') )
+                      <a href="javascript:sortByColumn('id')">ID</a>
+                      @if( Request::input('q.s') == 'id_asc' )<i class="material-icons">arrow_drop_up</i>
+                      @elseif( Request::input('q.s') == 'id_desc' )<i class="material-icons">arrow_drop_down</i> @endif
+                    @else
+                      ID
+                    @endif
+                  </div></th>
+{{{ foreach($schemas): }}}
+{{{ if($this.belongsto==''): }}}
+{{{ if($this.show_in_list==true): }}}
+                  <th scope="col"><div class="d-flex">
+                    @if( method_exists(${{{ $name|nameNames }}}, 'appends') )
+                      <a href="javascript:sortByColumn('{{{ $this.name|name_name }}}')">{{{ $this.display_name }}}</a>
+                      @if( Request::input('q.s') == '{{{ $this.name|name_name }}}_asc' )<i class="material-icons">arrow_drop_up</i>
+                      @elseif( Request::input('q.s') == '{{{ $this.name|name_name }}}_desc' )<i class="material-icons">arrow_drop_down</i> @endif
+                    @else
+                      {{{ $this.display_name }}}
+                    @endif
+                  </div></th>
+{{{ endif; }}}
+{{{ endif; }}}
+{{{ endforeach; }}}
+
+{{{ foreach($relations): }}}
+{{{ if($this.type=='belongsTo'): }}}
+                  <th scope="col">{{{ $this.targetModel.display_name }}}</th>
+{{{ endif; }}}
+{{{ endforeach; }}}
+
+{{{ foreach($relations): }}}
+{{{ if($this.type=='hasMany'): }}}
+                  <th scope="col">{{{ $this.targetModel.display_name }}}</th>
+{{{ endif; }}}
+{{{ endforeach; }}}
+
+{{{ foreach($relations): }}}
+{{{ if($this.type=='belongsToMany'): }}}
+                  <th scope="col">{{{ $this.targetModel.display_name }}}</th>
+{{{ endif; }}}
+{{{ endforeach; }}}
+
+                  <th class="text-right" scope="col">OPTIONS</th>
+                </tr>
+              </thead>
+              <tbody>
+                @foreach(${{{ $name|nameNames }}} as ${{{ $name|nameName }}})
+                    <tr>
+                      <td scope="row"><a href="{{ route('{{{ $name|nameNames }}}.show', ${{{ $name|nameName }}}->id) }}">{{${{{ $name|nameName }}}->id}}</a></td>
+{{{ foreach($schemas): }}}
+{{{ if($this.belongsto==''): }}}
+{{{ if($this.show_in_list==true): }}}
+                      <td>{{${{{ $name|nameName }}}->{{{ $this.name|name_name }}}}}</td>
+{{{ endif; }}}
+{{{ endif; }}}
+{{{ endforeach; }}}
+
+{{{ foreach($relations): }}}
+{{{ if($this.type=='belongsTo'): }}}
+                      <td>@if(${{{ $name|nameName }}}->{{{ $this.targetModel.name|nameName }}})<a href="{{ route('{{{ $this.targetModel.name|nameNames }}}.show', ${{{ $name|nameName }}}->{{{ $this.targetModel.name|nameName }}}->id) }}">{{ ${{{ $name|nameName }}}->{{{ $this.targetModel.name|nameName }}}->{{{ $this.targetModel.getRelationSchema().name|name_name }}} }}</a>@else - @endif</td>
+{{{ endif; }}}
+{{{ endforeach; }}}
+
+{{{ foreach($relations): }}}
+{{{ if($this.type=='hasMany'): }}}
+                      <td>
+                          @foreach(${{{ $name|nameName }}}->{{{ $this.targetModel.name|nameNames }}} as ${{{ $this.targetModel.name|nameName }}})
+                                        @if (!$loop->first) , @endif
+                                        <a href="{{ route('{{{ $this.targetModel.name|nameNames }}}.show', ${{{ $this.targetModel.name|nameName }}}->id) }}">{{ ${{{ $this.targetModel.name|nameName }}}->{{{ $this.targetModel.getRelationSchema().name|name_name }}} }}</a>
+                          @endforeach
+                      </td>
+{{{ endif; }}}
+{{{ endforeach; }}}
+
+{{{ foreach($relations): }}}
+{{{ if($this.type=='belongsToMany'): }}}
+                      <td>
+                          @foreach(${{{ $name|nameName }}}->{{{ $this.targetModel.name|nameNames }}} as ${{{ $this.targetModel.name|nameName }}})
+                                        @if (!$loop->first) , @endif
+                                        <a href="{{ route('{{{ $this.targetModel.name|nameNames }}}.show', ${{{ $this.targetModel.name|nameName }}}->id) }}">{{ ${{{ $this.targetModel.name|nameName }}}->{{{ $this.targetModel.getRelationSchema().name|name_name }}} }}(
+{{{ foreach($this.pivotModelSchemas): }}}
+{{{ if($this.show_in_list==true): }}}
+                                            {{{ $this.display_name }}}:{{ ${{{ $parent.targetModel.name|nameName }}}->pivot->{{{ $this.name|name_name }}} }}
+{{{ endif; }}}
+{{{ endforeach; }}}
+                                        )</a>
+                          @endforeach
+                      </td>
+{{{ endif; }}}
+{{{ endforeach; }}}
+
+                      <td class="text-right">
+                        <div class="btn-group" role="group">
+                            <a class="btn btn-sm btn-primary" href="{{ route('{{{ $name|nameNames }}}.duplicate', ${{{ $name|nameName }}}->id) }}" data-toggle="tooltip" data-placement="top" title="Duplicate"><i class="material-icons d-block">add_to_photos</i></a>
+                            <a class="btn btn-sm btn-warning" href="{{ route('{{{ $name|nameNames }}}.edit', ${{{ $name|nameName }}}->id) }}" data-toggle="tooltip" data-placement="top" title="Edit"><i class="material-icons d-block">edit</i></a>
+                            <form method="POST" action="{{ route('{{{ $name|nameNames }}}.destroy', ${{{ $name|nameName }}}->id) }}" accept-charset="UTF-8" style="display: inline;" onsubmit="if(confirm('Delete? Are you sure?')) { return true } else {return false };">
+                                {{ method_field('DELETE') }}
+                                {{ csrf_field() }}
+                                <button type="submit" class="btn btn-sm btn-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="material-icons d-block">delete</i></button>
+                            </form>
+                        </div>
+                      </td>
+                    </tr>
+                @endforeach
+              </tbody>
+            </table>
+            @if( method_exists(${{{ $name|nameNames }}}, 'appends') )
+              {!! ${{{ $name|nameNames }}}->appends(Request::except('page'))->render() !!}
+            @endif
+        @else
+            <h3 class="text-center alert alert-info">Empty!</h3>
+        @endif
+    </div>
+</div>

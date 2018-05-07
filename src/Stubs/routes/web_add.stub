@@ -1,3 +1,6 @@
-
-Route::get("{{{ $name|nameNames }}}/{{{{ $name|nameName }}}}/duplicate", ['as' => '{{{ $name|nameNames }}}.duplicate', 'uses' => '{{{ $name|NameName }}}Controller@duplicate']);
-Route::resource("{{{ $name|nameNames }}}","{{{ $name|NameName }}}Controller");
+{{{ foreach($models): }}}
+{{{ if($this.is_pivot==false): }}}
+Route::get("{{{ $this.name|nameNames }}}/{{{{ $this.name|nameName }}}}/duplicate", ['as' => '{{{ $this.name|nameNames }}}.duplicate', 'uses' => '{{{ $this.name|NameName }}}Controller@duplicate']);
+Route::resource("{{{ $this.name|nameNames }}}","{{{ $this.name|NameName }}}Controller");
+{{{ endif; }}}
+{{{ endforeach; }}}
