@@ -19,15 +19,10 @@ class GeneratorsServiceProvider extends ServiceProvider {
 	 */
 	public function boot()
 	{
-
 		//asset publish
 	    $this->publishes([
 	        __DIR__.'/Assets' => public_path('dog-ears/CrudDscaffold'),
 	    ], 'public');
-/*	    
-		//define resource view folder
-	    $this->loadViewsFrom(__DIR__.'/Resource/views', 'CrudDscaffold');
-*/
 	}
 
 	/**

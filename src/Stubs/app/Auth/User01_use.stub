@@ -1,5 +1,3 @@
-use dogears\CrudDscaffold\Traits\GetAllDataTrait;
-use dogears\CrudDscaffold\Traits\GetListFromAllRelationAppsTrait;
 {{{ if($use_soft_delete==true): }}}
 use Illuminate\Database\Eloquent\SoftDeletes;
 {{{ endif; }}}

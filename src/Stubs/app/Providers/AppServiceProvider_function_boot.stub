@@ -1,0 +1,20 @@
+        // common variable
+        View::share('model_title_list', [
+{{{ foreach($models): }}}
+{{{ if($this.is_pivot==false): }}}
+            '{{{ $this.name|nameNames }}}' => '{{{ $this.display_name }}}',
+{{{ endif; }}}
+{{{ endforeach; }}}
+        ]);
+        
+        // Add Pagenate to Collectoin
+        if (!Collection::hasMacro('paginate')) {
+        
+            Collection::macro('paginate', 
+                function ($perPage = 15, $page = null, $options = []) {
+                $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
+                return (new LengthAwarePaginator(
+                    $this->forPage($page, $perPage), $this->count(), $perPage, $page, $options))
+                    ->withPath('');
+            });
+        }

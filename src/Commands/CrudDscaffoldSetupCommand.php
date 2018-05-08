@@ -32,7 +32,7 @@ class CrudDscaffoldSetupCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Setup crud-d-scaffold with bootstrap 3';
+    protected $description = 'Setup crud-d-scaffold with bootstrap 4';
 
     /**
      * Crud-D-Scaffold Core
@@ -54,8 +54,9 @@ class CrudDscaffoldSetupCommand extends Command
     public function __construct( CrudDscaffold $crud_d_scaffold, Composer $composer )
     {
         parent::__construct();
-        $this->crud_d_scaffold = $crud_d_scaffold;
         $this->composer = $composer;
+        $this->crud_d_scaffold = $crud_d_scaffold;
+        $this->crud_d_scaffold->setCommand( $this );
     }
 
     /**
@@ -65,7 +66,7 @@ class CrudDscaffoldSetupCommand extends Command
      */
     public function handle()
     {
-        $this->crud_d_scaffold->setCommand( $this );
+
         $this->crud_d_scaffold->generate();
 
         //Dump autoload
