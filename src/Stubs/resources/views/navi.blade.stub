@@ -1,70 +1,54 @@
-{{-- include_area_app_common_start --}}
-{{{ foreach($models): }}}
-@include('{{{ $this.name|nameNames }}}._common')
-{{{ endforeach; }}}
-{{-- include_area_app_common_end --}}
-
-    <nav class="navbar navbar-default">
-        <div class="container">
-            <div class="navbar-header">
-
-                <!-- Collapsed Hamburger -->
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
+        <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
+            <div class="container">
+                <a class="navbar-brand" href="{{ url('/') }}">
+                    {{ config('app.name', 'Laravel') }}
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
                 </button>
 
-                <!-- Branding Image -->
-                <a class="navbar-brand" href="#">Project name</a>
-
-            </div>
-
-            <div id="navbar" class="collapse navbar-collapse">
-
-                <!-- Left Side Of Navbar -->
-                <ul class="nav navbar-nav">
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Menu level 1<span class="caret"></span></a>
-                        <ul id="app_navi" class="dropdown-menu" role="menu">
-{{{ foreach($models): }}}
-                            <li{!! Request::is('{{{ $this.name|nameNames }}}*') ? ' class="active"' : '' !!}><a href="/{{{ $this.name|nameNames }}}/">@yield('{{{ $this.name|nameNames }}}AppTitle')</a></li>
-{{{ endforeach; }}}
-                        </ul>
-                    </li>
-                </ul>
-
-{{{ if($auth==true): }}}
-                <!-- Right Side Of Navbar -->
-                <ul class="nav navbar-nav navbar-right">
-                    <!-- Authentication Links -->
-                    @if (Auth::guest())
-                        <li><a href="{{ route('login') }}">Login</a></li>
-                        <li><a href="{{ route('register') }}">Register</a></li>
-                    @else
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                {{ Auth::user()->name }} <span class="caret"></span>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <!-- Left Side Of Navbar -->
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item active dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Menu level 1
                             </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                @foreach($model_title_list as $model_name => $model_title)
+                                <a class="dropdown-item @if(Request::is($model_name.'*')) active @endif" href="{{ route($model_name.'.index') }}">{{$model_title}}</a>
+                                @endforeach
+                            </div>
+                        </li>
+                    </ul>
+{{{ if($use_laravel_auth==true): }}}
+                    <!-- Right Side Of Navbar -->
+                    <ul class="navbar-nav ml-auto">
+                        <!-- Authentication Links -->
+                        @guest
+                            <li><a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a></li>
+                            <li><a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a></li>
+                        @else
+                            <li class="nav-item dropdown">
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                    {{ Auth::user()->name }} <span class="caret"></span>
+                                </a>
 
-                            <ul class="dropdown-menu" role="menu">
-                                <li>
-                                    <a href="{{ route('logout') }}"
-                                        onclick="event.preventDefault();
-                                                 document.getElementById('logout-form').submit();">
-                                        Logout
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="{{ route('logout') }}"
+                                       onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">
+                                        {{ __('Logout') }}
                                     </a>
 
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                        {{ csrf_field() }}
+                                        @csrf
                                     </form>
-                                </li>
-                            </ul>
-                        </li>
-                    @endif
-                </ul>
+                                </div>
+                            </li>
+                        @endguest
+                    </ul>
 {{{ endif; }}}
-            </div><!--/.nav-collapse -->
-        </div>
-    </nav>
+                </div>
+            </div>
+        </nav>

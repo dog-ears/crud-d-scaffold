@@ -1,30 +1,6 @@
-<?php
-
-namespace App;
-
-use Illuminate\Database\Eloquent\Model;
-{{{ if($use_soft_delete==true): }}}
-use Illuminate\Database\Eloquent\SoftDeletes;
-{{{ endif; }}}
-
-
-class {{{ $name|NameName }}} extends Model
-{
-{{{ if($use_soft_delete==true): }}}
-    use SoftDeletes;
-{{{ endif; }}}
-
-
-	// Mass Assignment
-	protected $fillable = [{{{ foreach($schemas): }}}'{{{ $this.name|name_name }}}',{{{ endforeach; }}}];
-{{{ if($use_soft_delete==true): }}}
-    protected $dates = ['deleted_at'];
-{{{ endif; }}}
-
-
 	// Validate Rule
     public static function getValidateRule({{{ $name|NameName }}} ${{{ $name|name_name }}}=null){
-        if(${{{ $name|name_name }}}){
+        if($user){
             $ignore_unique = ${{{ $name|name_name }}}->id;
         }else{
             $ignore_unique = 'NULL';
@@ -114,4 +90,3 @@ class {{{ $name|NameName }}} extends Model
 {{{ endforeach; }}}
 		return $lists;
 	}
-}

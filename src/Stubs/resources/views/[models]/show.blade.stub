@@ -1,95 +1,73 @@
 @extends('layout')
 
-@include('{{{ $name|nameNames }}}._common')
-
-@section('header')
-
-<ol class="breadcrumb">
-	<li><a href="/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span></a></li>
-    <li><a href="{{ route('{{{ $name|nameNames }}}.index') }}">@yield('{{{ $name|nameNames }}}AppTitle')</a></li>
-    <li class="active">#{{ ${{{ $name|nameName }}}->id }}</li>
-</ol>
-
-<div class="page-header">
-        <h1>@yield('{{{ $name|nameNames }}}AppTitle') / Show #{{${{{ $name|nameName }}}->id}}
-
-            <form method="POST" action="{{ route('{{{ $name|nameNames }}}.destroy', ${{{ $name|nameName }}}->id) }}" accept-charset="UTF-8" style="display: inline;" onsubmit="if(confirm('Delete? Are you sure?')) { return true } else {return false };">
-                {{ method_field('DELETE') }}
-                {{ csrf_field() }}
-                <div class="btn-group pull-right" role="group" aria-label="...">
-                    <a class="btn btn-primary btn-group" role="group" href="{{ route('{{{ $name|nameNames }}}.duplicate', ${{{ $name|nameName }}}->id) }}"><i class="glyphicon glyphicon-duplicate"></i> Duplicate</a>
-                    <a class="btn btn-warning btn-group" role="group" href="{{ route('{{{ $name|nameNames }}}.edit', ${{{ $name|nameName }}}->id) }}"><i class="glyphicon glyphicon-edit"></i> Edit</a>
-                    <button type="submit" class="btn btn-danger">Delete <i class="glyphicon glyphicon-trash"></i></button>
-                </div>
-            </form>
-
-        </h1>
-    </div>
+@section('breadcrumb')
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/" class="d-inline-flex"><i class="material-icons mr-1">home</i> Home</a></li>
+        <li class="breadcrumb-item"><a href="{{ route('{{{ $name|nameNames }}}.index') }}">{{ $model_title_list['{{{ $name|nameNames }}}'] }}</a></li>
+        <li class="breadcrumb-item active">#{{ ${{{ $name|nameName }}}->id }}</li>
+      </ol>
+    </nav>
 @endsection
 
 @section('content')
-    <div class="row">
-        <div class="col-md-12">
 
-            <form action="#">
-                <div class="form-group">
-                    <label for="id">ID</label>
-                    <p class="form-control-static">{{${{{ $name|nameName }}}->id}}</p>
-                </div>
+    <h1 class="d-flex mb-3">
+        <i class="material-icons align-self-center mr-1">subject</i>
+        <span class="d-inline-block">{{ $model_title_list['{{{ $name|nameNames }}}'] }} / Show #{{${{{ $name|nameName }}}->id}}</span>
+        <form class="ml-auto" method="POST" action="{{ route('{{{ $name|nameNames }}}.destroy', ${{{ $name|nameName }}}->id) }}" accept-charset="UTF-8" style="display: inline;" onsubmit="if(confirm('Delete? Are you sure?')) { return true } else {return false };">
+            {{ method_field('DELETE') }}
+            {{ csrf_field() }}
+            <div class="btn-group" role="group">
+                <a class="btn btn-sm btn-primary" href="{{ route('{{{ $name|nameNames }}}.duplicate', ${{{ $name|nameName }}}->id) }}" data-toggle="tooltip" data-placement="top" title="Duplicate"><i class="material-icons d-block">add_to_photos</i></a>
+                <a class="btn btn-sm btn-warning" href="{{ route('{{{ $name|nameNames }}}.edit', ${{{ $name|nameName }}}->id) }}" data-toggle="tooltip" data-placement="top" title="Edit"><i class="material-icons d-block">edit</i></a>
+                <button type="submit" class="btn btn-sm btn-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="material-icons d-block">delete</i></button>
+            </div>
+        </form>
+    </h1> 
 
-{{{ if($use_laravel_auth==true): }}}
-                <div class="form-group">
-                    <label for="nome">NAME</label>
-                    <p class="form-control-static">{{${{{ $name|nameName }}}->name}}</p>
-                </div>
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <p class="form-control-static">{{${{{ $name|nameName }}}->email}}</p>
-                </div>
+    <ul class="list-group list-group-flush mt-4">
+      <li class="list-group-item d-inline-flex flex-wrap"><div><strong>ID ： </strong></div><div>{{${{{ $name|nameName }}}->id}}</div></li>
+
+{{{ foreach($schemas): }}}
+{{{ if($this.belongsto==''): }}}
+{{{ if($this.show_in_detail==true): }}}
+      <li class="list-group-item d-inline-flex flex-wrap"><div><strong>{{{ $this.display_name }}} : </strong></div><div>{{ ${{{ $name|nameName }}}->{{{ $this.name|name_name }}} }}</div></li>
 {{{ endif; }}}
-
-{{{ foreach($schemas): }}}{{{ if($this.show_in_detail==true): }}}
-{{{ if($this.belongsto!=): }}}
-                <div class="form-group">
-                     <label for="{{{ $this.belongsto|name_name }}}.{{{ $this.belongsto_column|name_name }}}">{{{ $this.display_name }}}</label>
-                     <p class="form-control-static">{{${{{ $name|nameName }}}->{{{ $this.belongsto|nameName }}}->{{{ $this.belongsto_column|name_name }}}}}</p>
-                </div>
-{{{ else: }}}
-                <div class="form-group">
-                     <label for="{{{ $this.name|name_name }}}">{{{ $this.display_name }}}</label>
-                     <p class="form-control-static">{{ ${{{ $name|nameName }}}->{{{ $this.name|name_name }}} }}</p>
-                </div>
 {{{ endif; }}}
-{{{ endif; }}}{{{ endforeach; }}}
-
-
-
-{{{ foreach($belongstomany): }}}
-                <div class="form-group">
-                     <label for="{{{ $this.name|name_name }}}">{{{ $this.name }}}</label>
-                     <p class="form-control-static">
-                        @foreach(${{{ $name|nameName }}}->{{{ $this.name|nameNames }}} as $my_child)
-                            @if (!$loop->first) , @endif
-                            {{ $my_child->{{{ $this.column|name_name }}} }}
-{{{ if($this.schemas!=[]): }}}
-(
-{{{ endif; }}}
-{{{ foreach($this.schemas): }}}
-                                {{{ $this.name|name_name }}}:{{ $my_child->pivot->{{{ $this.name|name_name }}} }}
-{{{ endforeach; }}}
-{{{ if($this.schemas!=[]): }}}
-)
-{{{ endif; }}}
-                        @endforeach                     
-                     </p>
-                </div>
 {{{ endforeach; }}}
 
-            </form>
+{{{ foreach($relations): }}}
+{{{ if($this.type=='belongsTo'): }}}
+      <li class="list-group-item d-inline-flex flex-wrap"><div><strong>{{{ $this.targetModel.display_name }}} : </strong></div><div>{{ ${{{ $name|nameName }}}->{{{ $this.targetModel.name|nameName }}}->{{{ $this.targetModel.getRelationSchema().name|name_name }}} or '' }}</div></li>
+{{{ endif; }}}
+{{{ endforeach; }}}
 
-            <a class="btn btn-link" href="{{ route('{{{ $name|nameNames }}}.index') }}"><i class="glyphicon glyphicon-backward"></i>  Back</a>
+{{{ foreach($relations): }}}
+{{{ if($this.type=='hasMany'): }}}
+      <li class="list-group-item"><p><strong>{{{ $this.targetModel.display_name }}} : </strong></p><div>
+        @include('{{{ $this.targetModel.name|nameNames }}}._table', ['{{{ $this.targetModel.name|nameNames }}}' => ${{{ $name|nameName }}}->{{{ $this.targetModel.name|nameNames }}}])
+      </div></li>
+{{{ endif; }}}
+{{{ endforeach; }}}
 
-        </div>
+{{{ foreach($relations): }}}
+{{{ if($this.type=='belongsToMany'): }}}
+      <li class="list-group-item d-inline-flex flex-wrap"><div><strong>{{{ $this.targetModel.display_name }}} : </strong></div><div>
+        @foreach(${{{ $name|nameName }}}->{{{ $this.targetModel.name|nameNames }}} as $my_child)
+            @if (!$loop->first) , @endif
+            {{ $my_child->{{{ $this.targetModel.getRelationSchema().name|name_name }}} }}(
+{{{ foreach($this.pivotModelSchemas): }}}
+              {{{ $this.display_name }}}:{{ $my_child->pivot->{{{ $this.name|name_name }}} }}
+{{{ endforeach; }}}
+            )
+        @endforeach </div></li>
+{{{ endif; }}}
+{{{ endforeach; }}}
+
+    </ul>
+    <div class="d-flex justify-content-end mt-3">
+        <a class="btn btn-secondary d-inline-flex mr-3" href="{{ route('{{{ $name|nameNames }}}.index') }}"><i class="material-icons">fast_rewind</i> Back</a>
     </div>
 
 @endsection

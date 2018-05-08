@@ -1,5 +1,8 @@
 jQuery(function($){
 	
+		//bootstrap4 tooltip
+		$('[data-toggle="tooltip"]').tooltip()
+	
 		//clear query
 		$('form#search').cleanQuery();
 	
@@ -38,11 +41,12 @@ jQuery(function($){
 						var error_name = 'errors.' + opener_name.replace(/\[/g,'.').replace(/\]/g,'') + '.' + pivot_input_name;
 						var error = myRoot.find('input[name="' + error_name + '"]');
 						if(error.length){
-							$(this).parent().addClass("has-error");
-							$(this).siblings('.help-block').show().html(error.val());
+							$(this).addClass("is-invalid");
+							$(this).siblings('.invalid-feedback').html(error.val());
 						}else{
-							$(this).parent().removeClass("has-error");
-							$(this).siblings('.help-block').hide();
+							$(this)[0].checkValidity();
+							$(this).removeClass("is-invalid");
+							$(this).siblings('.invalid-feedback').html('Invalid!');
 						}
 					});
 	
@@ -56,35 +60,77 @@ jQuery(function($){
 			// set save button click event
 			myModal.find('button.save').on('click', function(e){
 	
+				var opener_name = myModal.attr('opener-name');
+	
 				myModal.find('.manytomany-pivot-input').each( function(){
 	
-					var opener_name = myModal.attr('opener-name');
 					var pivot_input_name = $(this).attr('name').replace('pivots-option[','').replace(']','')
 					var hidden_name = opener_name + '[' + pivot_input_name + ']';
 	
-					//exist-check
-					var target = myRoot.children('input[name="' + hidden_name + '"]');
+					// manual validate
+					if( $(this)[0].checkValidity() === false ){	// has error
+						$(this).addClass('has-error');
+					}else{										// has no error
+						if( $(this).hasClass('has-error') ){
+							$(this).removeClass('has-error');
+						}
 	
-					if( target.length ){
-	
-						//update
-						target.val( $(this).val() );
-						
-					}else{
-	
-						//add
-						myRoot.append('<input type="hidden" name="' + hidden_name + '" value="' + $(this).val() + '" parent_name="' + opener_name + '">');
+						//exist-check
+						var target = myRoot.children('input[name="' + hidden_name + '"]');
+		
+						if( target.length ){
+		
+							//update
+							target.val( $(this).val() );
+							
+						}else{
+							//add
+							myRoot.append('<input type="hidden" name="' + hidden_name + '" value="' + $(this).val() + '" parent_name="' + opener_name + '">');
+						}
 					}
 				});
+				
+				if( myModal.find('.has-error').length ){
+					if( myModal.hasClass('needs-validation-with-save') ){
+						myModal.addClass('was-validated');
+					}
+					return false;
+				}else{
+					if( myModal.hasClass('was-validated') ){
+						myModal.removeClass('was-validated');
+					}
+					myRoot.find('[name="' + opener_name + '[id]"]').addClass('save-is-pushed');
+					myModal.modal('hide');
+				}
 	
-				myModal.modal('hide');
+	
 			});
 	
 			// set modal close event
 			myModal.on('hide.bs.modal', function(e){
 	
+				var opener_name = myModal.attr('opener-name');
+	
 				//clear input
 				myModal.find('.manytomany-pivot-input').val('');
+				
+				//check off input in case of cancel
+				var opener_checkbox = myRoot.find('[name="' + opener_name + '[id]"]');
+				if( opener_checkbox.hasClass('save-is-pushed') ){
+					opener_checkbox.removeClass('save-is-pushed');
+				}else{
+					myHidden = myRoot.find('input[type="hidden"][parent_name="' + opener_name + '"]');
+	
+					if( !myHidden.length ){	// in case of create
+	
+						// turn checkbox off
+						opener_checkbox.prop("checked", false);
+						
+						// add disabled attr
+						myHidden.attr('disabled','disabled');
+					}
+	
+				}
 			});
 		});
 	
@@ -95,10 +141,17 @@ jQuery(function($){
 	
 				// disable input,select,textarea in modal
 				$(this).find('.manytomany-modal input, .manytomany-modal select, .manytomany-modal textarea').attr('disabled','disabled');
+				
+				if( !$(this)[0].checkValidity() ){ // in case of validation false
+	
+					// remove disable input,select,textarea in modal
+					$(this).find('.manytomany-modal input, .manytomany-modal select, .manytomany-modal textarea').removeAttr('disabled');
+					
+				}
 			}
 		});
 	});
-	
+		
 	// sort by column
 	function sortByColumn(column){
 		
@@ -127,3 +180,22 @@ jQuery(function($){
 	
 		window.location.href = window.location.pathname + query_txt;
 	}
+	
+	// bootstrap4 form validation
+	(function() {
+	  'use strict';
+	  window.addEventListener('load', function() {
+		// Fetch all the forms we want to apply custom Bootstrap validation styles to
+		var forms = document.getElementsByClassName('needs-validation');
+		// Loop over them and prevent submission
+		var validation = Array.prototype.filter.call(forms, function(form) {
+		  form.addEventListener('submit', function(event) {
+			if (form.checkValidity() === false) {
+			  event.preventDefault();
+			  event.stopPropagation();
+			}
+			form.classList.add('was-validated');
+		  }, false);
+		});
+	  }, false);
+	})();
