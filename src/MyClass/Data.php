@@ -127,12 +127,12 @@ class Data
     }
 
     public function getModelByName( $name ){
-        $result = current( array_filter( $this->models, function($model) use($name){
+        $result = array_filter( $this->models, function($model) use($name){
             return $model->name === $name;
-        }));
+        });
         if( count($result)===0 ){
             throw new \Exception('getModelByName('.$name.') return no model!');
         }
-        return $result;
+        return array_values($result)[0];
     }
 }
