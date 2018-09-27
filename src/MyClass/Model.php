@@ -32,7 +32,7 @@ class Model
         $result = current( array_filter( $this->schemas, function($schema) use($name){
             return $schema->name === $name;
         }));
-        if( count($result)===0 ){
+        if( $result===FALSE ){
             throw new \Exception('getSchemaByName('.$name.') return no schema!');
         }
         return $result;
