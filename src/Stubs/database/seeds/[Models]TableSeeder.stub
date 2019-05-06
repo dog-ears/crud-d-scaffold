@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Schema;
 
 {{{ if($is_pivot==true): }}}
 class {{{ $name|NameName }}}TableSeeder extends Seeder
@@ -16,6 +17,7 @@ class {{{ $name|NameNames }}}TableSeeder extends Seeder
      */
     public function run()
     {
+        Schema::disableForeignKeyConstraints();
         $faker = Faker\Factory::create();
 
         for($i=0;$i<30;$i++){
@@ -35,5 +37,6 @@ class {{{ $name|NameNames }}}TableSeeder extends Seeder
 {{{ endforeach; }}}
             ]);
         }
+        Schema::enableForeignKeyConstraints();
     }
 }
