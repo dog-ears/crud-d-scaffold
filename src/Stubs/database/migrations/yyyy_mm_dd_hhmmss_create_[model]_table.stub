@@ -18,6 +18,7 @@ class Create{{{ $name|NameNames }}}Table extends Migration
      */
     public function up()
     {
+        Schema::disableForeignKeyConstraints();
 {{{ if($is_pivot==true): }}}
         Schema::create('{{{ $name|name_name }}}', function (Blueprint $table) {
 {{{ else: }}}
@@ -38,6 +39,7 @@ class Create{{{ $name|NameNames }}}Table extends Migration
             $table->softDeletes();
 {{{ endif; }}}
         });
+        Schema::enableForeignKeyConstraints();
     }
 
     /**
@@ -47,10 +49,12 @@ class Create{{{ $name|NameNames }}}Table extends Migration
      */
     public function down()
     {
+        Schema::disableForeignKeyConstraints();
 {{{ if($is_pivot==true): }}}
         Schema::dropIfExists('{{{ $name|name_name }}}');
 {{{ else: }}}
         Schema::dropIfExists('{{{ $name|name_names }}}');
 {{{ endif; }}}
+        Schema::enableForeignKeyConstraints();
     }
 }
