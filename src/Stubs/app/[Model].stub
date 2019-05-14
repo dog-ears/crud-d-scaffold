@@ -36,7 +36,7 @@ class {{{ $name|NameName }}} extends Model
 {{{ if($this.varidate!=''): }}}
             'model.{{{ $this.name|name_name }}}' => '{{{ $this.varidate }}}',
 {{{ else: }}}
-            'model.{{{ $this.name|name_name }}}' => '{{{ $this.getVaridate() }}}{{{ if($use_soft_delete==true): }}}{{{ if($this.unique==true): }}},deleted_at,NOT_NULL{{{ endif; }}}{{{ endif; }}}',
+            'model.{{{ $this.name|name_name }}}' => '{{{ $this.getVaridate() }}}{{{ if($parent.use_soft_delete==true): }}}{{{ if($this.unique==true): }}},deleted_at,NOT_NULL{{{ endif; }}}{{{ endif; }}}',
 {{{ endif; }}}
 {{{ endforeach; }}}
 

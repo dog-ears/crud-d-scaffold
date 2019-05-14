@@ -58,7 +58,7 @@ class Schema
             $result .= '|nullable';
         }
         if( $this->unique === true ){
-            $result .= '|unique:\'.$table_name.\',email,\'.$ignore_unique.\',id,deleted_at,NOT_NULL';
+            $result .= '|unique:\'.$table_name.\','. $this->name .',\'.$ignore_unique.\',id';  // ,deleted_at,NOT_NULL
         }
         $result = ltrim ($result,'|');
         return $result;

@@ -13,14 +13,15 @@ class AddColumnToUsersTable extends Migration
      */
     public function up()
     {
+        Schema::disableForeignKeyConstraints();
         if( Schema::hasTable('users') ){
             Schema::table('users', function (Blueprint $table) {
 
 {{{ foreach($schemas): }}}
 {{{ if($this.name!='name'): }}}{{{ if($this.name!='email'): }}}{{{ if($this.name!='password'): }}}
 {{{ if($this.belongsto!=''): }}}
-                $table->integer('{{{ $this.name|name_name }}}')->unsigned(){{{ if($this.nullable==true): }}}->nullable(){{{ endif; }}};
-                $table->foreign('{{{ $this.name|name_name }}}')->references('id')->on('{{{ $this.belongsto|name_names }}}');
+                $table->bigInteger('{{{ $this.name|name_name }}}')->unsigned(){{{ if($this.nullable==true): }}}->nullable(){{{ endif; }}};
+                $table->foreign('{{{ $this.name|name_name }}}')->references('id')->on('{{{ $this.belongsto|name_names }}}')->onUpdate('cascade')->onDelete('cascade');
 {{{ else: }}}
                 $table->{{{ $this.type }}}('{{{ $this.name|name_name }}}'){{{ if($this.nullable==true): }}}->nullable(){{{ endif; }}};
 {{{ endif; }}}
@@ -30,9 +31,9 @@ class AddColumnToUsersTable extends Migration
 {{{ if($use_soft_delete==true): }}}
                 $table->softDeletes();
 {{{ endif; }}}
-
             });
         }
+        Schema::enableForeignKeyConstraints();
     }
 
     /**

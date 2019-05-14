@@ -39,7 +39,7 @@
 
 {{{ foreach($relations): }}}
 {{{ if($this.type=='belongsTo'): }}}
-      <li class="list-group-item d-inline-flex flex-wrap"><div><strong>{{{ $this.targetModel.display_name }}} : </strong></div><div>{{ ${{{ $name|nameName }}}->{{{ $this.targetModel.name|nameName }}}->{{{ $this.targetModel.getRelationSchema().name|name_name }}} or '' }}</div></li>
+      <li class="list-group-item d-inline-flex flex-wrap"><div><strong>{{{ $this.targetModel.display_name }}} : </strong></div><div>{{ ${{{ $name|nameName }}}->{{{ $this.targetModel.name|nameName }}}->{{{ $this.targetModel.getRelationSchema().name|name_name }}} ?? '' }}</div></li>
 {{{ endif; }}}
 {{{ endforeach; }}}
 
