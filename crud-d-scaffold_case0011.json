@@ -120,7 +120,7 @@
           "varidate": "",
           "faker_type": "company()",
           "nullable": false,
-          "unique": false,
+          "unique": true,
           "show_in_list": true,
           "show_in_detail": true,
           "belongsto": "",
