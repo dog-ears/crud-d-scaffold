@@ -24,13 +24,13 @@ class Create{{{ $name|NameNames }}}Table extends Migration
 {{{ else: }}}
         Schema::create('{{{ $name|name_names }}}', function (Blueprint $table) {
 {{{ endif; }}}
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->timestamps();
 
 {{{ foreach($schemas): }}}
 {{{ if($this.belongsto!=''): }}}
-            $table->unsignedInteger('{{{ $this.name|name_name }}}'){{{ if($this.nullable==true): }}}->nullable(){{{ endif; }}};
-            $table->foreign('{{{ $this.name|name_name }}}')->references('id')->on('{{{ $this.belongsto|name_names }}}');
+            $table->unsignedBigInteger('{{{ $this.name|name_name }}}'){{{ if($this.nullable==true): }}}->nullable(){{{ endif; }}};
+            $table->foreign('{{{ $this.name|name_name }}}')->references('id')->on('{{{ $this.belongsto|name_names }}}')->onUpdate('cascade')->onDelete('cascade');
 {{{ else: }}}
             $table->{{{ $this.type }}}('{{{ $this.name|name_name }}}'){{{ if($this.nullable==true): }}}->nullable(){{{ endif; }}};
 {{{ endif; }}}

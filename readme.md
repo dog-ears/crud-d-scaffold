@@ -1,8 +1,7 @@
 # Crud-D-Scaffold for Laravel 5.6
 
-  Hi, this is a scaffold generator for Laravel 5.6.
-  You can Create Basic CRUD application by using this package.<br>
-  (For laravel 5.5, use package version 2.6.0)
+  Hi, this is a scaffold generator for Laravel 5.8.
+  You can Create Basic CRUD application by using this package.
 
 ## Demo & Screen Capture
 
@@ -65,22 +64,27 @@ Run `php artisan` from the console, and you'll see the new commands below.
 
 ### Step 3: Crud-D-Scaffold
 
-##### (i) publish public resource.
+##### (i) run artisan make:auth(*In case of using laravel auth)
+```
+php artisan make:auth
+```
+##### (ii) publish public resource.
 ```
 php artisan vendor:publish --tag=public --force
 ```
-##### (ii) Copy /vendor/dog-ears/crud-d-scaffold/crud-d-scaffold_case0010.json to your laravel project root
+##### (iii) Copy /vendor/dog-ears/crud-d-scaffold/crud-d-scaffold_case0010.json to your laravel project root
 ```
 cp ./vendor/dog-ears/crud-d-scaffold/crud-d-scaffold_case0010.json ./crud-d-scaffold.json
 ```
-##### (iii) run crud-d-scaffold:setup
+##### (iv) run crud-d-scaffold:setup
 ```
 php artisan crud-d-scaffold:setup -f
 ```
   Overwriting the file with -f option.  
   For the first time, the f option is unnecessary. (No problem with putting on)
+  It is recommended to back up with git before set up scaffold.
 
-##### (iv) run migration and seeding
+##### (v) run migration and seeding
 ```
 php artisan migrate
 ```
@@ -117,15 +121,6 @@ ER-DIAGRAM-TOOL<br>
 ## Usage notes
 * You can use laravel auth. At first [ php artisan make:auth ] and run crud-d-scaffold.
 * Column names, model names, etc. are automatically converted according to the convention of laravel, so it is not possible to create singular and plural models at the same time.
-
-
-
-## Testing
-
-This package is tested by laravel dusk.
-see below repository.
-
-https://github.com/dog-ears/crud-d-scaffold-dusktest3
 
 
 

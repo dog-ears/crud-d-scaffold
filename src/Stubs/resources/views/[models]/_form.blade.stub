@@ -7,15 +7,23 @@
 {{{ if($this.input_type=='text'): }}}
   <input type="text" class="form-control
   @if($errors->any()) @if($errors->has("model.{{{ $this.name|name_name }}}")) is-invalid @else is-valid @endif @endif;
-  " id="{{{ $this.name|name_name }}}-field" name="model[{{{ $this.name|name_name }}}]" value="@if($errors->any()){{ old('model.{{{ $this.name|name_name }}}') }}@else{{ ${{{ $name|nameName }}}->{{{ $this.name|name_name }}} or '' }}@endif" {{{ if($this.nullable==false): }}}required{{{ endif; }}}>
+  " id="{{{ $this.name|name_name }}}-field" name="model[{{{ $this.name|name_name }}}]" value="
+@if(isset(${{{ $name|nameName }}}))
+@if($errors->any()){{ old('model.{{{ $this.name|name_name }}}') }}@else{{ ${{{ $name|nameName }}}->{{{ $this.name|name_name }}} ?? '' }}@endif
+@endif" {{{ if($this.nullable==false): }}}required{{{ endif; }}}>
 {{{ elseif($this.input_type=='textarea'): }}}
   <textarea class="form-control
   @if($errors->any()) @if($errors->has("model.{{{ $this.name|name_name }}}")) is-invalid @else is-valid @endif @endif;
-  " id="{{{ $this.name|name_name }}}-field" name="model[{{{ $this.name|name_name }}}]" rows="3" {{{ if($this.nullable==false): }}}required{{{ endif; }}}>@if($errors->any()){{ old('model.{{{ $this.name|name_name }}}') }}@else{{ ${{{ $name|nameName }}}->{{{ $this.name|name_name }}} or '' }}@endif</textarea>
+  " id="{{{ $this.name|name_name }}}-field" name="model[{{{ $this.name|name_name }}}]" rows="3" {{{ if($this.nullable==false): }}}required{{{ endif; }}}>
+@if(isset(${{{ $name|nameName }}}))
+@if($errors->any()){{ old('model.{{{ $this.name|name_name }}}') }}@else{{ ${{{ $name|nameName }}}->{{{ $this.name|name_name }}} ?? '' }}@endif
+@endif</textarea>
 {{{ elseif($this.input_type=='password'): }}}
   <input type="password" class="form-control
   @if($errors->any()) @if($errors->has("model.{{{ $this.name|name_name }}}")) is-invalid @else is-valid @endif @endif;
-  " id="{{{ $this.name|name_name }}}-field" name="model[{{{ $this.name|name_name }}}]" value="@if($errors->any()){{ old('model.{{{ $this.name|name_name }}}') }}@endif" {{{ if($this.nullable==false): }}} @if($mode!=='edit') required @endif {{{ endif; }}}>
+  " id="{{{ $this.name|name_name }}}-field" name="model[{{{ $this.name|name_name }}}]" value="@if(isset(${{{ $name|nameName }}}))
+@if($errors->any()){{ old('model.{{{ $this.name|name_name }}}') }}@endif
+@endif" {{{ if($this.nullable==false): }}} @if($mode!=='edit') required @endif {{{ endif; }}}>
 {{{ endif; }}}
 
   @if($errors->has("model.{{{ $this.name|name_name }}}"))
