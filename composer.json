@@ -1,7 +1,7 @@
 {
   "name": "dog-ears/crud-d-scaffold",
-  "description": "Extend Laravel 5.8's generators scaffold.",
-  "keywords": ["laravel", "generators", "scaffold" , "laravel5.8" , "CRUD" , "crud"],
+  "description": "Extend Laravel 7's generators scaffold.",
+  "keywords": ["laravel", "generators", "scaffold" , "laravel7" , "CRUD" , "crud"],
   "license": "MIT",
   "minimum-stability": "dev",
   "homepage": "http://dog-ears.net/",
@@ -12,13 +12,7 @@
     }
   ],
   "require": {
-    "php": ">=7.0.0",
-    "illuminate/support": "5.*",
-    "laravel/framework": ">=5.8.0"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "6.*",
-    "orchestra/testbench": "~3.0"
+    "laravel/framework": "^7.0"
   },
   "autoload": {
     "psr-4": {
