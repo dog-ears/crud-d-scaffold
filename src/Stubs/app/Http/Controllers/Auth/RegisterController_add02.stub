@@ -19,7 +19,7 @@
                     }
                 }unset($value);
 
-                $method = camel_case( str_plural($pivot_child_model_name) );
+                $method = Str::camel( Str::plural($pivot_child_model_name) );
                 $user->$method()->sync($pivots);
             }
         }

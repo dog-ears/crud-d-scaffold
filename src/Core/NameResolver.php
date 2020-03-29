@@ -9,6 +9,8 @@ http://dog-ears.net/
 
 namespace dogears\CrudDscaffold\Core;
 
+use Illuminate\Support\Str;
+
 class NameResolver
 {
     static function solveName( $input, $type ){
@@ -21,21 +23,21 @@ class NameResolver
         }
 
         if( $type === 'nameName' ){
-            $result = camel_case( str_singular($input) );
+            $result = Str::camel( Str::singular($input) );
         }elseif( $type === 'NameName' ){
-            $result = studly_case( str_singular($input) );
+            $result = Str::studly( Str::singular($input) );
         }elseif( $type === 'nameNames' ){
-            $result = camel_case( str_plural($input) );
+            $result = Str::camel( Str::plural($input) );
         }elseif( $type === 'NameNames' ){
-            $result = studly_case( str_plural($input) );
+            $result = Str::studly( Str::plural($input) );
         }elseif( $type === 'name_name' ){
-            $result = str_replace('__', '_', snake_case( str_singular($input) ) );
+            $result = str_replace('__', '_', Str::snake( Str::singular($input) ) );
         }elseif( $type === 'name_names' ){
-            $result = str_replace('__', '_', snake_case( str_plural($input) ) );
+            $result = str_replace('__', '_', Str::snake( Str::plural($input) ) );
         }elseif( $type === 'NAME_NAME' ){
-            $result = mb_strtoupper( str_replace('__', '_', snake_case( str_singular($input) ) ) );
+            $result = mb_strtoupper( str_replace('__', '_', Str::snake( Str::singular($input) ) ) );
         }elseif( $type === 'NAME_NAMES' ){
-            $result = mb_strtoupper( str_replace('__', '_', snake_case( str_plural($input) ) ) );
+            $result = mb_strtoupper( str_replace('__', '_', Str::snake( Str::plural($input) ) ) );
         }elseif( $type === '' || $type === null ){
             $result = $input;
         }else{
