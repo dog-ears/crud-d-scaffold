@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\{{{ $name|NameName }}};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class {{{ $name|NameName }}}Controller extends Controller
 {
@@ -248,7 +249,7 @@ class {{{ $name|NameName }}}Controller extends Controller
                 }
             }unset($value);
 
-            $method = camel_case( str_plural($pivot_child_model_name) );
+            $method = Str::camel( Str::plural($pivot_child_model_name) );
             ${{{ $name|nameName }}}->$method()->sync($pivots);
         }
     }

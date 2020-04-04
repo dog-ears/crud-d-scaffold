@@ -57,6 +57,7 @@ class CrudDscaffold
         $this->setupViewLayout();
         $this->setupView();
         $this->setupRoute();
+        $this->setupJsScss();
     }
 
     private function stubTest(){
@@ -264,36 +265,33 @@ class CrudDscaffold
 
         //(i)layout --------------------------------------------------
 
-        $stub_txt = $this->files->get( __DIR__. '/../Stubs/resources/views/layout.blade.stub');
-        $output_path = base_path().'/resources/views/layout.blade.php';
+        $stub_txt = $this->files->get( __DIR__. '/../Stubs/resources/views/layouts/de_app.blade.stub');
+        $output_folder = base_path().'/resources/views/layouts';
+        $output_path = $output_folder.'/de_app.blade.php';
 
-        //overwrite check
-        if( !$this->command->option('force') ){
-            if( $this->files->exists($output_path) ){
-                throw new \Exception("Controller File is already exists![".$output_path."]");
-            }
+        if( !$this->files->exists($output_folder) ){
+          $this->files->makeDirectory($output_folder);
         }
-
         $this->files->put($output_path, $stub_txt );
 
         //(ii)alert --------------------------------------------------
 
-        $stub_txt = $this->files->get( __DIR__. '/../Stubs/resources/views/_common/alert.blade.stub');
-        $output_dir = base_path().'/resources/views/_common/';
-        $output_path = $output_dir.'alert.blade.php';
+        // $stub_txt = $this->files->get( __DIR__. '/../Stubs/resources/views/_common/alert.blade.stub');
+        // $output_dir = base_path().'/resources/views/_common/';
+        // $output_path = $output_dir.'alert.blade.php';
 
-        //overwrite check
-        if( !$this->command->option('force') ){
-            if( $this->files->exists($output_path) ){
-                throw new \Exception("Controller File is already exists![".$output_path."]");
-            }
-        }
+        // //overwrite check
+        // if( !$this->command->option('force') ){
+        //     if( $this->files->exists($output_path) ){
+        //         throw new \Exception("Controller File is already exists![".$output_path."]");
+        //     }
+        // }
 
-        //create directory
-        if( !$this->files->exists($output_dir) ){
-            $this->files->makeDirectory( $output_dir, $mode = 493, $recursive = false, $force = false);
-        }
-        $this->files->put($output_path, $stub_txt );
+        // //create directory
+        // if( !$this->files->exists($output_dir) ){
+        //     $this->files->makeDirectory( $output_dir, $mode = 493, $recursive = false, $force = false);
+        // }
+        // $this->files->put($output_path, $stub_txt );
 
         //(iii)navi --------------------------------------------------
 
@@ -305,17 +303,10 @@ class CrudDscaffold
             $setting_array['auth'] = "true";
         }
 */
-        $stub_txt = $this->files->get( __DIR__. '/../Stubs/resources/views/navi.blade.stub');
-        $output_path = base_path().'/resources/views/navi.blade.php';
+        $stub_txt = $this->files->get( __DIR__. '/../Stubs/resources/views/layouts/de_navi.blade.stub');
+        $output_path = base_path().'/resources/views/layouts/de_navi.blade.php';
         $stub_obj = new StubCompiler( $stub_txt, $setting_array );
         $output = $stub_obj->compile();
-
-        //overwrite check
-        if( !$this->command->option('force') ){
-            if( $this->files->exists($output_path) ){
-                throw new \Exception("Controller File is already exists![".$output_path."]");
-            }
-        }
 
         $this->files->put($output_path, $output );
 
@@ -349,6 +340,8 @@ class CrudDscaffold
         }
     }
 
+
+
     private function checkAuthScaffold(){
         if( $this->files->exists( base_path().'/resources/views/auth/login.blade.php' ) ){
             return true;
@@ -356,6 +349,7 @@ class CrudDscaffold
             return false;
         }
     }
+
 
 
     private function setupView(){
@@ -417,5 +411,33 @@ class CrudDscaffold
         if( !strpos( $target_src, $output) ){
             $this->files->append($output_path, $output );
         }
+    }
+
+
+
+    private function setupJsScss(){
+
+      // js - cleanQuery
+      $this->files->copy( __DIR__. '/../Stubs/resources/js/jquery.cleanQuery.js', base_path().'/resources/js/jquery.cleanQuery.js' );
+      // js - dy.js
+      $this->files->copy( __DIR__. '/../Stubs/resources/js/dog-ears.js', base_path().'/resources/js/dog-ears.js' );
+      // sass - dy.scss
+      $this->files->copy( __DIR__. '/../Stubs/resources/sass/_dog-ears.scss', base_path().'/resources/sass/_dog-ears.scss' );
+
+      // js - app.js
+      $output = $this->files->get( __DIR__. '/../Stubs/resources/js/app_add.js.stub');
+      $output_path = base_path().'/resources/js/app.js';
+      $target_src = $this->files->get( $output_path );
+      if( !strpos( $target_src, $output) ){
+          $this->files->append($output_path, $output );
+      }
+
+      // sass - app.scss
+      $output = $this->files->get( __DIR__. '/../Stubs/resources/sass/app_add.scss.stub');
+      $output_path = base_path().'/resources/sass/app.scss';
+      $target_src = $this->files->get( $output_path );
+      if( !strpos( $target_src, $output) ){
+          $this->files->append($output_path, $output );
+      }
     }
 }

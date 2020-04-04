@@ -18,12 +18,7 @@ class GeneratorsServiceProvider extends ServiceProvider {
 	 * @return void
 	 */
 	public function boot()
-	{
-		//asset publish
-	    $this->publishes([
-	        __DIR__.'/Assets' => public_path('dog-ears/CrudDscaffold'),
-	    ], 'public');
-	}
+	{}
 
 	/**
 	 * Register the application services.
