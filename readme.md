@@ -1,6 +1,6 @@
-# Crud-D-Scaffold for Laravel 5.6
+# Crud-D-Scaffold for Laravel 7
 
-  Hi, this is a scaffold generator for Laravel 5.8.
+  Hi, this is a scaffold generator for Laravel 7.
   You can Create Basic CRUD application by using this package.
 
 ## Demo & Screen Capture
@@ -18,7 +18,7 @@ Demo Site<br>
 
   [ General ]
 * In addition to the basic CRUD (create, detail, update, delete), there is a "Duplicate" function.
-* Adopted Bootstrap 4 for display
+* Adopted Bootstrap for display
 * Describe application configuration in setting file -> Automatic generation completed by command execution.
 * it is possible to create One-to-many and many-to-many relation between two models
 * The main creation files are model, controller, migration, seeding, view
@@ -38,6 +38,7 @@ Demo Site<br>
 
 ## Latest Release note
 
+Ver 4.0.0 Renewal for laravel 7<br>
 Ver 3.0.0 Renewal<br>
 Ver 2.6.0 Add Varidation and keep old input value.<br>
 Ver 2.5.3 bugfix
@@ -45,13 +46,25 @@ Ver 2.5.3 bugfix
 
 ## How to installation and execution
 
-### Step 1: Installing package through Composer
+### Step 1: Installing laravel/ui package through Composer and create bootstrap
+
+```
+composer require laravel/ui
+php artisan ui bootstrap
+```
+if you want to use laravel auth, use below
+```
+composer require laravel/ui
+php artisan ui bootstrap --auth
+```
+
+### Step 2: Installing package through Composer
 
 ```
 composer require dog-ears/crud-d-scaffold
 ```
 
-### Step 2: Run Artisan!
+### Step 3: Run Artisan!
 
 You're all set.
 Run `php artisan` from the console, and you'll see the new commands below.
@@ -62,21 +75,13 @@ Run `php artisan` from the console, and you'll see the new commands below.
   This completes the preparation.  
   Let's register the sample.  
 
-### Step 3: Crud-D-Scaffold
+### Step 4: Crud-D-Scaffold
 
-##### (i) run artisan make:auth(*In case of using laravel auth)
-```
-php artisan make:auth
-```
-##### (ii) publish public resource.
-```
-php artisan vendor:publish --tag=public --force
-```
-##### (iii) Copy /vendor/dog-ears/crud-d-scaffold/crud-d-scaffold_case0010.json to your laravel project root
+##### (i) Copy /vendor/dog-ears/crud-d-scaffold/crud-d-scaffold_case0010.json to your laravel project root
 ```
 cp ./vendor/dog-ears/crud-d-scaffold/crud-d-scaffold_case0010.json ./crud-d-scaffold.json
 ```
-##### (iv) run crud-d-scaffold:setup
+##### (ii) run crud-d-scaffold:setup
 ```
 php artisan crud-d-scaffold:setup -f
 ```
@@ -84,7 +89,7 @@ php artisan crud-d-scaffold:setup -f
   For the first time, the f option is unnecessary. (No problem with putting on)
   It is recommended to back up with git before set up scaffold.
 
-##### (v) run migration and seeding
+##### (iii) run migration and seeding
 ```
 php artisan migrate
 ```
