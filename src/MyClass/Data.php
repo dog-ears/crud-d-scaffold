@@ -7,12 +7,12 @@ This software is released under the MIT License.
 http://dog-ears.net/
 */
 
-namespace dogears\CrudDscaffold\MyClass;
+namespace DogEars\CrudDscaffold\MyClass;
 
 use Illuminate\Filesystem\Filesystem;
-use dogears\CrudDscaffold\Commands\CrudDscaffoldSetupCommand;
-use dogears\CrudDscaffold\MyClass\Model;
-use dogears\CrudDscaffold\MyClass\Schema;
+use DogEars\CrudDscaffold\Commands\CrudDscaffoldSetupCommand;
+use DogEars\CrudDscaffold\MyClass\Model;
+use DogEars\CrudDscaffold\MyClass\Schema;
 
 class Data
 {

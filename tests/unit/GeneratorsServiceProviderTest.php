@@ -13,7 +13,7 @@ class GeneratorsServiceProviderTest extends TestCase
 
     protected function getPackageProviders($app)
     {
-        return ['dogears\CrudDscaffold\GeneratorsServiceProvider'];
+        return ['DogEars\CrudDscaffold\GeneratorsServiceProvider'];
     }
 
     public function testBasicTest()

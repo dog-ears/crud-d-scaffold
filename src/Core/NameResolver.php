@@ -7,7 +7,7 @@ This software is released under the MIT License.
 http://dog-ears.net/
 */
 
-namespace dogears\CrudDscaffold\Core;
+namespace DogEars\CrudDscaffold\Core;
 
 use Illuminate\Support\Str;
 

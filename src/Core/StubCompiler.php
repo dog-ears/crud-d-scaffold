@@ -7,9 +7,9 @@ This software is released under the MIT License.
 http://dog-ears.net/
 */
 
-namespace dogears\CrudDscaffold\Core;
+namespace DogEars\CrudDscaffold\Core;
 
-use dogears\CrudDscaffold\Core\NameResolver ;
+use DogEars\CrudDscaffold\Core\NameResolver ;
 
 class StubCompiler
 {

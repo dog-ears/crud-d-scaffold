@@ -6,7 +6,7 @@ This software is released under the MIT License.
 http://dog-ears.net/
 */
 
-namespace dogears\CrudDscaffold;
+namespace DogEars\CrudDscaffold;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -37,7 +37,7 @@ class GeneratorsServiceProvider extends ServiceProvider {
 	{
 		//Setup my scaffold
 		$this->app->singleton('command.CrudDscaffold.setup', function ($app) {
-			return $app['dogears\CrudDscaffold\Commands\CrudDscaffoldSetupCommand'];
+			return $app['DogEars\CrudDscaffold\Commands\CrudDscaffoldSetupCommand'];
 		});
 		$this->commands('command.CrudDscaffold.setup');
 	}

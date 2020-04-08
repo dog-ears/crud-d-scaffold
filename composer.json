@@ -16,7 +16,7 @@
   },
   "autoload": {
     "psr-4": {
-      "dogears\\CrudDscaffold\\": "src/"
+      "DogEars\\CrudDscaffold\\": "src/"
     }
   },
   "autoload-dev": {
@@ -27,7 +27,7 @@
   "extra": {
     "laravel": {
       "providers": [
-        "dogears\\CrudDscaffold\\GeneratorsServiceProvider"
+        "DogEars\\CrudDscaffold\\GeneratorsServiceProvider"
       ]
     }
   }

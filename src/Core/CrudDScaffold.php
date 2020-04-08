@@ -7,16 +7,16 @@ This software is released under the MIT License.
 http://dog-ears.net/
 */
 
-namespace dogears\CrudDscaffold\Core;
+namespace DogEars\CrudDscaffold\Core;
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-use dogears\CrudDscaffold\Commands\CrudDscaffoldSetupCommand;
-use dogears\CrudDscaffold\Core\StubCompiler ;
-use dogears\CrudDscaffold\Core\NameResolver ;
-use dogears\CrudDscaffold\MyClass\Data ;
+use DogEars\CrudDscaffold\Commands\CrudDscaffoldSetupCommand;
+use DogEars\CrudDscaffold\Core\StubCompiler ;
+use DogEars\CrudDscaffold\Core\NameResolver ;
+use DogEars\CrudDscaffold\MyClass\Data ;
 
 class CrudDscaffold
 {

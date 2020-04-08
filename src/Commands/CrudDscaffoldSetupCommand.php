@@ -7,11 +7,11 @@ This software is released under the MIT License.
 http://dog-ears.net/
 */
 
-namespace dogears\CrudDscaffold\Commands;
+namespace DogEars\CrudDscaffold\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Composer;
-use dogears\CrudDscaffold\Core\CrudDscaffold;
+use DogEars\CrudDscaffold\Core\CrudDscaffold;
 
 class CrudDscaffoldSetupCommand extends Command
 {
