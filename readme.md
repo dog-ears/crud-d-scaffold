@@ -41,7 +41,6 @@ Demo Site<br>
 Ver 4.0.0 Renewal for laravel 7<br>
 Ver 3.0.0 Renewal<br>
 Ver 2.6.0 Add Varidation and keep old input value.<br>
-Ver 2.5.3 bugfix
 
 
 ## How to installation and execution
@@ -89,7 +88,13 @@ php artisan crud-d-scaffold:setup -f
   For the first time, the f option is unnecessary. (No problem with putting on)
   It is recommended to back up with git before set up scaffold.
 
-##### (iii) run migration and seeding
+##### (iii) run npm install and npm run dev
+```
+npm install
+npm run dev
+```
+
+##### (iv) run migration and seeding
 ```
 php artisan migrate
 ```
