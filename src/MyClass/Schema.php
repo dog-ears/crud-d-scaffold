@@ -7,7 +7,7 @@ This software is released under the MIT License.
 http://dog-ears.net/
 */
 
-namespace DogEars\CrudDscaffold\MyClass;
+namespace DogEars\CrudDScaffold\MyClass;
 
 class Schema
 {

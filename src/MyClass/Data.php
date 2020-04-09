@@ -7,17 +7,17 @@ This software is released under the MIT License.
 http://dog-ears.net/
 */
 
-namespace DogEars\CrudDscaffold\MyClass;
+namespace DogEars\CrudDScaffold\MyClass;
 
 use Illuminate\Filesystem\Filesystem;
-use DogEars\CrudDscaffold\Commands\CrudDscaffoldSetupCommand;
-use DogEars\CrudDscaffold\MyClass\Model;
-use DogEars\CrudDscaffold\MyClass\Schema;
+use DogEars\CrudDScaffold\Commands\CrudDScaffoldSetupCommand;
+use DogEars\CrudDScaffold\MyClass\Model;
+use DogEars\CrudDScaffold\MyClass\Schema;
 
 class Data
 {
     private $files;     /* Filesystem */
-    private $command;   /* CrudDscaffoldSetupCommand */
+    private $command;   /* CrudDScaffoldSetupCommand */
     public $relations;
 
     /**
@@ -26,7 +26,7 @@ class Data
      * @param Filesystem $files
      * @param Composer $composer
      */
-    public function __construct( CrudDscaffoldSetupCommand $command, Filesystem $files )
+    public function __construct( CrudDScaffoldSetupCommand $command, Filesystem $files )
     {
         $this->command = $command;
         $this->files = $files;

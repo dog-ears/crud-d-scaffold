@@ -7,13 +7,13 @@ This software is released under the MIT License.
 http://dog-ears.net/
 */
 
-namespace DogEars\CrudDscaffold\Commands;
+namespace DogEars\CrudDScaffold\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Composer;
-use DogEars\CrudDscaffold\Core\CrudDscaffold;
+use DogEars\CrudDScaffold\Core\CrudDScaffold;
 
-class CrudDscaffoldSetupCommand extends Command
+class CrudDScaffoldSetupCommand extends Command
 {
 //    use DetectsApplicationNamespace, MakerTrait, NameSolverTrait;
 
@@ -51,7 +51,7 @@ class CrudDscaffoldSetupCommand extends Command
      *
      * @param Composer $composer
      */
-    public function __construct( CrudDscaffold $crud_d_scaffold, Composer $composer )
+    public function __construct( CrudDScaffold $crud_d_scaffold, Composer $composer )
     {
         parent::__construct();
         $this->composer = $composer;
