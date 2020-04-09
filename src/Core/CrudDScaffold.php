@@ -7,21 +7,21 @@ This software is released under the MIT License.
 http://dog-ears.net/
 */
 
-namespace dogears\CrudDscaffold\Core;
+namespace DogEars\CrudDScaffold\Core;
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-use dogears\CrudDscaffold\Commands\CrudDscaffoldSetupCommand;
-use dogears\CrudDscaffold\Core\StubCompiler ;
-use dogears\CrudDscaffold\Core\NameResolver ;
-use dogears\CrudDscaffold\MyClass\Data ;
+use DogEars\CrudDScaffold\Commands\CrudDScaffoldSetupCommand;
+use DogEars\CrudDScaffold\Core\StubCompiler ;
+use DogEars\CrudDScaffold\Core\NameResolver ;
+use DogEars\CrudDScaffold\MyClass\Data ;
 
-class CrudDscaffold
+class CrudDScaffold
 {
     private $files;     /* Filesystem */
-    private $command;   /* CrudDscaffoldSetupCommand */
+    private $command;   /* CrudDScaffoldSetupCommand */
     private $data;   /* Data */
 
     //private $app_type;  /* 'web' or 'api' */
@@ -37,7 +37,7 @@ class CrudDscaffold
         $this->files = $files;
     }
     
-    public function setCommand( CrudDscaffoldSetupCommand $command ){
+    public function setCommand( CrudDScaffoldSetupCommand $command ){
         $this->command = $command;
     }
 
